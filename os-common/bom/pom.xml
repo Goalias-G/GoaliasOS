@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.goalias</groupId>
+    <artifactId>bom</artifactId>
+    <version>${version}</version>
+    <packaging>pom</packaging>
+
+    <description>
+        common依赖项定义
+    </description>
+
+    <properties>
+        <version>1.0.0</version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- 核心模块 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>core</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- 数据库服务 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- OSS -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>oss</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- 限流 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>rateLimiter</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- 缓存服务 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>cache</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- saToken -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>saToken</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- 消息通知模块 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>notification</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- web服务 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>web</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- 数据库加解密模块 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>encrypt</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <!-- chat模块 -->
+            <dependency>
+                <groupId>com.goalias</groupId>
+                <artifactId>chat</artifactId>
+                <version>${version}</version>
+            </dependency>
+        </dependencies>
+
+    </dependencyManagement>
+
+</project>
