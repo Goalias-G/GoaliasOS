@@ -1,0 +1,13 @@
+com.goalias.common.web.config.CaptchaConfig
+com.goalias.common.web.config.FilterConfig
+com.goalias.common.web.config.ResourcesConfig
+com.goalias.common.web.config.UndertowConfig
+
+com.goalias.common.web.config.JacksonConfig
+
+com.goalias.common.web.handler.GlobalExceptionHandler
+com.goalias.common.web.handler.AllUrlHandler
+com.goalias.common.web.config.SecurityConfig
+
+com.goalias.common.web.config.IdempotentConfig
+

@@ -1,0 +1,3 @@
+com.goalias.common.redis.config.RedisConfig
+com.goalias.common.redis.service.impl.RedisServiceImpl
+
