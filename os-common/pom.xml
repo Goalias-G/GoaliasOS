@@ -19,16 +19,16 @@
 
     <modules>
         <module>bom</module>
-        <module>core</module>
-        <module>cache</module>
-        <module>web</module>
-        <module>saToken</module>
-        <module>encrypt</module>
-        <module>mybatis</module>
-        <module>rateLimiter</module>
-        <module>notification</module>
-        <module>oss</module>
-        <module>chat</module>
+        <module>common-core</module>
+        <module>common-cache</module>
+        <module>common-web</module>
+        <module>common-saToken</module>
+        <module>common-encrypt</module>
+        <module>common-mybatis</module>
+        <module>common-rateLimiter</module>
+        <module>common-notification</module>
+        <module>common-oss</module>
+        <module>common-chat</module>
     </modules>
 
 </project>

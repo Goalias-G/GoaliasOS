@@ -5,41 +5,36 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.goalias</groupId>
-        <artifactId>GoaliasOS</artifactId>
+        <artifactId>os-common</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>os-service</artifactId>
-
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+    <artifactId>common-saToken</artifactId>
 
     <dependencies>
-        <!-- 系统核心模块 -->
+
         <dependency>
             <groupId>com.goalias</groupId>
             <artifactId>common-core</artifactId>
         </dependency>
 
-        <!-- mybatis基础模块 -->
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-        </dependency>
+        <!-- ruoyi Common Redis-->
         <dependency>
             <groupId>com.goalias</groupId>
-            <artifactId>common-mybatis</artifactId>
+            <artifactId>common-cache</artifactId>
         </dependency>
 
-        <!-- 对象存储模块 -->
+        <!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
         <dependency>
-            <groupId>com.goalias</groupId>
-            <artifactId>common-oss</artifactId>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
         </dependency>
 
+        <!-- Sa-Token 整合 jwt -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-jwt</artifactId>
+        </dependency>
 
     </dependencies>
 

@@ -22,70 +22,70 @@
             <!-- 核心模块 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>core</artifactId>
+                <artifactId>common-core</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- 数据库服务 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>mybatis</artifactId>
+                <artifactId>common-mybatis</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- OSS -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>oss</artifactId>
+                <artifactId>common-oss</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- 限流 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>rateLimiter</artifactId>
+                <artifactId>common-rateLimiter</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- 缓存服务 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>cache</artifactId>
+                <artifactId>common-cache</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- saToken -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>saToken</artifactId>
+                <artifactId>common-saToken</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- 消息通知模块 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>notification</artifactId>
+                <artifactId>common-notification</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- web服务 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>web</artifactId>
+                <artifactId>common-web</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- 数据库加解密模块 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>encrypt</artifactId>
+                <artifactId>common-encrypt</artifactId>
                 <version>${version}</version>
             </dependency>
 
             <!-- chat模块 -->
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>chat</artifactId>
+                <artifactId>common-chat</artifactId>
                 <version>${version}</version>
             </dependency>
         </dependencies>
