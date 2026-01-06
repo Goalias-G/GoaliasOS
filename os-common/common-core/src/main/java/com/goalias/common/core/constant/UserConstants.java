@@ -42,20 +42,7 @@ public interface UserConstants {
      */
     String ROLE_DISABLE = "1";
 
-    /**
-     * 部门正常状态
-     */
-    String DEPT_NORMAL = "0";
 
-    /**
-     * 部门停用状态
-     */
-    String DEPT_DISABLE = "1";
-
-    /**
-     * 字典正常状态
-     */
-    String DICT_NORMAL = "0";
 
     /**
      * 是否为系统默认（是）

@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.goalias</groupId>
-            <artifactId>common-web</artifactId>
+            <artifactId>os-service</artifactId>
         </dependency>
 
         <dependency>

@@ -47,7 +47,6 @@ public class ThreadPoolConfig {
      */
     @Bean(name = "scheduledExecutorService")
     public ScheduledExecutorService scheduledExecutorService() {
-        log.info("====创建定时任务线程池====");
         return new ScheduledThreadPoolExecutor(core * 2,
                 new BasicThreadFactory.Builder().namingPattern("schedule-pool-%d").daemon(true).build(),
                 new ThreadPoolExecutor.CallerRunsPolicy()) {
