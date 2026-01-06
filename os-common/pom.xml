@@ -14,6 +14,7 @@
 
     <properties>
         <okhttp.version>4.10.0</okhttp.version>
+        <fastjson.version>2.0.32</fastjson.version>
     </properties>
 
 

@@ -1,0 +1,90 @@
+package com.goalias.common.rateLimiter.spring;
+
+import cn.hutool.core.annotation.AnnotationUtil;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.alibaba.csp.sentinel.util.MethodUtil;
+import com.alibaba.csp.sentinel.util.function.Tuple2;
+import com.goalias.common.rateLimiter.annotation.GoaliasFallback;
+import com.goalias.common.rateLimiter.annotation.GoaliasHot;
+import com.goalias.common.rateLimiter.enums.GoaliasStrategyEnum;
+import com.goalias.common.rateLimiter.manager.GoaliasMethodManager;
+import com.goalias.common.rateLimiter.manager.GoaliasStrategyManager;
+import com.goalias.common.rateLimiter.proxy.GoaliasByteBuddyProxy;
+import com.goalias.common.rateLimiter.strategy.GoaliasStrategy;
+import com.goalias.common.rateLimiter.util.ProxyUtil;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class GoaliasScanner implements BeanPostProcessor {
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {//对所有bean进行后置处理
+        Class<?> clazz = ProxyUtil.getUserClass(bean.getClass());
+
+        if (GoaliasStrategy.class.isAssignableFrom(clazz)){
+            GoaliasStrategyManager.addStrategy((GoaliasStrategy) bean);
+            return bean;
+        }
+
+        AtomicBoolean needProxy=new AtomicBoolean(false);
+        Arrays.stream(clazz.getMethods()).forEach(method -> {
+            GoaliasFallback goaliasFallback = searchAnnotation(method, GoaliasFallback.class);
+            if (ObjectUtil.isNotNull(goaliasFallback)){
+                GoaliasMethodManager.addGoaliasMethod(MethodUtil.resolveMethodName(method),new Tuple2<>(GoaliasStrategyEnum.FALLBACK,goaliasFallback));
+                needProxy.set(true);
+            }
+
+            GoaliasHot goaliasHot = searchAnnotation(method, GoaliasHot.class);
+            if (ObjectUtil.isNotNull(goaliasHot)){
+                GoaliasMethodManager.addGoaliasMethod(MethodUtil.resolveMethodName(method),new Tuple2<>(GoaliasStrategyEnum.HOT_METHOD,goaliasHot));
+                needProxy.set(true);
+            }
+        });
+        if (needProxy.get()){
+            GoaliasByteBuddyProxy goaliasByteBuddyProxy = new GoaliasByteBuddyProxy(bean, clazz);
+            try {
+                return goaliasByteBuddyProxy.proxy();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }else return bean;
+    }
+
+    private <A extends Annotation> A searchAnnotation(Method method, Class<A> annotationType){
+        A anno = AnnotationUtil.getAnnotation(method, annotationType);
+        //从接口层面向上搜索
+        if (anno == null){
+            Class<?>[] ifaces = method.getDeclaringClass().getInterfaces();
+
+            for (Class<?> ifaceClass : ifaces){
+                Method ifaceMethod = ReflectUtil.getMethod(ifaceClass, method.getName(), method.getParameterTypes());
+                if (ifaceMethod != null) {
+                    anno = searchAnnotation(ifaceMethod, annotationType);
+                    break;
+                }
+            }
+        }
+
+        //从父类逐级向上搜索
+        if (anno == null){
+            Class<?> superClazz = method.getDeclaringClass().getSuperclass();
+            if (superClazz != null){
+                Method superMethod = ReflectUtil.getMethod(superClazz, method.getName(), method.getParameterTypes());
+                if (superMethod != null){
+                    return searchAnnotation(superMethod, annotationType);
+                }else{
+                    return null;
+                }
+            }else{
+                return null;
+            }
+        }
+
+        return anno;
+    }
+}
