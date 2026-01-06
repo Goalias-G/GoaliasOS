@@ -25,7 +25,7 @@
         <module>common-web</module>
         <module>common-saToken</module>
         <module>common-rateLimiter</module>
-        <module>common-notification</module>
+        <module>common-notice</module>
         <module>common-oss</module>
         <module>common-chat</module>
     </modules>

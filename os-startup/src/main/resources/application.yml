@@ -19,34 +19,6 @@ server:
       # 阻塞任务线程池, 当执行类似servlet请求阻塞操作, undertow会从这个线程池中取得线程,它的值设置取决于系统的负载
       worker: 256
 
-# 日志配置
-logging:
-  level:
-    com.goalias: @logging.level@
-    org.springframework: warn
-    org.mybatis.spring.mapper: error
-  config: classpath:logback-plus.xml
-
-captcha:
-  enable: false
-  # 页面 <参数设置> 可开启关闭 验证码校验
-  # 验证码类型 math 数组计算 char 字符验证
-  type: MATH
-  # line 线段干扰 circle 圆圈干扰 shear 扭曲干扰
-  category: CIRCLE
-  # 数字验证码位数
-  numberLength: 1
-  # 字符验证码长度
-  charLength: 4
-
-# 用户配置
-user:
-  password:
-    # 密码最大错误次数
-    maxRetryCount: 5
-    # 密码锁定时间（默认10分钟）
-    lockTime: 10
-
 # Spring配置
 spring:
   application:
@@ -74,6 +46,34 @@ spring:
     deserialization:
       # 允许对象忽略json中不存在的属性
       fail_on_unknown_properties: false
+
+# 日志配置
+logging:
+  level:
+    com.goalias: @logging.level@
+    org.springframework: warn
+    org.mybatis.spring.mapper: error
+  config: classpath:logback-plus.xml
+
+captcha:
+  enable: false
+  # 页面 <参数设置> 可开启关闭 验证码校验
+  # 验证码类型 math 数组计算 char 字符验证
+  type: MATH
+  # line 线段干扰 circle 圆圈干扰 shear 扭曲干扰
+  category: CIRCLE
+  # 数字验证码位数
+  numberLength: 1
+  # 字符验证码长度
+  charLength: 4
+
+# 用户配置
+user:
+  password:
+    # 密码最大错误次数
+    maxRetryCount: 5
+    # 密码锁定时间（默认10分钟）
+    lockTime: 10
 
 # Sa-Token配置
 sa-token:
@@ -139,9 +139,6 @@ security:
 #    - sys_role_menu
 #    - sys_user_post
 #    - sys_user_role
-
-knowledge-role:
-  enable: false
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
@@ -245,6 +242,9 @@ spring:
         stdio:
           servers-configuration: classpath:mcp-server.json
         request-timeout: 300s
+
+knowledge-role:
+  enable: false
 
 # 向量库配置
 vector-store:
