@@ -18,20 +18,16 @@
     </properties>
 
     <dependencies>
-        <!-- 系统核心模块 -->
+        <!-- 系统核心模块 (include core saToken)-->
         <dependency>
             <groupId>com.goalias</groupId>
-            <artifactId>common-core</artifactId>
+            <artifactId>common-web</artifactId>
         </dependency>
 
         <!-- mybatis基础模块 -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.goalias</groupId>
-            <artifactId>common-mybatis</artifactId>
         </dependency>
 
         <!-- 对象存储模块 -->

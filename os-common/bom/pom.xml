@@ -26,13 +26,6 @@
                 <version>${version}</version>
             </dependency>
 
-            <!-- 数据库服务 -->
-            <dependency>
-                <groupId>com.goalias</groupId>
-                <artifactId>common-mybatis</artifactId>
-                <version>${version}</version>
-            </dependency>
-
             <!-- OSS -->
             <dependency>
                 <groupId>com.goalias</groupId>
@@ -72,13 +65,6 @@
             <dependency>
                 <groupId>com.goalias</groupId>
                 <artifactId>common-web</artifactId>
-                <version>${version}</version>
-            </dependency>
-
-            <!-- 数据库加解密模块 -->
-            <dependency>
-                <groupId>com.goalias</groupId>
-                <artifactId>common-encrypt</artifactId>
                 <version>${version}</version>
             </dependency>
 

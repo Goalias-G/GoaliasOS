@@ -125,13 +125,6 @@ public class LoginHelper {
     }
 
     /**
-     * 获取部门ID
-     */
-    public static Long getDeptId() {
-        return getLoginUser().getDeptId();
-    }
-
-    /**
      * 获取用户账户
      */
     public static String getUsername() {

@@ -8,11 +8,14 @@ import cn.hutool.http.HttpStatus;
 import com.goalias.common.core.domain.R;
 import com.goalias.common.core.exception.ServiceException;
 import com.goalias.common.core.utils.StreamUtils;
+import com.goalias.common.core.utils.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,7 +38,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',权限码校验失败'{}'", requestURI, e.getMessage());
-        return R.fail(HttpStatus.HTTP_FORBIDDEN, "没有访问权限，请联系管理员授权");
+        return R.fail(HttpStatus.HTTP_FORBIDDEN, "没有访问权限!");
     }
 
     /**
@@ -45,7 +48,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleNotRoleException(NotRoleException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',角色权限校验失败'{}'", requestURI, e.getMessage());
-        return R.fail(HttpStatus.HTTP_FORBIDDEN, "没有访问权限，请联系管理员授权");
+        return R.fail(HttpStatus.HTTP_FORBIDDEN, "没有访问权限!");
     }
 
     /**
@@ -126,6 +129,32 @@ public class GlobalExceptionHandler {
     public R<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error(e.getMessage(), e);
         String message = e.getBindingResult().getFieldError().getDefaultMessage();
+        return R.fail(message);
+    }
+
+
+    /**
+     * 主键或UNIQUE索引，数据重复异常
+     */
+    @ExceptionHandler(DuplicateKeyException.class)
+    public R<Void> handleDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        log.error("请求地址'{}',数据库中已存在记录'{}'", requestURI, e.getMessage());
+        return R.fail("数据库中已存在该记录!");
+    }
+
+    /**
+     * Mybatis系统异常 通用处理
+     */
+    @ExceptionHandler(MyBatisSystemException.class)
+    public R<Void> handleCannotFindDataSourceException(MyBatisSystemException e, HttpServletRequest request) {
+        String requestURI = request.getRequestURI();
+        String message = e.getMessage();
+        if (StringUtils.contains("CannotFindDataSourceException", message)) {
+            log.error("请求地址'{}', 未找到数据源", requestURI);
+            return R.fail("未找到数据源!");
+        }
+        log.error("请求地址'{}', Mybatis系统异常", requestURI, e);
         return R.fail(message);
     }
 }

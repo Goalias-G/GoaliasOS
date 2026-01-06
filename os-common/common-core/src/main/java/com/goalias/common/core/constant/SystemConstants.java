@@ -72,9 +72,5 @@ public interface SystemConstants {
      */
     Long SUPER_ADMIN_ID = 1L;
 
-    /**
-     * 根部门祖级列表
-     */
-    String ROOT_DEPT_ANCESTORS = "0";
 
 }
