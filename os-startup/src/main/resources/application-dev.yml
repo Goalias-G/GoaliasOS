@@ -1,35 +1,37 @@
---- # 数据源配置
+# 数据源配置
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://59.110.126.23:6661/goalias-ai?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
     username: root
     password: Goalias0831!
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      # 数据库索引
+      database: 5
+      # password: 123456
+      # 连接超时时间
+      timeout: 10S
   mail:
-    username: xx
+    host: smtp.qq.com
+    port: 465
+    username: xxxxxx@qq.com
+    password: xxxxxxx
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
 
---- # redis 单机配置(单机与集群只能开启一个另一个需要注释掉)
-spring.data:
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    # 数据库索引
-    database: 5
-    # password: 123456
-    # 连接超时时间
-    timeout: 10S
-
---- # sms 短信
-sms:
-  enabled: false
-  # 阿里云 dysmsapi.aliyuncs.com
-  # 腾讯云 sms.tencentcloudapi.com
-  endpoint: "dysmsapi.aliyuncs.com"
-  accessKeyId: xxxxxxx
-  accessKeySecret: xxxxxx
-  signName: 测试
-  # 腾讯专用
-  sdkAppId:
+# sms aliyun短信
+notice:
+  sms:
+    enabled: false
+    accessKeyId: xxxxxxx
+    accessKeySecret: xxxxxx
+    signName: 测试
 
 pdf:
   extract:

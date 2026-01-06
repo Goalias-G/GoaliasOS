@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.goalias</groupId>
+        <artifactId>os-common</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>common-notice</artifactId>
+
+    <properties>
+        <dysmsapi20170525.version>2.0.24</dysmsapi20170525.version>
+    </properties>
+
+    <dependencies>
+<!--        mail-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!--        aliSms-->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>dysmsapi20170525</artifactId>
+            <version>${dysmsapi20170525.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
