@@ -12,9 +12,24 @@
     <artifactId>common-oss</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <minio.version>8.5.11</minio.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>common-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>common-cache</artifactId>
+        </dependency>
+        <!--        minio-->
+        <dependency>
+            <groupId>io.minio</groupId>
+            <artifactId>minio</artifactId>
+            <version>${minio.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

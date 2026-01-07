@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 /**
  * SMS短信 配置属性
  *
- * @author Lion Li
+ * @author Goalias
  * @version 4.2.0
  */
 @Data

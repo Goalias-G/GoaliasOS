@@ -35,21 +35,14 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册路由拦截器，自定义验证规则
         registry.addInterceptor(new SaInterceptor(handler -> {
-            AllUrlHandler allUrlHandler = SpringUtils.getBean(AllUrlHandler.class);
-            // 登录验证 -- 排除多个路径
-            SaRouter
-                // 获取所有的
-                .match(allUrlHandler.getUrls())
-                // 对未排除的路径进行检查
-                .check(() -> {
-                    // 检查是否登录 是否有token
-                    StpUtil.checkLogin();
-
-
-                });
-        })).addPathPatterns("/**")
-            // 排除不需要拦截的路径
-            .excludePathPatterns(securityProperties.getExcludes());
+                    AllUrlHandler allUrlHandler = SpringUtils.getBean(AllUrlHandler.class);
+                    SaRouter.match(allUrlHandler.getUrls())// 获取所有的url
+//                            .notMatch("")
+                            // 对未排除的路径进行检查 Assert
+                            .check(StpUtil::checkLogin);
+                })).addPathPatterns("/**")
+                // 排除不需要拦截的路径
+                .excludePathPatterns(securityProperties.getExcludes());
     }
 
 }
