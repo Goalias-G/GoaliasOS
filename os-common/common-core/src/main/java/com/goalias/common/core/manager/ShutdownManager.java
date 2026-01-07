@@ -33,7 +33,6 @@ public class ShutdownManager {
      */
     private void shutdownAsyncManager() {
         try {
-            log.info("====关闭后台任务任务线程池====");
             Threads.shutdownAndAwaitTermination(scheduledExecutorService);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

@@ -17,7 +17,7 @@ import java.util.Objects;
 /**
  * Mail 邮件模板
  *
- * @author Lion Li
+ * @author Goalias
  * @version 4.2.0
  */
 @Component

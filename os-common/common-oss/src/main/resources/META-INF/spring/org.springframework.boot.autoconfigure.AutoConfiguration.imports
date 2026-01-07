@@ -1,0 +1,2 @@
+com.goalias.common.oss.config.MinioConfig
+com.goalias.common.oss.core.MinioService

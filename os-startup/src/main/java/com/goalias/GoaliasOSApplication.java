@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 /**
  * 启动程序
  *
- * @author Lion Li
+ * @author Goalias
  */
 @SpringBootApplication(scanBasePackages = {"com.goalias"})
 @EnableScheduling

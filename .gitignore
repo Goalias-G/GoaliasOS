@@ -24,6 +24,9 @@ target/
 ######################################################################
 # IDE
 
+.kiro
+.vscode
+
 ### STS ###
 .apt_generated
 .classpath
@@ -31,6 +34,7 @@ target/
 .project
 .settings
 .springBeans
+
 
 ### IntelliJ IDEA ###
 .idea

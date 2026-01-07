@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 /**
  * Aliyun 短信模板
  *
- * @author Lion Li
+ * @author Goalias
  * @version 4.2.0
  */
 public class AliyunSmsTemplate implements SmsTemplate {
