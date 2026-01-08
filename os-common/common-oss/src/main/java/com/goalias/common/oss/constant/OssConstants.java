@@ -70,9 +70,9 @@ public interface OssConstants {
         long MULTIPART_UPLOAD_EXPIRE = 24 * 60 * 60L;
 
         /**
-         * 文件 MD5 映射缓存过期时间：7天
+         * 文件 MD5 映射缓存过期时间：16天
          */
-        long FILE_MD5_EXPIRE = 7 * 24 * 60 * 60L;
+        long FILE_MD5_EXPIRE = 16 * 24 * 60 * 60L;
     }
 
 }

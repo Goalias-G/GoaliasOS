@@ -222,9 +222,9 @@ management:
 
 # websocket
 websocket:
-  enabled: true
+  enabled: false
   # 路径
-  path: '/resource/websocket'
+  path: '/ws'
   # 设置访问源地址
   allowedOrigins: '*'
 

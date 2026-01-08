@@ -2,8 +2,11 @@
 # Compiled class file
 *.class
 
+
 # Log file
 *.log
+logs
+docs
 
 # Package Files #
 *.jar

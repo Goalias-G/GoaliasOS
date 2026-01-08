@@ -75,8 +75,7 @@ public class FileController {
     }
 
     /**
-     * 上传单个分片（通过后端代理）
-     * 适用于前端无法直接访问 MinIO 的场景
+     * 上传单个分片
      *
      * @param bucketName  存储桶名称
      * @param objectName  文件对象名
