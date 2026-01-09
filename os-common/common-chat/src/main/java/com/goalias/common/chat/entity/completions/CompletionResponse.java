@@ -5,6 +5,7 @@ import lombok.Data;
 import com.goalias.common.chat.entity.common.Choice;
 import com.goalias.common.chat.entity.common.OpenAiResponse;
 import com.goalias.common.chat.entity.common.Usage;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 
@@ -16,6 +17,7 @@ import java.io.Serializable;
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
+@EqualsAndHashCode(callSuper = false)
 public class CompletionResponse extends OpenAiResponse implements Serializable {
     private String id;
     private String object;

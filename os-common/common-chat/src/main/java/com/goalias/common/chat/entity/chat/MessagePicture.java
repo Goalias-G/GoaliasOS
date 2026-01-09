@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import com.goalias.common.chat.entity.chat.tool.ToolCalls;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class MessagePicture extends BaseMessage implements Serializable {
     /**
      * Content数组支持多图片输入

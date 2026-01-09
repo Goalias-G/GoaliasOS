@@ -1,10 +1,7 @@
 package com.goalias.common.chat.entity.chat;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +18,7 @@ import java.util.List;
 @SuperBuilder
 @Slf4j
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatCompletion extends BaseChatCompletion implements Serializable {

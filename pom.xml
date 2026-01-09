@@ -215,13 +215,6 @@
                 <version>${commons-compress.version}</version>
             </dependency>
 
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>chat</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
 <!--            <dependency>-->
 <!--                <groupId>com.goalias</groupId>-->
 <!--                <artifactId>knowledge-api</artifactId>-->
@@ -237,31 +230,6 @@
 <!--            <dependency>-->
 <!--                <groupId>com.goalias</groupId>-->
 <!--                <artifactId>system-api</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>generator</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>graph</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>aihuman</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>workflow</artifactId>-->
 <!--                <version>${version}</version>-->
 <!--            </dependency>-->
 
