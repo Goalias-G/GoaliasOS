@@ -32,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class LoginHelper {
 
     public static final String LOGIN_USER_KEY = "loginUser";
-    public static final String TENANT_KEY = "tenantId";
     public static final String USER_KEY = "userId";
 
     /**
@@ -53,15 +52,13 @@ public class LoginHelper {
     public static void loginByDevice(LoginUser loginUser, DeviceType deviceType) {
         SaStorage storage = SaHolder.getStorage();
         storage.set(LOGIN_USER_KEY, loginUser);
-        storage.set(TENANT_KEY, loginUser.getTenantId());
         storage.set(USER_KEY, loginUser.getUserId());
         SaLoginModel model = new SaLoginModel();
         if (ObjectUtil.isNotNull(deviceType)) {
             model.setDevice(deviceType.getDevice());
         }
         StpUtil.login(loginUser.getLoginId(),
-            model.setExtra(TENANT_KEY, loginUser.getTenantId())
-                .setExtra(USER_KEY, loginUser.getUserId()));
+            model.setExtra(USER_KEY, loginUser.getUserId()));
         StpUtil.getTokenSession().set(LOGIN_USER_KEY, loginUser);
     }
 
@@ -105,23 +102,6 @@ public class LoginHelper {
             return null;
         }
         return userId;
-    }
-
-    /**
-     * 获取租户ID
-     */
-    public static String getTenantId() {
-        String tenantId;
-        try {
-            tenantId = (String) SaHolder.getStorage().get(TENANT_KEY);
-            if (ObjectUtil.isNull(tenantId)) {
-                tenantId = (String) StpUtil.getExtra(TENANT_KEY);
-                SaHolder.getStorage().set(TENANT_KEY, tenantId);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return tenantId;
     }
 
     /**

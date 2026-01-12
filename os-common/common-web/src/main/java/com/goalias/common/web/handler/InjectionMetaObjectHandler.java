@@ -5,13 +5,11 @@ import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.goalias.common.core.domain.model.LoginUser;
 import com.goalias.common.core.exception.ServiceException;
-import com.goalias.common.core.service.BaseContext;
 import com.goalias.common.core.utils.ObjectUtils;
 import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.common.web.domain.BaseEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-
 
 import java.util.Date;
 
@@ -40,7 +38,7 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
 
                 // 如果创建人为空，则填充当前登录用户的信息
                 if (ObjectUtil.isNull(baseEntity.getCreateBy())) {
-                    LoginUser loginUser = getLoginUser();
+                    LoginUser loginUser = LoginHelper.getLoginUser();
                     if (ObjectUtil.isNotNull(loginUser)) {
                         Long userId = loginUser.getUserId();
                         // 填充创建人、更新人和创建部门信息
@@ -82,23 +80,6 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
         } catch (Exception e) {
             throw new ServiceException("自动注入异常 => " + e.getMessage(), HttpStatus.HTTP_UNAUTHORIZED);
         }
-    }
-
-    /**
-     * 获取当前登录用户信息
-     *
-     * @return 当前登录用户的信息，如果用户未登录则返回 null
-     */
-    private LoginUser getLoginUser() {
-        LoginUser loginUser;
-        try {
-            String token = BaseContext.getCurrentToken();
-            loginUser = LoginHelper.getLoginUser(token);
-        } catch (Exception e) {
-            log.warn("自动注入警告 => 用户未登录");
-            return null;
-        }
-        return loginUser;
     }
 
 }

@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
  * @author Goalias
  */
 @Slf4j
-public class RegionUtils {
+public class IpUtils {
 
     private static final String UNKNOWN = "unknown";
 

@@ -46,6 +46,8 @@ spring:
     deserialization:
       # 允许对象忽略json中不存在的属性
       fail_on_unknown_properties: false
+  cache:
+    type: redis
 
 # 日志配置
 logging:
