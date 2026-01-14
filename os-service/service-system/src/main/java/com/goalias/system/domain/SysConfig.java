@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 参数配置表 sys_config
  *
- * @author Lion Li
+ * @author Goalias
  */
 
 @Data

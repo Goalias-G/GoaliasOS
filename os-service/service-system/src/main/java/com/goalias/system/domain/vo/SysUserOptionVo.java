@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * 用户信息视图对象 sys_user
  *
- * @author Michelle.Chung
+ * @author Goalias
  */
 @Data
 public class SysUserOptionVo implements Serializable {

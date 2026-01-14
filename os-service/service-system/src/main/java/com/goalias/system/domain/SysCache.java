@@ -7,7 +7,7 @@ import com.goalias.common.core.utils.StringUtils;
 /**
  * 缓存信息
  *
- * @author Lion Li
+ * @author Goalias
  */
 @Data
 @NoArgsConstructor

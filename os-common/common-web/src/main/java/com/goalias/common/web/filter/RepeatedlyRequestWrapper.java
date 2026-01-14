@@ -6,7 +6,7 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
-import com.goalias.common.core.constant.CommonConstants;
+import com.goalias.common.core.constant.Constants;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -23,8 +23,8 @@ public class RepeatedlyRequestWrapper extends HttpServletRequestWrapper {
 
     public RepeatedlyRequestWrapper(HttpServletRequest request, ServletResponse response) throws IOException {
         super(request);
-        request.setCharacterEncoding(CommonConstants.UTF8);
-        response.setCharacterEncoding(CommonConstants.UTF8);
+        request.setCharacterEncoding(Constants.UTF8);
+        response.setCharacterEncoding(Constants.UTF8);
 
         body = IoUtil.readBytes(request.getInputStream(), false);
     }

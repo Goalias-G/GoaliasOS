@@ -13,7 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 /**
  * WebSocket 配置
  *
- * @author zendwang
+ * @author Goalias
  */
 @AutoConfiguration
 @ConditionalOnProperty(value = "websocket.enabled", havingValue = "true")

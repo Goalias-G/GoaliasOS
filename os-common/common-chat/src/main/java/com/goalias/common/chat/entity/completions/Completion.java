@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  *   问题类
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * 2023-02-11
  */
 @Data

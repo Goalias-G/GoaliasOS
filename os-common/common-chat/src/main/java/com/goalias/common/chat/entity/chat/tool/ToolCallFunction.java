@@ -11,7 +11,7 @@ import java.io.Serializable;
  * ToolCall 的 Function参数
  * The function that the model called.
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 1.1.2
  * 2023-11-09
  */

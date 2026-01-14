@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  *
- * @author https://www.unfbx.com
+ * @author Goalias
  * 2023-11-10
  */
 @Data

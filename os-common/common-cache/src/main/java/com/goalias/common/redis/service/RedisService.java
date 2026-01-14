@@ -6,6 +6,7 @@ import org.springframework.data.geo.GeoResults;
 import org.springframework.data.geo.Point;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,9 +18,11 @@ public interface RedisService {
      * @description: 保存属性
      * @param key
      * @param value
-     * @param time
+     * @param time 秒
     */
     void set(String key, Object value, long time);
+
+    void set(String key, Object value, Duration time);
 
     /**
      * @description: 保存属性

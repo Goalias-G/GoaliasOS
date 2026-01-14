@@ -3,7 +3,7 @@ package com.goalias.common.chat.openai.exception;
 /**
  *   错误
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  *  2023-02-11
  */
 public enum CommonError implements IError {

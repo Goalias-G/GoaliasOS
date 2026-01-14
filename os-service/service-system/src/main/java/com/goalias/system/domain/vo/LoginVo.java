@@ -6,7 +6,7 @@ import com.goalias.common.core.domain.model.LoginUser;
 /**
  * 登录返回信息
  *
- * @author Michelle.Chung
+ * @author Goalias
  */
 @Data
 public class LoginVo {

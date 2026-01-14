@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  *  文本审核，敏感词鉴别
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  *  2023-02-15
  */
 @Getter

@@ -58,7 +58,7 @@ import java.util.concurrent.TimeUnit;
 /**
  *   open ai 客户端
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 2023-02-11
  */
 

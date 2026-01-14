@@ -20,4 +20,6 @@ public class MinioProperties {
 
     private String mediaUrl;
 
+    private String bucketName;
+
 }

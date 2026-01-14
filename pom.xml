@@ -76,14 +76,33 @@
         <dependencies>
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>os-web</artifactId>
+                <artifactId>web-system</artifactId>
                 <version>${version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.goalias</groupId>
-                <artifactId>os-service</artifactId>
+                <artifactId>service-system</artifactId>
                 <version>${version}</version>
             </dependency>
+
+            <!--            <dependency>-->
+            <!--                <groupId>com.goalias</groupId>-->
+            <!--                <artifactId>knowledge-api</artifactId>-->
+            <!--                <version>${version}</version>-->
+            <!--            </dependency>-->
+
+            <!--            <dependency>-->
+            <!--                <groupId>com.goalias</groupId>-->
+            <!--                <artifactId>chat-api</artifactId>-->
+            <!--                <version>${version}</version>-->
+            <!--            </dependency>-->
+
+            <!--            <dependency>-->
+            <!--                <groupId>com.goalias</groupId>-->
+            <!--                <artifactId>workflow-api</artifactId>-->
+            <!--                <version>${version}</version>-->
+            <!--            </dependency>-->
 
             <dependency>
                 <groupId>com.mysql</groupId>
@@ -214,30 +233,6 @@
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
             </dependency>
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>knowledge-api</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>chat-api</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>system-api</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
-
-<!--            <dependency>-->
-<!--                <groupId>com.goalias</groupId>-->
-<!--                <artifactId>workflow-api</artifactId>-->
-<!--                <version>${version}</version>-->
-<!--            </dependency>-->
 
         </dependencies>
     </dependencyManagement>

@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * 用户 业务层处理
  *
- * @author Lion Li
+ * @author Goalias
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -230,7 +230,7 @@ public class SysUserServiceImpl implements ISysUserService {
      * @return 结果
      */
     @Override
-    public SysUser registerUser(SysUserBo user, String tenantId) {
+    public SysUser registerUser(SysUserBo user) {
         user.setCreateBy(user.getUserId());
         user.setUpdateBy(user.getUserId());
         SysUser sysUser = MapstructUtils.convert(user, SysUser.class);

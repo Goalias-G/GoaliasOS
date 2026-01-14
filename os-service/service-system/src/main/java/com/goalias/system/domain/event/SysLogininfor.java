@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * 系统访问记录表 sys_logininfor
  *
- * @author Lion Li
+ * @author Goalias
  */
 
 @Data

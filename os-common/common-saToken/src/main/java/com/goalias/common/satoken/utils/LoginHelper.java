@@ -10,7 +10,6 @@ import cn.hutool.core.util.ObjectUtil;
 import com.goalias.common.core.constant.UserConstants;
 import com.goalias.common.core.domain.model.LoginUser;
 import com.goalias.common.core.enums.DeviceType;
-import com.goalias.common.core.enums.UserType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -111,13 +110,6 @@ public class LoginHelper {
         return getLoginUser().getUsername();
     }
 
-    /**
-     * 获取用户类型
-     */
-    public static UserType getUserType() {
-        String loginId = StpUtil.getLoginIdAsString();
-        return UserType.getUserType(loginId);
-    }
 
     /**
      * 是否为超级管理员

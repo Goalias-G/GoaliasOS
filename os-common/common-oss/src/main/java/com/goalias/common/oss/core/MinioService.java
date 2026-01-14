@@ -8,8 +8,8 @@ import com.goalias.common.oss.constant.OssConstants;
 import com.goalias.common.oss.domain.dto.MultipartUploadInitDTO;
 import com.goalias.common.oss.domain.dto.MultipartUploadMergeDTO;
 import com.goalias.common.oss.domain.vo.ChunkUploadVO;
-import com.goalias.common.oss.domain.vo.MultipartUploadInitVO;
-import com.goalias.common.oss.domain.vo.MultipartUploadResultVO;
+import com.goalias.common.oss.domain.vo.UploadInitVO;
+import com.goalias.common.oss.domain.vo.UploadResultVO;
 import com.goalias.common.redis.service.RedisService;
 import io.minio.*;
 import io.minio.http.Method;
@@ -18,6 +18,7 @@ import io.minio.messages.DeleteObject;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * MinIO 文件服务实现
  * 支持普通上传和分片上传（大文件）
- * 
+ * <p>
  * 分片上传采用 composeObject 方案：
  * 1. 每个分片作为独立临时对象上传
  * 2. 所有分片上传完成后，使用 composeObject 合并
@@ -43,26 +44,31 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @RequiredArgsConstructor
-public class MinioService implements IFileService {
+public class MinioService implements IFileService, InitializingBean {
 
     private final MinioProperties properties;
     private final MinioClient client;
     private final RedisService redisService;
 
     private static final Logger logger = LoggerFactory.getLogger(MinioService.class);
+    private String bucketName;
+
+    @Override
+    public void afterPropertiesSet() {
+        bucketName = properties.getBucketName();
+    }
 
     // ==================== 普通上传方法 ====================
 
     /**
      * 上传文件（流式）
      *
-     * @param bucketName  存储桶
      * @param objectName  文件对象名
      * @param inputStream 文件输入流
      * @return 文件名
      */
     @Override
-    public String uploadFile(String bucketName, String objectName, InputStream inputStream) {
+    public String uploadFile(String objectName, InputStream inputStream) {
         try (inputStream) {
             ObjectWriteResponse owr = client.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
@@ -79,13 +85,12 @@ public class MinioService implements IFileService {
     /**
      * 上传本地文件
      *
-     * @param bucketName 存储桶
      * @param objectName 文件对象名
      * @param filePath   本地文件路径
      * @return 文件名
      */
     @Override
-    public String uploadLocalFile(String bucketName, String objectName, String filePath) {
+    public String uploadLocalFile(String objectName, String filePath) {
         try {
             ObjectWriteResponse owr = client.uploadObject(
                     UploadObjectArgs.builder()
@@ -103,13 +108,12 @@ public class MinioService implements IFileService {
     /**
      * 上传 MultipartFile 文件
      *
-     * @param bucketName 存储桶
      * @param objectName 文件对象名
      * @param file       MultipartFile 文件
      * @return 文件访问 URL
      */
     @Override
-    public String uploadFile(String bucketName, String objectName, MultipartFile file) {
+    public String uploadFile(String objectName, MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
             client.putObject(PutObjectArgs.builder()
                     .bucket(bucketName)
@@ -134,7 +138,7 @@ public class MinioService implements IFileService {
      * @return 分片上传初始化信息
      */
     @Override
-    public MultipartUploadInitVO initMultipartUpload(MultipartUploadInitDTO dto) {
+    public UploadInitVO initMultipartUpload(MultipartUploadInitDTO dto) {
         try {
             // 1. 检查存储桶是否存在，不存在则创建
             ensureBucketExists(dto.getBucketName());
@@ -144,7 +148,7 @@ public class MinioService implements IFileService {
                 String existingUrl = checkInstantUpload(dto.getBucketName(), dto.getFileMd5());
                 if (existingUrl != null) {
                     logger.info("秒传成功，文件已存在: {}", existingUrl);
-                    return MultipartUploadInitVO.builder()
+                    return UploadInitVO.builder()
                             .instantUpload(true)
                             .fileUrl(existingUrl)
                             .objectName(dto.getObjectName())
@@ -173,7 +177,7 @@ public class MinioService implements IFileService {
 
             logger.info("分片上传初始化成功，uploadId: {}, 总分片数: {}", uploadId, totalChunks);
 
-            return MultipartUploadInitVO.builder()
+            return UploadInitVO.builder()
                     .uploadId(uploadId)
                     .bucketName(dto.getBucketName())
                     .objectName(dto.getObjectName())
@@ -194,7 +198,6 @@ public class MinioService implements IFileService {
      * 上传单个分片（通过后端代理）
      * 分片会作为独立的临时对象存储，合并时再组合
      *
-     * @param bucketName  存储桶
      * @param objectName  文件对象名
      * @param uploadId    分片上传 ID
      * @param chunkNumber 分片编号（从 1 开始）
@@ -202,7 +205,7 @@ public class MinioService implements IFileService {
      * @return 分片上传结果
      */
     @Override
-    public ChunkUploadVO uploadChunk(String bucketName, String objectName, String uploadId,
+    public ChunkUploadVO uploadChunk(String objectName, String uploadId,
                                      Integer chunkNumber, MultipartFile file) {
         try (InputStream inputStream = file.getInputStream()) {
             // 生成分片临时对象名
@@ -245,7 +248,7 @@ public class MinioService implements IFileService {
      * @return 上传结果
      */
     @Override
-    public MultipartUploadResultVO completeMultipartUpload(MultipartUploadMergeDTO dto) {
+    public UploadResultVO completeMultipartUpload(MultipartUploadMergeDTO dto) {
         try {
             // 1. 获取上传信息
             Map<String, Object> uploadInfo = getUploadInfo(dto.getUploadId());
@@ -293,7 +296,7 @@ public class MinioService implements IFileService {
             String fileUrl = getUrl(dto.getBucketName(), dto.getObjectName());
             logger.info("分片上传合并成功，文件: {}", fileUrl);
 
-            return MultipartUploadResultVO.builder()
+            return UploadResultVO.builder()
                     .objectName(dto.getObjectName())
                     .fileUrl(fileUrl)
                     .fileSize(stat.size())
@@ -310,12 +313,11 @@ public class MinioService implements IFileService {
      * 取消分片上传
      * 删除所有已上传的临时分片对象
      *
-     * @param bucketName 存储桶
      * @param objectName 文件对象名
      * @param uploadId   分片上传 ID
      */
     @Override
-    public void abortMultipartUpload(String bucketName, String objectName, String uploadId) {
+    public void abortMultipartUpload(String objectName, String uploadId) {
         try {
             // 获取上传信息
             Map<String, Object> uploadInfo = getUploadInfo(uploadId);
@@ -371,7 +373,7 @@ public class MinioService implements IFileService {
      * 生成分片预签名上传 URL 列表
      */
     private List<String> generateChunkPresignedUrls(String bucketName, String objectName,
-                                                     String uploadId, int totalChunks) throws Exception {
+                                                    String uploadId, int totalChunks) throws Exception {
         List<String> urls = new ArrayList<>(totalChunks);
 
         for (int partNumber = 1; partNumber <= totalChunks; partNumber++) {
@@ -510,7 +512,7 @@ public class MinioService implements IFileService {
      * 删除文件
      */
     @Override
-    public void delFile(String bucketName, List<String> objectNames) {
+    public void delFile(List<String> objectNames) {
         List<DeleteObject> deleteObjects = new ArrayList<>();
         objectNames.forEach(objectName -> deleteObjects.add(new DeleteObject(objectName)));
         try {
@@ -589,5 +591,4 @@ public class MinioService implements IFileService {
     public static String getTimeFilePath() {
         return new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/";
     }
-
 }

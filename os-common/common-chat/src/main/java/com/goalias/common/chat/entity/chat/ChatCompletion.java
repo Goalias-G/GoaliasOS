@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * chat模型参数
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * 2023-03-02
  */
 @Data

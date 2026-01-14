@@ -59,7 +59,6 @@ logging:
 
 captcha:
   enable: false
-  # 页面 <参数设置> 可开启关闭 验证码校验
   # 验证码类型 math 数组计算 char 字符验证
   type: MATH
   # line 线段干扰 circle 圆圈干扰 shear 扭曲干扰
@@ -103,7 +102,6 @@ security:
   # 排除路径
   excludes:
     # 测试排除路径
-    - /file/**
     # 获取模型信息
     - /system/model/modelList
     # 支付回调
@@ -130,19 +128,6 @@ security:
     - /actuator/**
     - /workflow/**
     - /admin/workflow/**
-## 多租户配置
-#tenant:
-#  # 是否开启
-#  enable: false
-#  # 排除表
-#  excludes:
-#    - sys_menu
-#    - sys_tenant
-#    - sys_tenant_package
-#    - sys_role_dept
-#    - sys_role_menu
-#    - sys_user_post
-#    - sys_user_role
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
@@ -235,17 +220,6 @@ spring:
     openai:
       api-key: sk-xx
       base-url: https://api.pandarobot.chat/
-    mcp:
-      client:
-        enabled: false
-        name: ruoyi-ai-mcp
-        sse:
-          connections:
-            server:
-              url: http://127.0.0.1:8081
-        stdio:
-          servers-configuration: classpath:mcp-server.json
-        request-timeout: 300s
 
 knowledge-role:
   enable: false
@@ -265,56 +239,4 @@ vector-store:
   milvus:
     url: http://localhost:19530
     collectionname: LocalKnowledge
-
-
---- # Neo4j 知识图谱配置
-#neo4j:
-#  uri: bolt://117.72.192.162:7687
-#  username: neo4j
-#  password: MySecurePass123!
-#  database: neo4j
-#  max-connection-pool-size: 50
-#  connection-timeout-seconds: 30
-
-# 知识图谱配置
-knowledge:
-  graph:
-    # 是否启用知识图谱功能
-    enabled: false
-    # 图数据库类型: neo4j 或 apache-age
-    database-type: neo4j
-    # 是否自动创建索引
-    auto-create-index: true
-    # 批量处理大小
-    batch-size: 1000
-    # 最大重试次数
-    max-retry-count: 3
-
-    # 实体抽取配置
-    extraction:
-      # 置信度阈值（低于此值的实体将被过滤）
-      confidence-threshold: 0.7
-      # 最大实体数量（每个文档）
-      max-entities-per-doc: 100
-      # 最大关系数量（每个文档）
-      max-relations-per-doc: 200
-      # 文本分片大小（用于长文档）
-      chunk-size: 2000
-      # 分片重叠大小
-      chunk-overlap: 200
-
-    # 查询配置
-    query:
-      # 默认查询限制数量
-      default-limit: 100
-      # 最大查询限制数量
-      max-limit: 1000
-      # 路径查询最大深度
-      max-path-depth: 5
-      # 查询超时时间（秒）
-      timeout-seconds: 30
-      # 是否启用查询缓存
-      cache-enabled: true
-      # 缓存过期时间（分钟）
-      cache-expire-minutes: 60
 

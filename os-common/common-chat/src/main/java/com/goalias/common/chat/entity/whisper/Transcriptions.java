@@ -6,7 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
 /**
- * @author Admin
+ * @author Goalias
  */
 @Data
 @Builder

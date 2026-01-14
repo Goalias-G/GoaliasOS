@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * 系统访问记录业务对象 sys_logininfor
  *
- * @author Michelle.Chung
+ * @author Goalias
  */
 
 @Data

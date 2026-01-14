@@ -5,17 +5,17 @@ import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
-import com.goalias.common.redis.constant.CacheConstants;
 import com.goalias.common.core.domain.dto.UserOnlineDTO;
 import com.goalias.common.core.domain.model.LoginUser;
-import com.goalias.common.core.enums.UserType;
 import com.goalias.common.core.utils.ServletUtils;
+import com.goalias.common.redis.constant.CacheConstants;
 import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.satoken.utils.LoginHelper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Component;
+
+import java.time.Duration;
 
 /**
  * 用户行为 侦听器的实现
@@ -35,29 +35,23 @@ public class UserActionListener implements SaTokenListener {
      */
     @Override
     public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
-        UserType userType = UserType.getUserType(loginId.toString());
-        if (userType == UserType.SYS_USER) {
-            UserAgent userAgent = UserAgentUtil.parse(ServletUtils.getRequest().getHeader("User-Agent"));
-            String ip = ServletUtils.getClientIP();
-            LoginUser user = LoginHelper.getLoginUser();
-            UserOnlineDTO dto = new UserOnlineDTO();
-            dto.setIpaddr(ip);
-           // dto.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
-            dto.setBrowser(userAgent.getBrowser().getName());
-            dto.setOs(userAgent.getOs().getName());
-            dto.setLoginTime(System.currentTimeMillis());
-            dto.setTokenId(tokenValue);
-            dto.setUserName(user.getUsername());
-            dto.setDeptName(user.getDeptName());
-            if(tokenConfig.getTimeout() == -1) {
-                redisService.set(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto);
-            } else {
-                redisService.set(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto, tokenConfig.getTimeout() / 1000L);
-            }
-            log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue);
-        } else if (userType == UserType.APP_USER) {
-            // app端 自行根据业务编写
+        UserAgent userAgent = UserAgentUtil.parse(ServletUtils.getRequest().getHeader("User-Agent"));
+        String ip = ServletUtils.getClientIP();
+        LoginUser user = LoginHelper.getLoginUser();
+        UserOnlineDTO dto = new UserOnlineDTO();
+        dto.setIpaddr(ip);
+        // dto.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
+        dto.setBrowser(userAgent.getBrowser().getName());
+        dto.setOs(userAgent.getOs().getName());
+        dto.setLoginTime(System.currentTimeMillis());
+        dto.setTokenId(tokenValue);
+        dto.setUserName(user.getUsername());
+        if (tokenConfig.getTimeout() == -1) {
+            redisService.set(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto);
+        } else {
+            redisService.set(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto, Duration.ofSeconds(tokenConfig.getTimeout()));
         }
+        log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue);
     }
 
     /**

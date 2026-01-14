@@ -7,7 +7,7 @@ import java.util.function.Function;
  * jdk默认实现
  * @see Function
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 2023-04-03
  */
 @FunctionalInterface

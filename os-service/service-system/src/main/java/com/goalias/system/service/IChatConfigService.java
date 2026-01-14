@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 配置信息Service接口
  *
- * @author ageerle
+ * @author Goalias
  * @date 2025-04-08
  */
 public interface IChatConfigService {

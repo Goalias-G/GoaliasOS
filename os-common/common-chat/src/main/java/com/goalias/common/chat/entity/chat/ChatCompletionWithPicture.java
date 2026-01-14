@@ -14,7 +14,7 @@ import java.util.List;
 /**
  *  ： chat模型附带图片的参数
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 1.1.2
  * 2023-11-10
  */

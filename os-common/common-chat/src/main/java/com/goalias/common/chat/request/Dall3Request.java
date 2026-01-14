@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  *  
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @sine 2023-04-08
  */
 @Data

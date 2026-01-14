@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 用户个人信息
  *
- * @author Michelle.Chung
+ * @author Goalias
  */
 @Data
 public class ProfileVo {

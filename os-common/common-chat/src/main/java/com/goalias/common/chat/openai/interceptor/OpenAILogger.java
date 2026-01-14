@@ -6,7 +6,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 /**
  *   日志
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * 2023-02-28
  */
 @Slf4j

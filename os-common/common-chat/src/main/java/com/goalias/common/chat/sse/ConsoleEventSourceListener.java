@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  *   sse
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * 2023-02-28
  */
 @Slf4j

@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,6 +32,11 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public void set(String key, Object value, long time) {
         redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void set(String key, Object value, Duration time) {
+        redisTemplate.opsForValue().set(key, value, time);
     }
 
     @Override

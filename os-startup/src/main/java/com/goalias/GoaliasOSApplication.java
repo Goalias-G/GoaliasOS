@@ -1,5 +1,6 @@
 package com.goalias;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
@@ -11,6 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @author Goalias
  */
 @SpringBootApplication(scanBasePackages = {"com.goalias"})
+@MapperScan("${mybatis-plus.mapperPackage}")
 @EnableScheduling
 public class GoaliasOSApplication {
 

@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  *  
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  *  2023-02-15
  */
 @AllArgsConstructor

@@ -17,9 +17,5 @@ public interface CacheConstants {
      */
     String SYS_CONFIG_KEY = "sys_config:";
 
-    /**
-     * 用户管理 cache key
-     */
-    String SYS_DICT_KEY = "sys_user_name:";
 
 }

@@ -1,11 +1,9 @@
 package com.goalias.common.core.exception.base;
 
-import com.goalias.common.core.utils.MessageUtils;
 import com.goalias.common.core.utils.StringUtils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 
 import java.io.Serial;
 
@@ -58,23 +56,16 @@ public class BaseException extends RuntimeException {
     }
 
     public BaseException(String code, Object[] args) {
-        this(null, code, args, null);
+        this("error", code, args, null);
     }
 
     public BaseException(String defaultMessage) {
-        this(null, null, null, defaultMessage);
+        this("error", null, null, defaultMessage);
     }
 
     @Override
     public String getMessage() {
-        String message = null;
-        if (!StringUtils.isEmpty(code)) {
-            message = MessageUtils.message(code, args);
-        }
-        if (message == null) {
-            message = defaultMessage;
-        }
-        return message;
+        return defaultMessage;
     }
 
 }

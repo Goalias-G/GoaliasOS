@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * chat答案类
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * 2023-03-02
  */
 @Data

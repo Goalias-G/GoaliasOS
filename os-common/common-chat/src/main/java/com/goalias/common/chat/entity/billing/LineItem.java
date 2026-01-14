@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * 金额消耗列表
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 2023-04-08
  */
 @Data

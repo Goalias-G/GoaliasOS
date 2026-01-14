@@ -3,12 +3,11 @@ package com.goalias.common.web.aspectj;
 import cn.dev33.satoken.SaManager;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.SecureUtil;
-import com.goalias.common.redis.constant.GlobalConstants;
 import com.goalias.common.core.domain.R;
 import com.goalias.common.core.exception.ServiceException;
-import com.goalias.common.core.utils.MessageUtils;
 import com.goalias.common.core.utils.ServletUtils;
 import com.goalias.common.core.utils.StringUtils;
+import com.goalias.common.redis.constant.GlobalConstants;
 import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.web.annotation.RepeatSubmit;
 import com.goalias.common.web.utils.JsonUtils;
@@ -67,9 +66,6 @@ public class RepeatSubmitAspect {
             KEY_CACHE.set(cacheRepeatKey);
         } else {
             String message = repeatSubmit.message();
-            if (StringUtils.startsWith(message, "{") && StringUtils.endsWith(message, "}")) {
-                message = MessageUtils.message(StringUtils.substring(message, 1, message.length() - 1));
-            }
             throw new ServiceException(message);
         }
     }

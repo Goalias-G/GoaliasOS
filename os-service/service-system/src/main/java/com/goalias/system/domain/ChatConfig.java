@@ -14,7 +14,7 @@ import java.io.Serial;
 /**
  * 配置信息对象 chat_config
  *
- * @author ageerle
+ * @author Goalias
  * @date 2025-04-08
  */
 @Data

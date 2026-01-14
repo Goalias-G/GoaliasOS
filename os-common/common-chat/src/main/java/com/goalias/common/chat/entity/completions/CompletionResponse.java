@@ -12,7 +12,7 @@ import java.io.Serializable;
 /**
  *   答案类
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  *  2023-02-11
  */
 @Data

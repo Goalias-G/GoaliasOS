@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 参数配置 数据层
  *
- * @author Lion Li
+ * @author Goalias
  */
 @Mapper
 public interface SysConfigMapper extends BaseMapper<SysConfig> {

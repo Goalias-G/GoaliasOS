@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 通知公告业务对象 sys_notice
  *
- * @author Michelle.Chung
+ * @author Goalias
  */
 
 @Data

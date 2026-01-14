@@ -2,7 +2,7 @@ package com.goalias.common.chat.constant;
 
 /**
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since  2023-03-06
  */
 public class OpenAIConst {

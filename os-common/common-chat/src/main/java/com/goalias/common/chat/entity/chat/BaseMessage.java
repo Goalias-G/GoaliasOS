@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 1.1.2
  * 2023-03-02
  */

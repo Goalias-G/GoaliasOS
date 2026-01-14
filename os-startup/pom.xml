@@ -18,9 +18,13 @@
     <dependencies>
         <dependency>
             <groupId>com.goalias</groupId>
-            <artifactId>os-web</artifactId>
+            <artifactId>web-system</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>service-system</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

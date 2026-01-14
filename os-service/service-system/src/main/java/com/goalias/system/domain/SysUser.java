@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * 用户对象 sys_user
  *
- * @author Lion Li
+ * @author Goalias
  */
 
 @Data

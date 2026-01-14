@@ -11,7 +11,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 用户阅读状态业务对象 sys_notice_state
  *
- * @author Lion Li
+ * @author Goalias
  * @date 2024-05-11
  */
 @Data

@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  *  用户密码修改bo
  *
- * @author ageerle@163.com
+ * @author Goalias
  * date 2025/3/9
  */
 @Data

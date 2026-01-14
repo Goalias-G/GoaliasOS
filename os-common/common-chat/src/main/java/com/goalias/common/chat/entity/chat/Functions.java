@@ -24,7 +24,7 @@ import java.io.Serializable;
  *          },
  *     }
  * </pre>
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since  2023-06-14
  */
 @Data

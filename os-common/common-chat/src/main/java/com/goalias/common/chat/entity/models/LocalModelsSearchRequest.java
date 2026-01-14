@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @author: hejh
+ * @author Goalias
  **/
 @Data
 public class LocalModelsSearchRequest {

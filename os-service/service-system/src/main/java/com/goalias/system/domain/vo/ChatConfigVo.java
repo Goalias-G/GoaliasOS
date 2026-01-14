@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 配置信息视图对象 chat_config
  *
- * @author ageerle
+ * @author Goalias
  * @date 2025-04-08
  */
 @Data

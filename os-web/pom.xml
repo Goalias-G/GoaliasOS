@@ -10,6 +10,10 @@
     </parent>
 
     <artifactId>os-web</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>web-system</module>
+    </modules>
 
     <properties>
         <httpclient.version>4.5.14</httpclient.version>
@@ -19,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>com.goalias</groupId>
-            <artifactId>os-service</artifactId>
+            <artifactId>common-web</artifactId>
         </dependency>
 
         <dependency>

@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 /**
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 2023-03-18
  */
 @Data

@@ -31,5 +31,10 @@ public interface CacheNames {
      */
     String SYS_USER_NAME = "sys_user_name#30d";
 
+    /**
+     * OSS内容
+     */
+    String SYS_OSS = "sys_oss";
+
 
 }

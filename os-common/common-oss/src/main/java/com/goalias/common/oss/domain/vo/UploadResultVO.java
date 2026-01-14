@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class MultipartUploadResultVO implements Serializable {
+public class UploadResultVO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

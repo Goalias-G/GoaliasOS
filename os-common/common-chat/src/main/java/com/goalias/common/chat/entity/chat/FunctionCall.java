@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 /**
  * 函数调用返回值
  *
- * @author https://www.unfbx.com
+ * @author Goalias
  * @since 2023-06-14
  */
 @Data

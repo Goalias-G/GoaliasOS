@@ -15,7 +15,7 @@ import java.util.Objects;
 /**
  *  openai 返回值处理Interceptor
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since  2023-03-23
  */
 @Slf4j

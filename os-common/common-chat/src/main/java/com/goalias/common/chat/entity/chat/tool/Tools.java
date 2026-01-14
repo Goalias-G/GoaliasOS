@@ -6,7 +6,7 @@ import lombok.*;
 import java.io.Serializable;
 
 /**
- * @author <a href="https://www.unfbx.com">unfbx</a>
+ * @author Goalias
  * @since 1.1.2
  * 2023-11-09
  */

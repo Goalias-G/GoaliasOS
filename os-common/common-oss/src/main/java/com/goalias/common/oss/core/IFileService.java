@@ -3,8 +3,8 @@ package com.goalias.common.oss.core;
 import com.goalias.common.oss.domain.dto.MultipartUploadInitDTO;
 import com.goalias.common.oss.domain.dto.MultipartUploadMergeDTO;
 import com.goalias.common.oss.domain.vo.ChunkUploadVO;
-import com.goalias.common.oss.domain.vo.MultipartUploadInitVO;
-import com.goalias.common.oss.domain.vo.MultipartUploadResultVO;
+import com.goalias.common.oss.domain.vo.UploadInitVO;
+import com.goalias.common.oss.domain.vo.UploadResultVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -16,24 +16,24 @@ public interface IFileService {
 
     boolean isObjectExist(String bucketName, String objectName);
 
-    String uploadFile(String bucketName, String objectName, InputStream file);
+    String uploadFile(String objectName, InputStream file);
 
-    String uploadFile(String bucketName, String objectName, MultipartFile file);
+    String uploadFile(String objectName, MultipartFile file);
 
-    String uploadLocalFile(String bucketName, String objectName, String filePath);
+    String uploadLocalFile(String objectName, String filePath);
 
-    void delFile(String bucketName, java.util.List<String> objectNames);
+    void delFile(java.util.List<String> objectNames);
 
     String getUrl(String bucketName, String objectName);
 
-    MultipartUploadInitVO initMultipartUpload(MultipartUploadInitDTO dto);
+    UploadInitVO initMultipartUpload(MultipartUploadInitDTO dto);
 
-    ChunkUploadVO uploadChunk(String bucketName, String objectName, String uploadId,
+    ChunkUploadVO uploadChunk(String objectName, String uploadId,
                               Integer chunkNumber, MultipartFile file);
 
-    MultipartUploadResultVO completeMultipartUpload(MultipartUploadMergeDTO dto);
+    UploadResultVO completeMultipartUpload(MultipartUploadMergeDTO dto);
 
-    void abortMultipartUpload(String bucketName, String objectName, String uploadId);
+    void abortMultipartUpload(String objectName, String uploadId);
 
     List<Integer> getUploadedChunks(String uploadId);
 

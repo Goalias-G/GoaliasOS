@@ -34,12 +34,6 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
 
-        <!-- 对象存储模块 -->
-        <dependency>
-            <groupId>com.goalias</groupId>
-            <artifactId>common-oss</artifactId>
-        </dependency>
-
 
     </dependencies>
 

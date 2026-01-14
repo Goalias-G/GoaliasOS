@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 金额消耗信息
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 2023-04-08
  */
 @Data

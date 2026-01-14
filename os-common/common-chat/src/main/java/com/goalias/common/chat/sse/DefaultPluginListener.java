@@ -9,7 +9,7 @@ import com.goalias.common.chat.openai.plugin.PluginAbstract;
 /**
  *   插件开发返回信息收集sse监听器
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * 2023-08-18
  */
 @Slf4j

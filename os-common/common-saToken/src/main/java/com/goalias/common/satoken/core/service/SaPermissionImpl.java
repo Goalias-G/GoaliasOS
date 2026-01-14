@@ -1,10 +1,6 @@
 package com.goalias.common.satoken.core.service;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.goalias.common.core.domain.model.LoginUser;
-import com.goalias.common.core.enums.UserType;
-import com.goalias.common.satoken.utils.LoginHelper;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +17,6 @@ public class SaPermissionImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        UserType userType = UserType.getUserType(loginUser.getUserType());
-        if (userType == UserType.SYS_USER) {
-            return new ArrayList<>(loginUser.getMenuPermission());
-        } else if (userType == UserType.APP_USER) {
-            // 其他端 自行根据业务编写
-        }
         return new ArrayList<>();
     }
 
@@ -36,13 +25,6 @@ public class SaPermissionImpl implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        UserType userType = UserType.getUserType(loginUser.getUserType());
-        if (userType == UserType.SYS_USER) {
-            return new ArrayList<>(loginUser.getRolePermission());
-        } else if (userType == UserType.APP_USER) {
-            // 其他端 自行根据业务编写
-        }
         return new ArrayList<>();
     }
 }

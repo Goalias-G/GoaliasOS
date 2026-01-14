@@ -9,7 +9,7 @@ import java.util.List;
 /**
  *  对话请求对象
  *
- * @author ageerle
+ * @author Goalias
  * @sine 2023-04-08
  */
 @Data

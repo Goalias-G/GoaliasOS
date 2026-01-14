@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * chat模型基础类
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  * @since 1.1.2
  * 2023-11-10
  */

@@ -2,7 +2,7 @@ package com.goalias.common.chat.openai.exception;
 /**
  *  
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  *  2023-02-11
  */
 public interface IError {

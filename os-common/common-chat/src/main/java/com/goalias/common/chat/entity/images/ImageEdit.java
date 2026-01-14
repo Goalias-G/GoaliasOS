@@ -13,7 +13,7 @@ import java.util.Objects;
 /**
  *  
  *
- * @author https:www.unfbx.com
+ * @author Goalias
  *  2023-02-15
  */
 @Getter

@@ -11,7 +11,7 @@ import com.goalias.common.web.domain.BaseEntity;
 /**
  * 配置信息业务对象 chat_config
  *
- * @author ageerle
+ * @author Goalias
  * @date 2025-04-08
  */
 @Data

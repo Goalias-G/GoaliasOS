@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * 用户 业务层
  *
- * @author Lion Li
+ * @author Goalias
  */
 public interface ISysUserService {
 
@@ -124,7 +124,7 @@ public interface ISysUserService {
      * @param tenantId
      * @return SysUser
      **/
-    SysUser registerUser(SysUserBo user, String tenantId);
+    SysUser registerUser(SysUserBo user);
 
     /**
      * 修改用户信息
