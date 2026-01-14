@@ -183,9 +183,10 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <dependency>
                 <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-core</artifactId>
+                <artifactId>sa-token-dao-redis-jackson</artifactId>
                 <version>${satoken.version}</version>
             </dependency>
 

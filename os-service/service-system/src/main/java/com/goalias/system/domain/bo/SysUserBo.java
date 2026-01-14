@@ -28,11 +28,6 @@ public class SysUserBo extends BaseEntity {
     private Long userId;
 
     /**
-     * 部门ID
-     */
-    private Long deptId;
-
-    /**
      * 用户账号
      */
     @Xss(message = "用户账号不能包含脚本字符")
@@ -98,14 +93,9 @@ public class SysUserBo extends BaseEntity {
     private String remark;
 
     /**
-     * 注册域名
+     * 最后登录所在地
      */
-    private String domainName;
-
-    /**
-     * 普通用户的标识,对当前开发者帐号唯一。一个openid对应一个公众号或小程序
-     */
-    private String openId;
+    private String loginLocation;
 
     /**
      * 用户等级

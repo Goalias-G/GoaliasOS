@@ -20,8 +20,6 @@ import java.util.Map;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MapstructUtils {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     /**
      * 将 T 类型对象，转换为 desc 类型的对象并返回
      *
@@ -36,7 +34,7 @@ public class MapstructUtils {
         if (ObjectUtil.isNull(desc)) {
             return null;
         }
-        return mapper.convertValue(source, desc);
+        return BeanUtil.copyProperties(source, desc);
     }
 
     /**

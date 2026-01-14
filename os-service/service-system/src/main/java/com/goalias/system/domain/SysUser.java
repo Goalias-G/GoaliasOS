@@ -2,6 +2,7 @@ package com.goalias.system.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.goalias.common.core.constant.UserConstants;
+import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.common.web.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,11 +27,6 @@ public class SysUser extends BaseEntity {
      */
     @TableId(value = "user_id")
     private Long userId;
-
-    /**
-     * 部门ID
-     */
-    private Long deptId;
 
     /**
      * 用户账号
@@ -99,9 +95,9 @@ public class SysUser extends BaseEntity {
     private String loginIp;
 
     /**
-     * 注册域名
+     * 最后登录所在地
      */
-    private String domainName;
+    private String loginLocation;
 
     /**
      * 最后登录时间
@@ -112,11 +108,6 @@ public class SysUser extends BaseEntity {
      * 备注
      */
     private String remark;
-
-    /**
-     * 普通用户的标识,对当前开发者帐号唯一。一个openid对应一个公众号或小程序
-     */
-    private String openId;
 
     /**
      * 用户余额
@@ -133,7 +124,7 @@ public class SysUser extends BaseEntity {
     }
 
     public boolean isSuperAdmin() {
-        return UserConstants.SUPER_ADMIN_ID.equals(this.userId);
+        return LoginHelper.isSuperAdmin(this.userId);
     }
 
     /**

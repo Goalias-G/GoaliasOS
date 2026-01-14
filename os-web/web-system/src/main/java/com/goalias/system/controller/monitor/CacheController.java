@@ -28,7 +28,7 @@ public class CacheController {
      * 获取缓存监控列表
      */
     @GetMapping()
-    public R<CacheListInfoVo> getInfo() throws Exception {
+    public R<CacheListInfoVo> getInfo() {
         RedisConnection connection = connectionFactory.getConnection();
         Properties commandStats = connection.commands().info("commandstats");
 

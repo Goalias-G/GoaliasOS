@@ -8,6 +8,7 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import com.goalias.common.core.domain.dto.UserOnlineDTO;
 import com.goalias.common.core.domain.model.LoginUser;
 import com.goalias.common.core.utils.ServletUtils;
+import com.goalias.common.core.utils.ip.IpUtils;
 import com.goalias.common.redis.constant.CacheConstants;
 import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.satoken.utils.LoginHelper;
@@ -40,7 +41,7 @@ public class UserActionListener implements SaTokenListener {
         LoginUser user = LoginHelper.getLoginUser();
         UserOnlineDTO dto = new UserOnlineDTO();
         dto.setIpaddr(ip);
-        // dto.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
+//        dto.setLoginLocation(IpUtils.getCityInfo(ip));
         dto.setBrowser(userAgent.getBrowser().getName());
         dto.setOs(userAgent.getOs().getName());
         dto.setLoginTime(System.currentTimeMillis());

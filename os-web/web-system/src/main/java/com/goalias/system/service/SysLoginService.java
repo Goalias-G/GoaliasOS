@@ -29,6 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 /**
@@ -124,7 +126,8 @@ public class SysLoginService {
     }
 
     private SysUserVo loadUserByUsername(String username) {
-        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>().select(SysUser::getUserName, SysUser::getStatus).eq(SysUser::getUserName, username));
+        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>().select(SysUser::getUserName, SysUser::getStatus)
+                .eq(SysUser::getUserName, username));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", username);
             throw new UserException("user.not.exists", username);
@@ -140,9 +143,9 @@ public class SysLoginService {
      */
     private LoginUser buildLoginUser(SysUserVo user) {
         LoginUser loginUser = new LoginUser();
-        loginUser.setTenantId(user.getTenantId());
         loginUser.setUserId(user.getUserId());
         loginUser.setUsername(user.getUserName());
+        loginUser.setNickName(user.getNickName());
         loginUser.setAvatar(user.getAvatar());
         loginUser.setUserType(user.getUserType());
         loginUser.setKroleGroupIds(user.getKroleGroupIds());
@@ -185,12 +188,12 @@ public class SysLoginService {
             errorNumber = ObjectUtil.isNull(errorNumber) ? 1 : errorNumber + 1;
             // 达到规定错误次数 则锁定登录
             if (errorNumber.equals(maxRetryCount)) {
-                redisService.set(errorKey, errorNumber, lockTime * 60);
+                redisService.set(errorKey, errorNumber, Duration.ofMinutes(lockTime));
                 recordLogininfor(username, loginFail, retryMsg);
                 throw new UserException(retryMsg);
             } else {
                 // 未达到规定错误次数 则递增
-                redisService.set(errorKey, errorNumber);
+                redisService.set(errorKey, errorNumber, Duration.ofMinutes(lockTime));
                 String tip = String.format("密码错误,已输入%d次", errorNumber);
                 recordLogininfor(username, loginFail, tip);
                 throw new UserException(tip);

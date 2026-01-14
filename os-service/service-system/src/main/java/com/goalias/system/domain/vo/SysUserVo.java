@@ -75,11 +75,6 @@ public class SysUserVo implements Serializable {
      */
     private String avatar;
 
-    /**
-     * 微信头像地址
-     */
-    private String wxAvatar;
-
 
     /**
      * 密码

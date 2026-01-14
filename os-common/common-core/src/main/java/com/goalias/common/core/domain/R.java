@@ -31,7 +31,7 @@ public class R<T> implements Serializable {
 
     private int code;
 
-    private String msg;
+    private String message;
 
     private T data;
 
@@ -43,60 +43,60 @@ public class R<T> implements Serializable {
         return restResult(data, SUCCESS, "操作成功");
     }
 
-    public static <T> R<T> ok(String msg) {
-        return restResult(null, SUCCESS, msg);
+    public static <T> R<T> ok(String message) {
+        return restResult(null, SUCCESS, message);
     }
 
-    public static <T> R<T> ok(String msg, T data) {
-        return restResult(data, SUCCESS, msg);
+    public static <T> R<T> ok(String message, T data) {
+        return restResult(data, SUCCESS, message);
     }
 
     public static <T> R<T> fail() {
         return restResult(null, FAIL, "操作失败");
     }
 
-    public static <T> R<T> fail(String msg) {
-        return restResult(null, FAIL, msg);
+    public static <T> R<T> fail(String message) {
+        return restResult(null, FAIL, message);
     }
 
     public static <T> R<T> fail(T data) {
         return restResult(data, FAIL, "操作失败");
     }
 
-    public static <T> R<T> fail(String msg, T data) {
-        return restResult(data, FAIL, msg);
+    public static <T> R<T> fail(String message, T data) {
+        return restResult(data, FAIL, message);
     }
 
-    public static <T> R<T> fail(int code, String msg) {
-        return restResult(null, code, msg);
+    public static <T> R<T> fail(int code, String message) {
+        return restResult(null, code, message);
     }
 
     /**
      * 返回警告消息
      *
-     * @param msg 返回内容
+     * @param message 返回内容
      * @return 警告消息
      */
-    public static <T> R<T> warn(String msg) {
-        return restResult(null, HttpStatus.WARN, msg);
+    public static <T> R<T> warn(String message) {
+        return restResult(null, HttpStatus.WARN, message);
     }
 
     /**
      * 返回警告消息
      *
-     * @param msg 返回内容
+     * @param message 返回内容
      * @param data 数据对象
      * @return 警告消息
      */
-    public static <T> R<T> warn(String msg, T data) {
-        return restResult(data, HttpStatus.WARN, msg);
+    public static <T> R<T> warn(String message, T data) {
+        return restResult(data, HttpStatus.WARN, message);
     }
 
-    private static <T> R<T> restResult(T data, int code, String msg) {
+    private static <T> R<T> restResult(T data, int code, String message) {
         R<T> r = new R<>();
         r.setCode(code);
         r.setData(data);
-        r.setMsg(msg);
+        r.setMessage(message);
         return r;
     }
 

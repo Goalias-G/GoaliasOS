@@ -45,14 +45,6 @@ public interface ISysUserService {
      */
     SysUserVo selectUserByUserName(String userName);
 
-    /**
-     * 通过OpenId查询用户
-     *
-     * @Date 2023/5/18
-     * @param openId
-     * @return SysUserVo
-     **/
-    SysUserVo selectUserByOpenId(String openId);
 
     /**
      * 通过手机号查询用户

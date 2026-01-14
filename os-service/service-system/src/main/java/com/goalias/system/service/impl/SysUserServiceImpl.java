@@ -101,16 +101,6 @@ public class SysUserServiceImpl implements ISysUserService {
         return baseMapper.selectUserByUserName(userName);
     }
 
-    /**
-     * 通过OpenId查询用户
-     *
-     * @param openId 用户名
-     * @return 用户对象信息
-     */
-    @Override
-    public SysUserVo selectUserByOpenId(String openId) {
-        return baseMapper.selectUserByOpenId(openId);
-    }
 
 
     /**
@@ -231,8 +221,6 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     public SysUser registerUser(SysUserBo user) {
-        user.setCreateBy(user.getUserId());
-        user.setUpdateBy(user.getUserId());
         SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
         baseMapper.insert(sysUser);
         return sysUser;

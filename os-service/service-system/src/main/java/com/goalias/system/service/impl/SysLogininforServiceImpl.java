@@ -68,7 +68,6 @@ public class SysLogininforServiceImpl implements ISysLogininforService {
         String browser = userAgent.getBrowser().getName();
         // 封装对象
         SysLogininforBo logininfor = new SysLogininforBo();
-        logininfor.setTenantId(logininforEvent.getTenantId());
         logininfor.setUserName(logininforEvent.getUsername());
         logininfor.setIpaddr(ip);
         logininfor.setLoginLocation(address);

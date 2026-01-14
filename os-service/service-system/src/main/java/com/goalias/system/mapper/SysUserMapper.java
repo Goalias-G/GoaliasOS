@@ -40,14 +40,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
     SysUserVo selectUserByUserName(String userName);
 
     /**
-     * 通过OpenId查询用户
-     *
-     * @param OpenId 微信用户唯一标识
-     * @return 用户对象信息
-     */
-    SysUserVo selectUserByOpenId(String OpenId);
-
-    /**
      * 通过手机号查询用户
      *
      * @param phonenumber 手机号
@@ -62,36 +54,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @return 用户对象信息
      */
     SysUserVo selectUserByEmail(String email);
-
-    /**
-     * 通过用户名查询用户(不走租户插件)
-     *
-     * @param userName 用户名
-     * @param tenantId 租户id
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByUserName(String userName, String tenantId);
-
-    /**
-     * 通过手机号查询用户(不走租户插件)
-     *
-     * @param phonenumber 手机号
-     * @param tenantId    租户id
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByPhonenumber(String phonenumber, String tenantId);
-
-    /**
-     * 通过邮箱查询用户(不走租户插件)
-     *
-     * @param email    邮箱
-     * @param tenantId 租户id
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByEmail(String email, String tenantId);
 
 
     @InterceptorIgnore(dataPermission = "true")

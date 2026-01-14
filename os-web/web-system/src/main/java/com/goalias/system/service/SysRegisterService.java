@@ -2,6 +2,7 @@ package com.goalias.system.service;
 
 import cn.dev33.satoken.secure.BCrypt;
 import com.goalias.common.core.constant.Constants;
+import com.goalias.common.core.constant.UserConstants;
 import com.goalias.common.core.domain.model.RegisterBody;
 import com.goalias.common.core.exception.base.BaseException;
 import com.goalias.common.core.exception.user.CaptchaException;
@@ -37,27 +38,25 @@ public class SysRegisterService {
      * 注册
      */
     public void register(RegisterBody registerBody) {
-
-
         String username = registerBody.getUsername();
         String password = registerBody.getPassword();
 
         // 检查验证码是否正确
-        validateEmail(username,registerBody.getCode());
+        validateCaptcha(username, registerBody.getCode(), registerBody.getUuid());
         SysUserBo sysUser = new SysUserBo();
-        sysUser.setDomainName(registerBody.getDomainName());
         sysUser.setUserName(username);
         sysUser.setNickName(username);
         sysUser.setPassword(BCrypt.hashpw(password));
+        sysUser.setUserType(UserConstants.SYS_USER);
         if (!userService.checkUserNameUnique(sysUser)) {
             throw new UserException("添加用户失败", username);
         }
-        sysUser.setUserBalance(1.0);
+        sysUser.setUserBalance(10.0);
         SysUser user = userService.registerUser(sysUser);
         if (user == null) {
             throw new UserException("用户注册失败!");
         }
-        recordLogininfor( username, Constants.REGISTER, "注册成功");
+        recordLogininfor(username, Constants.REGISTER, "注册成功");
     }
 
     /**
@@ -67,12 +66,12 @@ public class SysRegisterService {
         String username = registerBody.getUsername();
         String password = registerBody.getPassword();
         SysUserVo user = userService.selectUserByUserName(username);
-        if(user == null){
-            throw new UserException(String.format("用户【%s】,未注册!",username));
+        if (user == null) {
+            throw new UserException(String.format("用户【%s】,未注册!", username));
         }
         // 检查验证码是否正确
-        validateEmail(username,registerBody.getCode());
-        userService.resetUserPwd(user.getUserId(),BCrypt.hashpw(password));
+        validateCaptcha(username, registerBody.getCode(), registerBody.getUuid());
+        userService.resetUserPwd(user.getUserId(), BCrypt.hashpw(password));
     }
 
     /**
@@ -80,12 +79,12 @@ public class SysRegisterService {
      *
      * @param username 用户名
      */
-    public void validateEmail(String username,String code) {
+    public void validateEmail(String username, String code) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + username;
         String captcha = (String) redisService.get(key);
-        if(code.equals(captcha)){
+        if (code.equals(captcha)) {
             redisService.del(captcha);
-        }else {
+        } else {
             throw new UserException("验证码错误,请重试！");
         }
     }
@@ -97,16 +96,16 @@ public class SysRegisterService {
      * @param code     验证码
      * @param uuid     唯一标识
      */
-    public void validateCaptcha( String username, String code, String uuid) {
-        String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + StringUtils.defaultString(uuid, "");
+    public void validateCaptcha(String username, String code, String uuid) {
+        String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
         String captcha = (String) redisService.get(verifyKey);
         redisService.del(verifyKey);
         if (captcha == null) {
-            recordLogininfor( username, Constants.REGISTER, "验证码已过期");
+            recordLogininfor(username, Constants.REGISTER, "验证码已过期");
             throw new CaptchaExpireException();
         }
         if (!code.equalsIgnoreCase(captcha)) {
-            recordLogininfor( username, Constants.REGISTER, "验证码错误,请重试");
+            recordLogininfor(username, Constants.REGISTER, "验证码错误,请重试");
             throw new CaptchaException();
         }
     }
@@ -119,7 +118,7 @@ public class SysRegisterService {
      * @param message  消息内容
      * @return
      */
-    private void recordLogininfor( String username, String status, String message) {
+    private void recordLogininfor(String username, String status, String message) {
         LogininforEvent logininforEvent = new LogininforEvent();
         logininforEvent.setUsername(username);
         logininforEvent.setStatus(status);

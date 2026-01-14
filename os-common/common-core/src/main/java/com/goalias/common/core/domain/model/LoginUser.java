@@ -23,11 +23,6 @@ public class LoginUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 租户ID
-     */
-    private String tenantId;
-
-    /**
      * 用户ID
      */
     private Long userId;
@@ -74,16 +69,6 @@ public class LoginUser implements Serializable {
     private String os;
 
     /**
-     * 菜单权限
-     */
-    private Set<String> menuPermission;
-
-    /**
-     * 角色权限
-     */
-    private Set<String> rolePermission;
-
-    /**
      * 用户名
      */
     private String username;
@@ -97,16 +82,6 @@ public class LoginUser implements Serializable {
      * 微信头像
      */
     private String avatar;
-
-    /**
-     * 角色对象
-     */
-    private List<RoleDTO> roles;
-
-    /**
-     * 数据权限 当前角色ID
-     */
-    private Long roleId;
 
     /**
      * 关联角色类型

@@ -81,8 +81,6 @@ public class SysUserController extends BaseController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         SysUserVo user = userService.selectUserById(loginUser.getUserId());
         userInfoVo.setUser(user);
-        userInfoVo.setPermissions(loginUser.getMenuPermission());
-        userInfoVo.setRoles(loginUser.getRolePermission());
         return R.ok(userInfoVo);
     }
 
@@ -120,7 +118,6 @@ public class SysUserController extends BaseController {
         if(StringUtils.isEmpty(user.getNickName())){
             user.setNickName(user.getUserName());
         }
-        user.setDeptId(103L);
         user.setPassword(BCrypt.hashpw(user.getPassword()));
         return toAjax(userService.insertUser(user));
     }
