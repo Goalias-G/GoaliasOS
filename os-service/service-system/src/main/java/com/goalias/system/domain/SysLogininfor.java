@@ -1,4 +1,4 @@
-package com.goalias.system.domain.event;
+package com.goalias.system.domain;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;

@@ -5,7 +5,7 @@ import com.goalias.common.web.core.BaseController;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import com.goalias.system.domain.bo.SysLogininforBo;
-import com.goalias.system.domain.event.SysLogininfor;
+import com.goalias.system.domain.SysLogininfor;
 import com.goalias.system.service.ISysLogininforService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;

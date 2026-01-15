@@ -5,11 +5,13 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.goalias.common.core.domain.R;
 import com.goalias.common.core.exception.ServiceException;
 import com.goalias.common.core.utils.SpringUtils;
 import com.goalias.common.core.utils.StringUtils;
 import com.goalias.common.oss.core.MinioService;
 import com.goalias.common.redis.constant.CacheNames;
+import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import com.goalias.system.domain.SysOss;
@@ -47,26 +49,7 @@ public class SysOssServiceImpl implements ISysOssService {
 
     @Override
     public List<SysOss> listByIds(Collection<Long> ossIds) {
-        List<SysOss> list = new ArrayList<>();
-        for (Long id : ossIds) {
-            SysOss sysOss = SpringUtils.getAopProxy(this).getById(id);
-            if (ObjectUtil.isNotNull(sysOss)) {
-                list.add(sysOss);
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public String selectUrlByIds(String ossIds) {
-        List<String> list = new ArrayList<>();
-        for (Long id : StringUtils.splitTo(ossIds, Convert::toLong)) {
-            SysOss vo = SpringUtils.getAopProxy(this).getById(id);
-            if (ObjectUtil.isNotNull(vo)) {
-                list.add(vo.getUrl());
-            }
-        }
-        return String.join(StringUtils.SEPARATOR, list);
+        return baseMapper.selectByIds(ossIds);
     }
 
     private LambdaQueryWrapper<SysOss> buildQueryWrapper(SysOss bo) {
@@ -91,18 +74,23 @@ public class SysOssServiceImpl implements ISysOssService {
 
     @Override
     public SysOss upload(MultipartFile file) {
-        String originalfileName = file.getOriginalFilename();
-        String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf("."),
-                originalfileName.length());
+        // 生成文件存储路径：userId/年/月/日/文件名
+        String objectName = MinioService.getTimeFilePath(LoginHelper.getUserId(), file.getOriginalFilename());
 
-        String url;
-        url = minioService.uploadFile(originalfileName, file);//TODO 根据业务划分文件
+        String originalFilename = file.getOriginalFilename();
+        String suffix = StringUtils.substring(originalFilename, originalFilename.lastIndexOf("."),
+                originalFilename.length());
+
+        String url = minioService.uploadFile(objectName, file);
+        if (StringUtils.isBlank(url)) {
+            throw new ServiceException("文件上传失败");
+        }
         // 保存文件信息
         SysOss oss = new SysOss();
         oss.setUrl(url);
         oss.setFileSuffix(suffix);
-        oss.setFileName(originalfileName);
-        oss.setOriginalName(originalfileName);
+        oss.setFileName(objectName);
+        oss.setOriginalName(originalFilename);
         baseMapper.insert(oss);
         return oss;
     }
@@ -117,26 +105,10 @@ public class SysOssServiceImpl implements ISysOssService {
         return baseMapper.deleteByIds(ids) > 0;
     }
 
-    /**
-     * 根据文件路径删除文件
-     *
-     * @param filePath 文件路径
-     * @return 是否删除成功
-     */
-    @Override
-    public boolean deleteFile(String filePath) {
-        if (StringUtils.isEmpty(filePath)) {
-            return false;
-        }
 
-        try {
-            java.io.File file = new java.io.File(filePath);
-            if (file.exists() && file.isFile()) {
-                return file.delete();
-            }
-            return false;
-        } catch (Exception e) {
-            throw new ServiceException("删除文件失败: " + e.getMessage());
-        }
+    @Override
+    public Long saveFile(SysOss sysOss) {
+        baseMapper.insert(sysOss);
+        return sysOss.getOssId();
     }
 }

@@ -12,24 +12,19 @@ public interface OssConstants {
      */
     interface Multipart {
         /**
-         * 默认分片大小：5MB（MinIO 最小分片要求）
-         */
-        long DEFAULT_CHUNK_SIZE = 5 * 1024 * 1024L;
-
-        /**
          * 最小分片大小：5MB
          */
         long MIN_CHUNK_SIZE = 5 * 1024 * 1024L;
 
         /**
-         * 最大分片大小：5GB
+         * 最大分片大小：500MB
          */
-        long MAX_CHUNK_SIZE = 5L * 1024 * 1024 * 1024;
+        long MAX_CHUNK_SIZE = 500 * 1024 * 1024L;
 
         /**
-         * 最大分片数量：10000
+         * 最大分片数量：5000
          */
-        int MAX_CHUNK_COUNT = 10000;
+        int MAX_CHUNK_COUNT = 5000;
 
         /**
          * 预签名 URL 有效期（秒）：1小时 前端直传minio使用

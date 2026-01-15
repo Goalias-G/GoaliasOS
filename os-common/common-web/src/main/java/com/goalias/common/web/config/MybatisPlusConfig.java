@@ -1,9 +1,6 @@
 package com.goalias.common.web.config;
 
-import cn.hutool.core.net.NetUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
-import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
@@ -60,10 +57,10 @@ public class MybatisPlusConfig {
      * 使用网卡信息绑定雪花生成器
      * 防止集群雪花ID重复
      */
-    @Bean
-    public IdentifierGenerator idGenerator() {
-        return new DefaultIdentifierGenerator(NetUtil.getLocalhost());
-    }
+//    @Bean
+//    public IdentifierGenerator idGenerator() {
+//        return new DefaultIdentifierGenerator(NetUtil.getLocalhost());
+//    }
 
 
     /**

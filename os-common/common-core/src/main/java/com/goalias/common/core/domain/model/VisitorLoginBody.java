@@ -3,6 +3,7 @@ package com.goalias.common.core.domain.model;
 import lombok.Data;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 游客登录用户身份权限
@@ -10,7 +11,7 @@ import java.io.Serial;
  * @author Goalias
  */
 @Data
-public class VisitorLoginBody {
+public class VisitorLoginBody implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,6 +21,6 @@ public class VisitorLoginBody {
     /**
      * 登录类型(1.小程序访客 2.pc访客)
      */
-    private String type;
+    private String uuid;
 
 }

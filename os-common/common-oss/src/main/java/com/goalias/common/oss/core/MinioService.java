@@ -3,6 +3,7 @@ package com.goalias.common.oss.core;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.goalias.common.core.utils.StringUtils;
 import com.goalias.common.oss.config.properties.MinioProperties;
 import com.goalias.common.oss.constant.OssConstants;
 import com.goalias.common.oss.domain.dto.MultipartUploadInitDTO;
@@ -140,6 +141,9 @@ public class MinioService implements IFileService, InitializingBean {
     @Override
     public UploadInitVO initMultipartUpload(MultipartUploadInitDTO dto) {
         try {
+            if (dto.getChunkSize() > OssConstants.Multipart.MAX_CHUNK_SIZE) {
+                throw new IllegalArgumentException("分片大小不能超过" + OssConstants.Multipart.MAX_CHUNK_SIZE + "MB");
+            }
             // 1. 检查存储桶是否存在，不存在则创建
             ensureBucketExists(dto.getBucketName());
 
@@ -163,7 +167,7 @@ public class MinioService implements IFileService, InitializingBean {
 
             // 校验分片数量
             if (totalChunks > OssConstants.Multipart.MAX_CHUNK_COUNT) {
-                throw new IllegalArgumentException("分片数量超过限制，请增大分片大小");
+                throw new IllegalArgumentException("分片数量超过"+ OssConstants.Multipart.MAX_CHUNK_COUNT +"最大限制，请增大分片大小");
             }
 
             // 4. 生成唯一的 uploadId
@@ -537,7 +541,10 @@ public class MinioService implements IFileService, InitializingBean {
      */
     @Override
     public String getUrl(String bucketName, String objectName) {
-        return properties.getMediaUrl() + bucketName + "/" + objectName;
+        if (StringUtils.isNotBlank(objectName)) {
+            return properties.getMediaUrl() + bucketName + "/" + objectName;
+        }
+        return "";
     }
 
     /**
@@ -588,7 +595,8 @@ public class MinioService implements IFileService, InitializingBean {
      *
      * @return 如：/2026/01/07/
      */
-    public static String getTimeFilePath() {
-        return new SimpleDateFormat("yyyy/MM/dd").format(new Date()) + "/";
+    public static String getTimeFilePath(Long userId, String fileName) {
+        String timePath = new SimpleDateFormat("/yyyy/MM/dd").format(new Date()) + "/";
+        return userId + timePath + fileName;
     }
 }

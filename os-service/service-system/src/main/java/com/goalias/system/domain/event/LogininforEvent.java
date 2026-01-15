@@ -1,4 +1,4 @@
-package com.goalias.system.domain;
+package com.goalias.system.domain.event;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;

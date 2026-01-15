@@ -23,6 +23,6 @@ public class SysOssUploadVo {
     /**
      * 对象存储主键
      */
-    private String ossId;
+    private Long ossId;
 
 }

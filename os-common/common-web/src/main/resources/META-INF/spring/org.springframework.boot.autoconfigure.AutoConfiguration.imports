@@ -11,3 +11,5 @@ com.goalias.common.web.config.SecurityConfig
 
 com.goalias.common.web.config.IdempotentConfig
 
+com.goalias.common.web.config.MybatisPlusConfig
+

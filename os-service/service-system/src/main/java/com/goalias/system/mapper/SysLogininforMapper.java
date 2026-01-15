@@ -1,7 +1,7 @@
 package com.goalias.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.goalias.system.domain.event.SysLogininfor;
+import com.goalias.system.domain.SysLogininfor;
 import org.apache.ibatis.annotations.Mapper;
 
 

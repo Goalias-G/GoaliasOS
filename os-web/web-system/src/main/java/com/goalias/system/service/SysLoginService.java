@@ -20,7 +20,7 @@ import com.goalias.common.core.utils.StringUtils;
 import com.goalias.common.redis.constant.GlobalConstants;
 import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.satoken.utils.LoginHelper;
-import com.goalias.system.domain.LogininforEvent;
+import com.goalias.system.domain.event.LogininforEvent;
 import com.goalias.system.domain.SysUser;
 import com.goalias.system.domain.vo.SysUserVo;
 import com.goalias.system.mapper.SysUserMapper;
@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 /**

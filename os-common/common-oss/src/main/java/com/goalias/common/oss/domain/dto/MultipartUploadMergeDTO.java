@@ -25,7 +25,7 @@ public class MultipartUploadMergeDTO implements Serializable {
     private String bucketName;
 
     /**
-     * 文件名（包含路径）
+     * 文件名（包含路径）userId/年/月/日/文件名
      */
     @NotBlank(message = "文件名不能为空")
     private String objectName;

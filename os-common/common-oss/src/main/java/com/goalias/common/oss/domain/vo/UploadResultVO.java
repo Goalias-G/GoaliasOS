@@ -39,4 +39,9 @@ public class UploadResultVO implements Serializable {
      */
     private String etag;
 
+    /**
+     * 文件在数据库中的 ID
+     */
+    private Long ossId;
+
 }

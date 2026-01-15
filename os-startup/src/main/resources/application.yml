@@ -58,11 +58,11 @@ logging:
   config: classpath:logback-plus.xml
 
 captcha:
-  enable: false
+  enable: true
   # 验证码类型 math 数组计算 char 字符验证
-  type: MATH
+  type: char
   # line 线段干扰 circle 圆圈干扰 shear 扭曲干扰
-  category: CIRCLE
+  category: line
   # 数字验证码位数
   numberLength: 1
   # 字符验证码长度
@@ -83,7 +83,7 @@ sa-token:
   # token有效期 设为7天 (必定过期) 单位: 秒
   timeout: 604800
   # token临时有效期 (指定时间无操作就过期) 单位: 秒
-  activity-timeout: 604800
+  activity-timeout: 302400
   # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
   is-concurrent: true
   # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
@@ -109,8 +109,6 @@ security:
     - /pay/notifyUrl
     # 上传文件
     - /resource/oss/upload
-    # 重置密码
-    - /auth/reset/password
     # 聊天接口
     - /chat/send
     # 文件上传

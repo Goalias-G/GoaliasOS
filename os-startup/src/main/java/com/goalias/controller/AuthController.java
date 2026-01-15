@@ -5,6 +5,7 @@ import com.goalias.common.core.domain.R;
 import com.goalias.common.core.domain.model.LoginBody;
 import com.goalias.common.core.domain.model.RegisterBody;
 import com.goalias.common.core.domain.model.VisitorLoginBody;
+import com.goalias.common.core.utils.ip.IpUtils;
 import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.system.domain.vo.LoginVo;
 import com.goalias.system.service.SysLoginService;
@@ -57,8 +58,10 @@ public class AuthController {
      * @return token信息
      */
     @PostMapping("/visitorLogin")
-    public R<LoginVo> visitorLogin(@RequestBody VisitorLoginBody loginBody) {
+    public R<LoginVo> visitorLogin(@RequestBody VisitorLoginBody loginBody, HttpServletRequest request) {
         LoginVo loginVo = new LoginVo();
+        loginService.validateCaptcha("visitor", loginBody.getCode(), loginBody.getUuid());
+        loginVo.setToken(IpUtils.getIp(request));
         return R.ok(loginVo);
     }
 
