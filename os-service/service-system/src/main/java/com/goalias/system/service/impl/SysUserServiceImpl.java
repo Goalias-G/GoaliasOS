@@ -196,6 +196,24 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     /**
+     * 新增保存用户信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertUser(SysUserBo user) {
+        SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
+        // 新增用户信息
+        int rows = baseMapper.insert(sysUser);
+        if (sysUser != null) {
+            user.setUserId(sysUser.getUserId());
+        }
+        return rows;
+    }
+
+    /**
      * 注册用户信息
      *
      * @param user 用户信息

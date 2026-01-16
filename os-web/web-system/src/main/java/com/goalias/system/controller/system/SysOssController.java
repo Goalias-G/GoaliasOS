@@ -160,7 +160,8 @@ public class SysOssController extends BaseController {
                 SysOss sysOss = new SysOss();
                 sysOss.setUrl(result.getFileUrl());
                 sysOss.setFileName(result.getObjectName());
-                String originName = StringUtils.substring(result.getObjectName(), result.getObjectName().lastIndexOf("/"));
+                String[] nameArray = result.getObjectName().split("/");
+                String originName = nameArray[nameArray.length - 1];
                 sysOss.setOriginalName(originName);
                 sysOss.setFileSuffix(MinioService.getExtension(originName));
                 Long ossId = ossService.saveFile(sysOss);
