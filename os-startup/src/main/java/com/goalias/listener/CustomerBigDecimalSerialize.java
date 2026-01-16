@@ -1,4 +1,4 @@
-package com.goalias.system.listener;
+package com.goalias.listener;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

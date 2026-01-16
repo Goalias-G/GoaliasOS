@@ -111,9 +111,8 @@ public interface ISysUserService {
     /**
      * 注册用户信息
      *
-     * @Date 2023/5/18
+ * @since 2026-01-16
      * @param user
-     * @param tenantId
      * @return SysUser
      **/
     SysUser registerUser(SysUserBo user);

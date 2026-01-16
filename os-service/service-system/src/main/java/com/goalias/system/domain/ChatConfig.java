@@ -1,10 +1,7 @@
 package com.goalias.system.domain;
 
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.baomidou.mybatisplus.annotation.*;
 import com.goalias.common.web.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,7 +12,7 @@ import java.io.Serial;
  * 配置信息对象 chat_config
  *
  * @author Goalias
- * @date 2025-04-08
+ * @since 2026-01-16
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -28,7 +25,7 @@ public class ChatConfig extends BaseEntity {
     /**
      * 主键
      */
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**

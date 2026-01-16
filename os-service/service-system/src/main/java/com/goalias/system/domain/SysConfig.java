@@ -1,5 +1,6 @@
 package com.goalias.system.domain;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.goalias.common.web.domain.BaseEntity;
@@ -20,7 +21,7 @@ public class SysConfig extends BaseEntity {
     /**
      * 参数主键
      */
-    @TableId(value = "config_id")
+    @TableId(value = "config_id", type = IdType.AUTO)
     private Long configId;
 
     /**

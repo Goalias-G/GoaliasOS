@@ -23,7 +23,12 @@
 
         <dependency>
             <groupId>com.goalias</groupId>
-            <artifactId>service-system</artifactId>
+            <artifactId>service-chat</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>service-knowledge</artifactId>
         </dependency>
     </dependencies>
 
