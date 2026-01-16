@@ -101,28 +101,6 @@ public class SysUserController extends BaseController {
     }
 
     /**
-     * 新增用户
-     */
-    @PostMapping
-    public R<Void> add(@Validated @RequestBody SysUserBo user) {
-        if (!userService.checkUserNameUnique(user)) {
-            return R.fail("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
-        } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-            return R.fail("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
-        } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
-            return R.fail("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-        }
-        if(StringUtils.isEmpty(user.getPassword())){
-            user.setPassword("123456");
-        }
-        if(StringUtils.isEmpty(user.getNickName())){
-            user.setNickName(user.getUserName());
-        }
-        user.setPassword(BCrypt.hashpw(user.getPassword()));
-        return toAjax(userService.insertUser(user));
-    }
-
-    /**
      * 修改用户
      */
     @PutMapping
