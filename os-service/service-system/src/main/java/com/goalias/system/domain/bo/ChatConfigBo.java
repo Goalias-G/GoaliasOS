@@ -12,7 +12,7 @@ import com.goalias.common.web.domain.BaseEntity;
  * 配置信息业务对象 chat_config
  *
  * @author Goalias
- * @date 2025-04-08
+ * @since 2026-01-16
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

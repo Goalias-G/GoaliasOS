@@ -15,7 +15,7 @@ import java.util.Set;
 public interface RedisService {
 
     /**
-     * @description: 保存属性
+ * @apiNote: 保存属性
      * @param key
      * @param value
      * @param time 秒
@@ -25,35 +25,35 @@ public interface RedisService {
     void set(String key, Object value, Duration time);
 
     /**
-     * @description: 保存属性
+ * @apiNote: 保存属性
      * @param key
      * @param value
     */
     void set(String key, Object value);
 
     /**
-     * @description: 获取属性
+ * @apiNote: 获取属性
      * @param key
      * @return {@link Object}
     */
     Object get(String key);
 
     /**
-     * @description: 删除属性
+ * @apiNote: 删除属性
      * @param key
      * @return {@link Boolean}
     */
     Boolean del(String key);
 
     /**
-     * @description: 批量删除属性
+ * @apiNote: 批量删除属性
      * @param keys
      * @return {@link Long}
     */
     Long del(List<String> keys);
 
     /**
-     * @description: 设置过期时间
+ * @apiNote: 设置过期时间
      * @param key
      * @param time
      * @return {@link Boolean}
@@ -61,21 +61,21 @@ public interface RedisService {
     Boolean expire(String key, long time);
 
     /**
-     * @description: 获取过期时间
+ * @apiNote: 获取过期时间
      * @param key
      * @return {@link Long}
     */
     Long getExpire(String key);
 
     /**
-     * @description: 判断key是否存在
+ * @apiNote: 判断key是否存在
      * @param key
      * @return {@link Boolean}
     */
     Boolean hasKey(String key);
 
     /**
-     * @description: 按delta递增
+ * @apiNote: 按delta递增
      * @param key
      * @param delta
      * @return {@link Long}
@@ -83,13 +83,13 @@ public interface RedisService {
     Long incr(String key, long delta);
 
     /**
-     * @description: 设定过期时间的递增1
+ * @apiNote: 设定过期时间的递增1
      * @param key
      */
     Long incrExpire(String key, long time);
 
     /**
-     * @description: 按delta递减
+ * @apiNote: 按delta递减
      * @param key
      * @param delta
      * @return {@link Long}
@@ -97,7 +97,7 @@ public interface RedisService {
     Long decr(String key, long delta);
 
     /**
-     * @description: 获取Hash结构中的属性
+ * @apiNote: 获取Hash结构中的属性
      * @param key
      * @param hashKey
      * @return {@link Object}
@@ -105,7 +105,7 @@ public interface RedisService {
     Object hGet(String key, String hashKey);
 
     /**
-     * @description: 向Hash结构中放入一个属性
+ * @apiNote: 向Hash结构中放入一个属性
      * @param key
      * @param hashKey
      * @param value
@@ -115,7 +115,7 @@ public interface RedisService {
     Boolean hSet(String key, String hashKey, Object value, long time);
 
     /**
-     * @description: 向Hash结构中放入一个属性
+ * @apiNote: 向Hash结构中放入一个属性
      * @param key
      * @param hashKey
      * @param value
@@ -123,14 +123,14 @@ public interface RedisService {
     void hSet(String key, String hashKey, Object value);
 
     /**
-     * @description: 获取hash结构中所有属性
+ * @apiNote: 获取hash结构中所有属性
      * @param key
      * @return {@link Map<String,Object>}
     */
     Map<String, Object> hmGet(String key);
 
     /**
-     * @description: 添加多个hash结构
+ * @apiNote: 添加多个hash结构
      * @param key
      * @param value
      * @param time
@@ -139,21 +139,21 @@ public interface RedisService {
     Boolean hmSet(String key, Map<String, Object> value, long time);
 
     /**
-     * @description: 添加多个hash结构
+ * @apiNote: 添加多个hash结构
      * @param key
      * @param value
     */
     void hmSet(String key, Map<String, ?> value);
 
     /**
-     * @description: 删除Hash结构中的属性
+ * @apiNote: 删除Hash结构中的属性
      * @param key
      * @param hashKeys
     */
     void hDel(String key, Object... hashKeys);
 
     /**
-     * @description: 判断Hash结构中是否有该属性
+ * @apiNote: 判断Hash结构中是否有该属性
      * @param key
      * @param hashKey
      * @return {@link Boolean}
@@ -161,7 +161,7 @@ public interface RedisService {
     Boolean hHasKey(String key, String hashKey);
 
     /**
-     * @description: Hash结构中属性递增
+ * @apiNote: Hash结构中属性递增
      * @param key
      * @param hashKey
      * @param delta
@@ -170,7 +170,7 @@ public interface RedisService {
     Long hIncr(String key, String hashKey, Long delta);
 
     /**
-     * @description: Hash结构中属性递减
+ * @apiNote: Hash结构中属性递减
      * @param key
      * @param hashKey
      * @param delta
@@ -179,14 +179,14 @@ public interface RedisService {
     Long hDecr(String key, String hashKey, Long delta);
 
     /**
-     * @description: 获取Hash结构长度
+ * @apiNote: 获取Hash结构长度
      * @param key
      * @return {@link Long}
     */
     Long hSize(String key);
 
     /**
-     * @description: 有序集合中数据递增
+ * @apiNote: 有序集合中数据递增
      * @param key
      * @param value
      * @param score
@@ -195,7 +195,7 @@ public interface RedisService {
     Double zIncr(String key, Object value, Double score);
 
     /**
-     * @description: 有序集合中数据递减
+ * @apiNote: 有序集合中数据递减
      * @param key
      * @param value
      * @param score
@@ -204,7 +204,7 @@ public interface RedisService {
     Double zDecr(String key, Object value, Double score);
 
     /**
-     * @description: 根据分数排名获取指定元素信息
+ * @apiNote: 根据分数排名获取指定元素信息
      * @param key
      * @param start
      * @param end
@@ -213,7 +213,7 @@ public interface RedisService {
     Map<Object, Double> zReverseRangeWithScore(String key, long start, long end);
 
     /**
-     * @description: 获取指定元素分数
+ * @apiNote: 获取指定元素分数
      * @param key
      * @param value
      * @return {@link Double}
@@ -221,14 +221,14 @@ public interface RedisService {
     Double zScore(String key, Object value);
 
     /**
-     * @description: 获取所有分数
+ * @apiNote: 获取所有分数
      * @param key
      * @return {@link Map<Object,Double>}
     */
     Map<Object, Double> zAllScore(String key);
 
     /**
-     * @description: 删除指定Zset元素
+ * @apiNote: 删除指定Zset元素
      * @param key
      * @param value
      * @return {@link Long}
@@ -236,14 +236,14 @@ public interface RedisService {
     Long zRem(String key, Object... value);
 
     /**
-     * @description: 获取Set结构
+ * @apiNote: 获取Set结构
      * @param key
      * @return {@link Set<Object>}
     */
     Set<Object> sMembers(String key);
 
     /**
-     * @description: 随机获取指定数量的Set
+ * @apiNote: 随机获取指定数量的Set
      * @param key
      * @param count
      * @return {@link List<Object>}
@@ -251,14 +251,14 @@ public interface RedisService {
     List<Object> sRandMembers(String key, Long count);
 
     /**
-     * @description: 随机获取Set
+ * @apiNote: 随机获取Set
      * @param key
      * @return {@link Object}
     */
     Object sRandMember(String key);
 
     /**
-     * @description: 获取不同的随机成员
+ * @apiNote: 获取不同的随机成员
      * @param key
      * @param count
      * @return {@link Set<Object>}
@@ -266,7 +266,7 @@ public interface RedisService {
     Set<Object> sDistinctRandomMembers(String key, Long count);
 
     /**
-     * @description: 向Set结构中添加属性
+ * @apiNote: 向Set结构中添加属性
      * @param key
      * @param values
      * @return {@link Long}
@@ -274,7 +274,7 @@ public interface RedisService {
     Long sAdd(String key, Object... values);
 
     /**
-     * @description: 向Set结构中添加属性
+ * @apiNote: 向Set结构中添加属性
      * @param key
      * @param time
      * @param values
@@ -282,7 +282,7 @@ public interface RedisService {
     Long sAddExpire(String key, Long time, Object... values);
 
     /**
-     * @description: 是否为Set中的属性
+ * @apiNote: 是否为Set中的属性
      * @param key
      * @param value
      * @return {@link Boolean}
@@ -290,14 +290,14 @@ public interface RedisService {
     Boolean sIsMember(String key, Object value);
 
     /**
-     * @description: Set的长度
+ * @apiNote: Set的长度
      * @param key
      * @return {@link Long}
     */
     Long sSize(String key);
 
     /**
-     * @description: 删除Set中的属性
+ * @apiNote: 删除Set中的属性
      * @param key
      * @param values
      * @return {@link Long}
@@ -305,7 +305,7 @@ public interface RedisService {
     Long sRemove(String key, Object... values);
 
     /**
-     * @description: 删除Set中的属性
+ * @apiNote: 删除Set中的属性
      * @param key
      * @param start
      * @param end
@@ -314,14 +314,14 @@ public interface RedisService {
     List<Object> lRange(String key, long start, long end);
 
     /**
-     * @description: 获取List中的长度
+ * @apiNote: 获取List中的长度
      * @param key
      * @return {@link Long}
     */
     Long lSize(String key);
 
     /**
-     * @description: 根据索引获取List中的属性
+ * @apiNote: 根据索引获取List中的属性
      * @param key
      * @param index
      * @return {@link Object}
@@ -329,14 +329,14 @@ public interface RedisService {
     Object lIndex(String key, long index);
 
     /**
-     * @description: 向List中添加属性
+ * @apiNote: 向List中添加属性
      * @param key
      * @param value
     */
     Long lPush(String key, Object value);
 
     /**
-     * @description: 向List中添加属性
+ * @apiNote: 向List中添加属性
      * @param key
      * @param value
      * @param time
@@ -345,7 +345,7 @@ public interface RedisService {
     Long lPush(String key, Object value, long time);
 
     /**
-     * @description: 向List中批量添加属性
+ * @apiNote: 向List中批量添加属性
      * @param key
      * @param values
      * @return {@link Long}
@@ -353,18 +353,18 @@ public interface RedisService {
     Long lPushAll(String key, Object... values);
 
     /**
-     * @description: 向List中批量添加属性
+ * @apiNote: 向List中批量添加属性
      * @param key
      * @param time
      * @param values
      * @return {@link Long}
      * @auther apecode
-     * @date 2022/5/29 19:03
+ * @since 2026-01-16
     */
     Long lPushAll(String key, Long time, Object... values);
 
     /**
-     * @description: 从List中移除属性
+ * @apiNote: 从List中移除属性
      * @param key
      * @param count
      * @param value
@@ -373,7 +373,7 @@ public interface RedisService {
     Long lRemove(String key, long count, Object value);
 
     /**
-     * @description: 向Bitmap中新增值
+ * @apiNote: 向Bitmap中新增值
      * @param key
      * @param offset
      * @param b
@@ -382,7 +382,7 @@ public interface RedisService {
     Boolean bitAdd(String key, int offset, boolean b);
     
     /**
-     * @description: 从Bitmap中获取偏移量的值
+ * @apiNote: 从Bitmap中获取偏移量的值
      * @param key
      * @param offset
      * @return {@link Boolean}
@@ -390,14 +390,14 @@ public interface RedisService {
     Boolean bitGet(String key, int offset);
 
     /**
-     * @description: 获取Bitmap的key值总和
+ * @apiNote: 获取Bitmap的key值总和
      * @param key
      * @return {@link Long}
     */
     Long bitCount(String key);
 
     /**
-     * @description: 获取Bitmap范围值
+ * @apiNote: 获取Bitmap范围值
      * @param key
      * @param limit
      * @param offset
@@ -406,16 +406,16 @@ public interface RedisService {
     List<Long> bitField(String key, int limit, int offset);
 
     /**
-     * @description: 获取所有Bitmap
+ * @apiNote: 获取所有Bitmap
      * @param key
      * @return {@link byte}
      * @auther apecode
-     * @date 2022/5/29 19:04
+ * @since 2026-01-16
     */
     byte[] bitGetAll(String key);
 
     /**
-     * @description: 向hyperlog中添加数据
+ * @apiNote: 向hyperlog中添加数据
      * @param key
      * @param value
      * @return {@link Long}
@@ -423,20 +423,20 @@ public interface RedisService {
     Long hyperAdd(String key, Object... value);
 
     /**
-     * @description: 获取hyperlog元素数量
+ * @apiNote: 获取hyperlog元素数量
      * @param key
      * @return {@link Long}
     */
     Long hyperGet(String... key);
 
     /**
-     * @description: 删除hyperlog数据
+ * @apiNote: 删除hyperlog数据
      * @param key
     */
     void hyperDel(String key);
 
     /**
-     * @description: 增加坐标
+ * @apiNote: 增加坐标
      * @param key
      * @param x
      * @param y
@@ -446,7 +446,7 @@ public interface RedisService {
     Long geoAdd(String key, Double x, Double y, String name);
 
     /**
-     * @description: 根据城市名称获取坐标集合
+ * @apiNote: 根据城市名称获取坐标集合
      * @param key
      * @param place
      * @return {@link List<Point>}
@@ -454,7 +454,7 @@ public interface RedisService {
     List<Point> geoGetPointList(String key, Object... place);
 
     /**
-     * @description: 计算两个城市之间的距离
+ * @apiNote: 计算两个城市之间的距离
      * @param key
      * @param placeOne
      * @param placeTow
@@ -463,7 +463,7 @@ public interface RedisService {
     Distance geoCalculationDistance(String key, String placeOne, String placeTow);
 
     /**
-     * @description: 获取附该地点附近的其他地点
+ * @apiNote: 获取附该地点附近的其他地点
      * @param key
      * @param place
      * @param distance
@@ -474,7 +474,7 @@ public interface RedisService {
     GeoResults<RedisGeoCommands.GeoLocation<Object>> geoNearByPlace(String key, String place, Distance distance, long limit, Sort.Direction sort);
 
     /**
-     * @description: 获取地点的hash
+ * @apiNote: 获取地点的hash
      * @param key
      * @param place
      * @return {@link List<String>}

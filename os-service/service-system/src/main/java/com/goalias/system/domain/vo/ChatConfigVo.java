@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 配置信息视图对象 chat_config
  *
  * @author Goalias
- * @date 2025-04-08
+ * @since 2026-01-16
  */
 @Data
 public class ChatConfigVo implements Serializable {

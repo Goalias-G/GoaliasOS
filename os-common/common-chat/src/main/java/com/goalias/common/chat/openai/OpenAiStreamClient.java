@@ -336,7 +336,7 @@ public class OpenAiStreamClient {
      *
      * @param key
      * @return KeyInfo
-     * @Date 2023/7/6
+ * @since 2026-01-16
      **/
     public KeyInfo getKeyInfo(String key) {
         Date now = new Date();
@@ -368,7 +368,7 @@ public class OpenAiStreamClient {
      *
      * @param
      * @return String
-     * @Date 2023/7/6
+ * @since 2026-01-16
      **/
     public String getModelName() {
         Single<ModelResponse> models = this.openAiApi.models();

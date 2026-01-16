@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
  * 用户阅读状态业务对象 sys_notice_state
  *
  * @author Goalias
- * @date 2024-05-11
+ * @since 2026-01-16
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

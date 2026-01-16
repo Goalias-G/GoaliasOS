@@ -17,7 +17,7 @@ import java.util.Date;
  * MP注入处理器
  *
  * @author Goalias
- * @date 2021/4/25
+ * @since 2026-01-16
  */
 @Slf4j
 public class InjectionMetaObjectHandler implements MetaObjectHandler {

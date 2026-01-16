@@ -13,7 +13,7 @@ import java.util.List;
  * 配置信息Service接口
  *
  * @author Goalias
- * @date 2025-04-08
+ * @since 2026-01-16
  */
 public interface IChatConfigService {
 
