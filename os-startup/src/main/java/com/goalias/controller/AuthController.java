@@ -61,7 +61,7 @@ public class AuthController {
     public R<LoginVo> visitorLogin(@RequestBody VisitorLoginBody loginBody, HttpServletRequest request) {
         LoginVo loginVo = new LoginVo();
         loginService.validateCaptcha("visitor", loginBody.getCode(), loginBody.getUuid());
-        loginVo.setToken(IpUtils.getIp(request));
+        loginVo.setToken("visitor" + IpUtils.getIp(request));
         return R.ok(loginVo);
     }
 

@@ -101,14 +101,6 @@ public interface ISysUserService {
     void checkUserDataScope(Long userId);
 
     /**
-     * 新增用户信息
-     *
-     * @param user 用户信息
-     * @return 结果
-     */
-    int insertUser(SysUserBo user);
-
-    /**
      * 注册用户信息
      *
  * @since 2026-01-16
