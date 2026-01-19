@@ -44,17 +44,6 @@
         </dependency>
 
 <!--        <dependency>-->
-<!--            <groupId>dev.langchain4j</groupId>-->
-<!--            <artifactId>langchain4j-weaviate</artifactId>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.testcontainers</groupId>-->
-<!--            <artifactId>weaviate</artifactId>-->
-<!--            <version>1.19.6</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
 <!--            <groupId>io.milvus</groupId>-->
 <!--            <artifactId>milvus-sdk-java</artifactId>-->
 <!--            <version>2.6.4</version>-->

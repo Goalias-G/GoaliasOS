@@ -26,7 +26,7 @@ public class CodeFileLoader implements ResourceLoader {
                 stringBuffer.append(line).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("[CodeFileLoader] {}", e.getMessage());
         }
         return stringBuffer.toString();
     }

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.goalias.knowledge.domain.KnowledgeFragment;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 知识片段Mapper接口
  *
@@ -14,4 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface KnowledgeFragmentMapper extends BaseMapper<KnowledgeFragment> {
 
+    void insertBatch(List<KnowledgeFragment> list);
 }

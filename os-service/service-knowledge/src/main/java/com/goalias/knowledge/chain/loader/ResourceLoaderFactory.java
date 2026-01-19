@@ -14,21 +14,21 @@ public class ResourceLoaderFactory {
     private final ExcelTextSplitter excelTextSplitter;
 
 
-    public ResourceLoader getLoaderByFileType(String fileType){
-        if (FileType.isTextFile(fileType)){
+    public ResourceLoader getLoaderByFileType(String fileType) {
+        if (FileType.isTextFile(fileType)) {
             return new TextFileLoader(characterTextSplitter);
         } else if (FileType.isWord(fileType)) {
             return new WordLoader(characterTextSplitter);
         } else if (FileType.isPdf(fileType)) {
             return new PdfFileLoader(characterTextSplitter);
-        }else if (FileType.isMdFile(fileType)) {
+        } else if (FileType.isMdFile(fileType)) {
             return new MarkDownFileLoader(markdownTextSplitter);
-        }else if (FileType.isCodeFile(fileType)) {
+        } else if (FileType.isCodeFile(fileType)) {
             return new CodeFileLoader(codeTextSplitter);
         } else if (FileType.isExcel(fileType)) {
             return new ExcelFileLoader(excelTextSplitter);
-        }else {
-            return new TextFileLoader(characterTextSplitter);
         }
+        return new TextFileLoader(characterTextSplitter);
+
     }
 }

@@ -3,9 +3,9 @@ package com.goalias.knowledge.service;
 
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
+import com.goalias.knowledge.domain.KnowledgeInfo;
 import com.goalias.knowledge.domain.bo.KnowledgeInfoBo;
 import com.goalias.knowledge.domain.bo.KnowledgeInfoUploadBo;
-import com.goalias.knowledge.domain.vo.KnowledgeInfoVo;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,22 +21,18 @@ public interface IKnowledgeInfoService {
     /**
      * 查询知识库
      */
-    KnowledgeInfoVo queryById(Long id);
+    KnowledgeInfo queryById(Long id);
 
     /**
      * 查询知识库列表
      */
-    TableDataInfo<KnowledgeInfoVo> queryPageList(KnowledgeInfoBo bo, PageQuery pageQuery);
+    TableDataInfo<KnowledgeInfo> queryPageList(KnowledgeInfoBo bo, PageQuery pageQuery);
+
 
     /**
      * 查询知识库列表
      */
-    TableDataInfo<KnowledgeInfoVo> queryPageListByRole(KnowledgeInfoBo bo, PageQuery pageQuery);
-
-    /**
-     * 查询知识库列表
-     */
-    List<KnowledgeInfoVo> queryList(KnowledgeInfoBo bo);
+    List<KnowledgeInfo> queryList(KnowledgeInfoBo bo);
 
     /**
      * 新增知识库

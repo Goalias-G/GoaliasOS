@@ -1,12 +1,12 @@
 package com.goalias.knowledge.service.strategy;
 
 import com.goalias.common.core.config.VectorStoreProperties;
+import com.goalias.knowledge.service.strategy.impl.PineCoreVectorStoreStrategy;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.goalias.knowledge.service.VectorStoreService;
 import com.goalias.knowledge.service.strategy.impl.MilvusVectorStoreStrategy;
-import com.goalias.knowledge.service.strategy.impl.WeaviateVectorStoreStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class VectorStoreStrategyFactory {
 
     private final VectorStoreProperties vectorStoreProperties;
-    private final WeaviateVectorStoreStrategy weaviateStrategy;
+    private final PineCoreVectorStoreStrategy pineCoreStrategy;
     private final MilvusVectorStoreStrategy milvusStrategy;
 
     private Map<String, VectorStoreService> strategies;
@@ -32,7 +32,7 @@ public class VectorStoreStrategyFactory {
     @PostConstruct
     public void init() {
         strategies = new HashMap<>();
-//        strategies.put("weaviate", weaviateStrategy);
+        strategies.put("pinecore", pineCoreStrategy);
         strategies.put("milvus", milvusStrategy);
         log.info("向量库策略工厂初始化完成，支持的策略: {}", strategies.keySet());
     }
@@ -43,12 +43,12 @@ public class VectorStoreStrategyFactory {
     public VectorStoreService getStrategy() {
         String vectorStoreType = vectorStoreProperties.getType();
         if (vectorStoreType == null || vectorStoreType.trim().isEmpty()) {
-            vectorStoreType = "weaviate"; // 默认使用weaviate
+            vectorStoreType = "pinecore"; // 默认使用pinecore
         }
         VectorStoreService strategy = strategies.get(vectorStoreType.toLowerCase());
         if (strategy == null) {
-            log.warn("未找到向量库策略: {}, 使用默认策略: weaviate", vectorStoreType);
-            strategy = strategies.get("weaviate");
+            log.warn("未找到向量库策略: {}, 使用默认策略: pinecore", vectorStoreType);
+            strategy = strategies.get("pinecore");
         }
         log.debug("使用向量库策略: {}", vectorStoreType);
         return strategy;

@@ -16,12 +16,11 @@ public class PdfFileLoader implements ResourceLoader {
     private final TextSplitter characterTextSplitter;
     @Override
     public String getContent(InputStream inputStream) {
-        PDDocument document = null;
+        PDDocument document;
         try {
             document = PDDocument.load(inputStream);
             PDFTextStripper textStripper = new PDFTextStripper();
-            String content = textStripper.getText(document);
-            return content;
+            return textStripper.getText(document);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

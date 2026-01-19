@@ -28,10 +28,10 @@ spring:
   # 文件上传
   servlet:
     multipart:
-      # 单个文件大小
-      max-file-size: 50MB
+      # 单个文件大小(2GB)
+      max-file-size: 2046MB
       # 设置总上传的文件大小
-      max-request-size: 200MB
+      max-request-size: 2046MB
   mvc:
     format:
       date-time: yyyy-MM-dd HH:mm:ss
@@ -224,17 +224,50 @@ knowledge-role:
 
 # 向量库配置
 vector-store:
-  # 向量存储类型 可选(weaviate/milvus)
-  # 如需修改向量库类型，请修改此配置值!
-  type: weaviate
+  # 向量存储类型 可选(pinecore/milvus)
+  type: pinecore
 
-  # Weaviate配置
-  weaviate:
-    protocol: http
-    host: 127.0.0.1:6038
-    classname: LocalKnowledge
+  # PineCore配置
+  pinecore:
+    url:
   # Milvus配置
   milvus:
     url: http://localhost:19530
     collectionname: LocalKnowledge
 
+
+
+# 文本分词器配置
+splitter:
+  # 通用文本分词配置
+  default-config:
+    text-block-size: 500      # 文本块大小（字符数）
+    overlap-char: 50          # 重叠字符数
+    knowledge-separator: "。"  # 知识分隔符
+    question-separator: "?"   # 提问分隔符
+    enable-smart-boundary: true
+    sentence-end-markers: 。？！.?!
+    smart-boundary-range: 100
+
+  # 代码分词配置
+  code-config:
+    text-block-size: 1000     # 代码块大小（字符数）
+    overlap-char: 100         # 重叠字符数
+    preserve-structure: true  # 是否保留代码结构
+
+  # Excel 分词配置
+  excel-config:
+    text-block-size: 10000    # Excel 文本块大小（字符数）
+    overlap-char: 500         # 重叠字符数
+    knowledge-separator: "#"  # Excel 分隔符
+
+  # Markdown 分词配置
+  markdown-config:
+    text-block-size: 800      # Markdown 文本块大小（字符数）
+    overlap-char: 80          # 重叠字符数
+    preserve-structure: true  # 是否保留 Markdown 结构
+    h1-separator-regex: "^#\\s+.+$"
+    h2-separator-regex: "^##\\s+.+$"
+    h3-separator-regex: "^###\\s+.+$"
+    code-block-separator: "```"
+    horizontal-rule-separator: "---"

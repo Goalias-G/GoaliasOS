@@ -20,9 +20,9 @@ public class VectorStoreProperties {
     private String type;
 
     /**
-     * Weaviate配置
+     * PineCore配置
      */
-    private Weaviate weaviate = new Weaviate();
+    private PineCore pinecore = new PineCore();
 
     /**
      * Milvus配置
@@ -30,21 +30,11 @@ public class VectorStoreProperties {
     private Milvus milvus = new Milvus();
 
     @Data
-    public static class Weaviate {
+    public static class PineCore {
         /**
-         * 协议
+         * 连接URL
          */
-        private String protocol;
-
-        /**
-         * 主机地址
-         */
-        private String host;
-
-        /**
-         * 类名
-         */
-        private String classname;
+        private String url;
     }
 
     @Data

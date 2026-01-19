@@ -26,7 +26,7 @@ public class TextFileLoader implements ResourceLoader{
                 stringBuffer.append(line).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("[TextFileLoader] " + e.getMessage());
         }
         return stringBuffer.toString();
     }

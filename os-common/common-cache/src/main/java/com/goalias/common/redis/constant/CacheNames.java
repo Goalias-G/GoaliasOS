@@ -22,19 +22,16 @@ public interface CacheNames {
     String SYS_CONFIG = "sys_config";
 
     /**
-     * 数据字典
-     */
-    String SYS_DICT = "sys_dict";
-
-    /**
      * 用户账户
      */
-    String SYS_USER_NAME = "sys_user_name#30d";
+    String SYS_USER = "sys_user";
 
     /**
      * OSS内容
      */
     String SYS_OSS = "sys_oss";
+
+    String KNOWLEDGE_INFO = "knowledge_info";
 
 
 }

@@ -22,8 +22,7 @@ public class WordLoader implements ResourceLoader {
         try {
             document = new XWPFDocument(inputStream);
             XWPFWordExtractor extractor = new XWPFWordExtractor(document);
-            String content = extractor.getText();
-            return content;
+            return extractor.getText();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

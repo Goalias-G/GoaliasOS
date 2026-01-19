@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OsAppRunner implements ApplicationRunner {
 
+
     @Override
     public void run(ApplicationArguments args) {
         log.info("GoaliasOS start successfully!");

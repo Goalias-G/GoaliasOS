@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goalias.knowledge.mapper.KnowledgeFragmentMapper">
+
+    <insert id="insertBatch">
+        insert into knowledge_fragment (doc_id, idx, fid, kid, content, remark) values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.docId}, #{item.idx},#{item.fid}, #{item.kid}, #{item.content}, #{item.remark})
+        </foreach>
+    </insert>
+</mapper>

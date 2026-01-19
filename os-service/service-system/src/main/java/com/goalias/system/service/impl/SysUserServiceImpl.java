@@ -22,6 +22,8 @@ import com.goalias.system.mapper.SysUserMapper;
 import com.goalias.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -275,6 +277,7 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
+    @CachePut(cacheNames = CacheNames.SYS_USER, key = "#userId")
     public boolean updateUserName(Long userId, String nickName) {
         return baseMapper.update(null,
                 new LambdaUpdateWrapper<SysUser>()
@@ -306,6 +309,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = CacheNames.SYS_USER, key = "#userId")
     public int deleteUserById(Long userId) {
         // 防止更新失败导致的数据删除
         int flag = baseMapper.deleteById(userId);
@@ -323,6 +327,7 @@ public class SysUserServiceImpl implements ISysUserService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(cacheNames = CacheNames.SYS_USER)
     public int deleteUserByIds(Long[] userIds) {
         for (Long userId : userIds) {
             checkUserAllowed(userId);
@@ -337,7 +342,7 @@ public class SysUserServiceImpl implements ISysUserService {
         return flag;
     }
 
-    @Cacheable(cacheNames = CacheNames.SYS_USER_NAME, key = "#userId")
+    @Cacheable(cacheNames = CacheNames.SYS_USER, key = "#userId", unless = "#result == null")
     @Override
     public String selectUserNameById(Long userId) {
         SysUser sysUser = baseMapper.selectOne(new LambdaQueryWrapper<SysUser>()

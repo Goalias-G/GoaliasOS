@@ -23,8 +23,8 @@ public class RedisConfig {
     public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
         RedisCacheConfiguration config = RedisCacheConfiguration
                 .defaultCacheConfig()  // 生成一个默认配置，通过config对象即可对缓存进行自定义配置
-                .entryTtl(Duration.ofMinutes(30))     // 设置缓存的默认过期时间，也是使用Duration设置
-                .disableCachingNullValues()     // 不缓存空值
+                .entryTtl(Duration.ofMinutes(60))     // 设置缓存的默认过期时间，也是使用Duration设置
+//                .disableCachingNullValues()     // 不缓存空值
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new Jackson2JsonRedisSerializer<>(Object.class)));
         return RedisCacheManager.builder(factory)

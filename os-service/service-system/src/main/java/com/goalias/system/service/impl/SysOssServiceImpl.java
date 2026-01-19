@@ -15,6 +15,7 @@ import com.goalias.system.domain.SysOss;
 import com.goalias.system.mapper.SysOssMapper;
 import com.goalias.system.service.ISysOssService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,6 +93,7 @@ public class SysOssServiceImpl implements ISysOssService {
     }
 
     @Override
+    @CacheEvict(cacheNames = CacheNames.SYS_OSS)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
             // 做一些业务上的校验,判断是否需要校验

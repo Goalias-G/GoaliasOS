@@ -1,51 +1,52 @@
 package com.goalias.knowledge.constant;
 
-public class FileType {
-    public static final String TXT = "txt";
-    public static final String CSV = "csv";
-    public static final String MD = "md";
-    public static final String DOC = "doc";
-    public static final String DOCX = "docx";
-    public static final String PDF = "pdf";
-    public static final String XLS = "xls";
-    public static final String XLSX = "xlsx";
+public interface FileType {
+    String TXT = "txt";
+    String CSV = "csv";
+    String MD = "md";
+    String DOC = "doc";
+    String DOCX = "docx";
+    String PDF = "pdf";
+    String XLS = "xls";
+    String XLSX = "xlsx";
 
-    public static final String LOG = "log";
-    public static final String XML = "xml";
+    String LOG = "log";
+    String XML = "xml";
+    String JSON = "json";
 
-    public static final String JAVA = "java";
-    public static final String HTML = "html";
-    public static final String HTM = "htm";
-    public static final String CSS = "css";
-    public static final String JS = "js";
-    public static final String PY = "py";
-    public static final String CPP = "cpp";
-    public static final String SQL = "sql";
-    public static final String PHP = "php";
-    public static final String RUBY = "ruby";
-    public static final String C = "c";
-    public static final String H = "h";
-    public static final String HPP = "hpp";
-    public static final String SWIFT = "swift";
-    public static final String TS = "ts";
-    public static final String RUST = "rs";
-    public static final String PERL = "perl";
-    public static final String SHELL = "shell";
-    public static final String BAT = "bat";
-    public static final String CMD = "cmd";
+    String JAVA = "java";
+    String HTML = "html";
+    String HTM = "htm";
+    String CSS = "css";
+    String JS = "js";
+    String PY = "py";
+    String CPP = "cpp";
+    String SQL = "sql";
+    String PHP = "php";
+    String RUBY = "ruby";
+    String C = "c";
+    String H = "h";
+    String HPP = "hpp";
+    String SWIFT = "swift";
+    String TS = "ts";
+    String RUST = "rs";
+    String PERL = "perl";
+    String SHELL = "shell";
+    String BAT = "bat";
+    String CMD = "cmd";
 
-    public static final String PROPERTIES = "properties";
-    public static final String INI = "ini";
-    public static final String YAML = "yaml";
-    public static final String YML = "yml";
+    String PROPERTIES = "properties";
+    String INI = "ini";
+    String YAML = "yaml";
+    String YML = "yml";
 
-    public static boolean isTextFile(String type){
-        return type.equalsIgnoreCase(TXT) || type.equalsIgnoreCase(CSV) || type.equalsIgnoreCase(PROPERTIES)
+    static boolean isTextFile(String type){
+        return type.equalsIgnoreCase(TXT) || type.equalsIgnoreCase(PROPERTIES)
                 || type.equalsIgnoreCase(INI) || type.equalsIgnoreCase(YAML) || type.equalsIgnoreCase(YML)
-                || type.equalsIgnoreCase(LOG) || type.equalsIgnoreCase(XML);
+                || type.equalsIgnoreCase(LOG) || type.equalsIgnoreCase(XML) || type.equalsIgnoreCase(JSON);
     }
 
-    public static boolean isCodeFile(String type){
+    static boolean isCodeFile(String type){
         return type.equalsIgnoreCase(JAVA) || type.equalsIgnoreCase(HTML) || type.equalsIgnoreCase(HTM) || type.equalsIgnoreCase(JS) || type.equalsIgnoreCase(PY)
                 || type.equalsIgnoreCase(CPP) || type.equalsIgnoreCase(SQL) || type.equalsIgnoreCase(PHP) || type.equalsIgnoreCase(RUBY)
                 || type.equalsIgnoreCase(C) || type.equalsIgnoreCase(H) || type.equalsIgnoreCase(HPP) || type.equalsIgnoreCase(SWIFT)
@@ -53,20 +54,20 @@ public class FileType {
                 || type.equalsIgnoreCase(BAT) || type.equalsIgnoreCase(CMD) || type.equalsIgnoreCase(CSS);
     }
 
-    public static boolean isMdFile(String type){
+    static boolean isMdFile(String type){
         return type.equalsIgnoreCase(MD);
     }
 
-    public static boolean isWord(String type){
+    static boolean isWord(String type){
         return type.equalsIgnoreCase(DOC) || type.equalsIgnoreCase(DOCX);
     }
 
-    public static boolean isPdf(String type){
+    static boolean isPdf(String type){
         return type.equalsIgnoreCase(PDF);
     }
 
-    public static boolean isExcel(String type){
-        return type.equalsIgnoreCase(XLS) || type.equalsIgnoreCase(XLSX);
+    static boolean isExcel(String type){
+        return type.equalsIgnoreCase(XLS) || type.equalsIgnoreCase(XLSX) || type.equalsIgnoreCase(CSV);
     }
 
 }
