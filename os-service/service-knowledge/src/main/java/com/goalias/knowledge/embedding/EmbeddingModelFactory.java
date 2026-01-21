@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -42,7 +43,7 @@ public class EmbeddingModelFactory {
             if (modelConfig == null) {
                 throw new IllegalArgumentException("未找到模型配置，name=" + name);
             }
-            if (modelConfig.getDimension() != null) {
+            if (Objects.isNull(modelConfig.getDimension())) {
                 modelConfig.setDimension(dimension);
             }
             return createModelInstance(modelConfig.getProviderName(), modelConfig);

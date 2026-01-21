@@ -18,9 +18,18 @@ public interface VectorStoreService {
 
     void createSchema(String kid, String embeddingModelName);
 
-    void removeById(String id,String modelName) throws ServiceException;
+    /**
+     * 根据 kid 删除向量数据
+     */
+    void removeByKid(String kid, String modelName) throws ServiceException;
 
+    /**
+     * 根据上传所属文件 删除相关向量数据(docId)
+     */
     void removeByDocId(String docId, String kid) throws ServiceException;
 
+    /**
+     * 根据 chunk id 删除向量数据（fid）
+     */
     void removeByFid(String fid, String kid) throws ServiceException;
 }

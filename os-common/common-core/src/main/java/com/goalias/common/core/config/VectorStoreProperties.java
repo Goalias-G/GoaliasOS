@@ -20,9 +20,9 @@ public class VectorStoreProperties {
     private String type;
 
     /**
-     * PineCore配置
+     * pinecone配置
      */
-    private PineCore pinecore = new PineCore();
+    private Pinecone pinecone = new Pinecone();
 
     /**
      * Milvus配置
@@ -30,11 +30,11 @@ public class VectorStoreProperties {
     private Milvus milvus = new Milvus();
 
     @Data
-    public static class PineCore {
-        /**
-         * 连接URL
-         */
-        private String url;
+    public static class Pinecone {
+
+        private String index;
+
+        private String apiKey;
     }
 
     @Data

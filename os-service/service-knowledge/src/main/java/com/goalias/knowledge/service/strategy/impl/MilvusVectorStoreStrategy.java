@@ -124,7 +124,7 @@ public class MilvusVectorStoreStrategy extends AbstractVectorStoreStrategy {
 
     @Override
     @SneakyThrows
-    public void removeById(String id, String modelName) {
+    public void removeByKid(String id, String modelName) {
         // 注意：此处原逻辑使用 collectionname + id，保持现状
         EmbeddingStore<TextSegment> embeddingStore = getMilvusStore(vectorStoreProperties.getMilvus().getCollectionname() + id, false);
         embeddingStore.remove(id);

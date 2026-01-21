@@ -224,12 +224,13 @@ knowledge-role:
 
 # 向量库配置
 vector-store:
-  # 向量存储类型 可选(pinecore/milvus)
-  type: pinecore
+  # 向量存储类型 可选(pinecone/milvus)
+  type: pinecone
 
-  # PineCore配置
-  pinecore:
-    url:
+  # Pinecone配置
+  pinecone:
+    index: test
+    apiKey: ${PINECONE_API_KEY}
   # Milvus配置
   milvus:
     url: http://localhost:19530
