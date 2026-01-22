@@ -13,8 +13,7 @@ import com.goalias.common.core.validate.EditGroup;
  * 提示词模板业务对象 prompt_template
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PromptTemplateBo extends BaseEntity {

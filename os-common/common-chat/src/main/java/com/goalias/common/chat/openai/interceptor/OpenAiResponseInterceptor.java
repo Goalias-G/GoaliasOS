@@ -16,8 +16,7 @@ import java.util.Objects;
  *  openai 返回值处理Interceptor
  *
  * @author Goalias
- * @since  2023-03-23
- */
+ * @since 2026-01-22 */
 @Slf4j
 public class OpenAiResponseInterceptor implements Interceptor {
     @Override

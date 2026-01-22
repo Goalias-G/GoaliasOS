@@ -359,8 +359,7 @@ public interface RedisService {
      * @param values
      * @return {@link Long}
      * @auther apecode
- * @since 2026-01-16
-    */
+ * @since 2026-01-22    */
     Long lPushAll(String key, Long time, Object... values);
 
     /**
@@ -410,8 +409,7 @@ public interface RedisService {
      * @param key
      * @return {@link byte}
      * @auther apecode
- * @since 2026-01-16
-    */
+ * @since 2026-01-22    */
     byte[] bitGetAll(String key);
 
     /**

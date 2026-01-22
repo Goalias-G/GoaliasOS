@@ -15,8 +15,7 @@ import java.util.List;
  *  ： chat模型附带图片的参数
  *
  * @author Goalias
- * @since 1.1.2
- * 2023-11-10
+ * @since 2026-01-22 * 2023-11-10
  */
 @Data
 @SuperBuilder

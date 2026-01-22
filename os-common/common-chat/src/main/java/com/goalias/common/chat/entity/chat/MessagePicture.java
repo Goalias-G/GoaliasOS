@@ -12,8 +12,7 @@ import java.util.List;
 
 /**
  * @author Goalias
- * @since 2023-03-02
- */
+ * @since 2026-01-22 */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

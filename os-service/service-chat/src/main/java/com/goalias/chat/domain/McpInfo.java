@@ -11,8 +11,7 @@ import lombok.EqualsAndHashCode;
  * MCP对象 mcp_info
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("mcp_info")

@@ -10,8 +10,7 @@ import org.apache.ibatis.annotations.Param;
  * 知识库Mapper接口
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Mapper
 public interface KnowledgeInfoMapper extends BaseMapper<KnowledgeInfo> {
 

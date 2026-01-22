@@ -219,9 +219,6 @@ spring:
       api-key: sk-xx
       base-url: https://api.pandarobot.chat/
 
-knowledge-role:
-  enable: false
-
 # 向量库配置
 vector-store:
   # 向量存储类型 可选(pinecone/milvus)

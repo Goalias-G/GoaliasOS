@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  *
  * @author Goalias
- * @since 1.1.2
- * 2023-11-10
+ * @since 2026-01-22 * 2023-11-10
  */
 @Data
 @Builder

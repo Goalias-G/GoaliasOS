@@ -14,8 +14,7 @@ import java.util.Set;
 
 /**
  * @author Goalias
- * @since 2026-01-16
- * @apiNote: OpenAi嵌入模型
+ * @since 2026-01-22 * @apiNote: OpenAi嵌入模型
  */
 @Component("openai")
 public class OpenAiEmbeddingProvider implements BaseEmbedModelService {

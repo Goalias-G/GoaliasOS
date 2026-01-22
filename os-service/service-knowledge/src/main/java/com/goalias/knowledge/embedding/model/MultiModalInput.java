@@ -7,8 +7,7 @@ import lombok.Data;
 
 /**
  * @author Goalias
- * @since 2026-01-16
- * @apiNote: 多模态输入
+ * @since 2026-01-22 * @apiNote: 多模态输入
  */
 @Data
 @Builder

@@ -11,8 +11,7 @@ import java.math.BigDecimal;
  * 余额查询接口返回值
  *
  * @author Goalias
- * @since 2023-03-18
- */
+ * @since 2026-01-22 */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreditGrantsResponse implements Serializable {

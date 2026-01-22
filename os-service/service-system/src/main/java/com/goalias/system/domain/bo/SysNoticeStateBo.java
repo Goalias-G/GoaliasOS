@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
  * 用户阅读状态业务对象 sys_notice_state
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class SysNoticeStateBo extends BaseEntity {

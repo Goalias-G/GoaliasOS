@@ -10,8 +10,7 @@ import java.util.List;
  * 金额消耗列表
  *
  * @author Goalias
- * @since 2023-04-08
- */
+ * @since 2026-01-22 */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DailyCost {

@@ -16,8 +16,7 @@ import java.io.Serializable;
  * 用户token使用记录
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @TableName("chat_usage_token")
 public class ChatToken implements Serializable {

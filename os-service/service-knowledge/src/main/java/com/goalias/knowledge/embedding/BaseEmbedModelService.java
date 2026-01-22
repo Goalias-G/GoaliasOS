@@ -1,7 +1,6 @@
 package com.goalias.knowledge.embedding;
 
 import com.goalias.chat.domain.ChatModel;
-import com.goalias.chat.domain.vo.ChatModelVo;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import com.goalias.knowledge.embedding.model.ModalityType;
 

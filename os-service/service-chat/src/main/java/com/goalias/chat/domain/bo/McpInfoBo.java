@@ -9,8 +9,7 @@ import java.io.Serializable;
  * MCP业务对象 mcp_info
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 
 public class McpInfoBo implements Serializable {

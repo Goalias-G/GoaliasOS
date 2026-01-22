@@ -10,8 +10,7 @@ import java.io.Serializable;
  *  语音转文字
  *
  * @author Goalias
- * @since 2023-03-02
- */
+ * @since 2026-01-22 */
 @Data
 public class Whisper implements Serializable {
 

@@ -8,8 +8,7 @@ import java.util.Map;
 
 /**
  * @author Goalias
- * @since 2026-01-16
- * @apiNote: 阿里云多模态嵌入请求
+ * @since 2026-01-22 * @apiNote: 阿里云多模态嵌入请求
  */
 @Data
 public class AliyunMultiModalEmbedRequest {

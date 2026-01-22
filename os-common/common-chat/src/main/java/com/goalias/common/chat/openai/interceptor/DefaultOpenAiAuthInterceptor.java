@@ -12,8 +12,7 @@ import java.util.Map;
  *  请求增加header apikey
  *
  * @author Goalias
- * @since 2023-03-23
- */
+ * @since 2026-01-22 */
 @Slf4j
 public class DefaultOpenAiAuthInterceptor extends OpenAiAuthInterceptor {
     /**

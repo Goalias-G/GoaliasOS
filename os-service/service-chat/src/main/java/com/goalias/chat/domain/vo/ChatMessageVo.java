@@ -12,8 +12,7 @@ import java.util.Date;
  * 聊天消息视图对象 chat_message
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 public class ChatMessageVo implements Serializable {
 

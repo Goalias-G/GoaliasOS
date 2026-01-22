@@ -14,8 +14,7 @@ import java.util.Map;
  * chat模型基础类
  *
  * @author Goalias
- * @since 1.1.2
- * 2023-11-10
+ * @since 2026-01-22 * 2023-11-10
  */
 @Data
 @SuperBuilder
@@ -31,8 +30,7 @@ public class BaseChatCompletion implements Serializable {
     /**
      * 指定模型必须输出的格式的对象。
      *
-     * @since 1.1.2
-     */
+ * @since 2026-01-22     */
     @JsonProperty("response_format")
     private ResponseFormat responseFormat;
 
@@ -61,15 +59,13 @@ public class BaseChatCompletion implements Serializable {
      * 模型可能调用的工具列表。
      * 当前版本仅支持：functions
      *
-     * @since 1.1.2
-     */
+ * @since 2026-01-22     */
     private List<Tools> tools;
 
     /**
      * 取值：String或者ToolChoiceObj
      *
-     * @since 1.1.2
-     */
+ * @since 2026-01-22     */
     @JsonProperty("tool_choice")
     private Object toolChoice;
 
@@ -135,8 +131,7 @@ public class BaseChatCompletion implements Serializable {
     private String user;
 
     /**
-     * @since 1.1.2
-     */
+ * @since 2026-01-22     */
     private Integer seed;
 
 

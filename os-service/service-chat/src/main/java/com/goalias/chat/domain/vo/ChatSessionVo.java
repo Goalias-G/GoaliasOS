@@ -11,8 +11,7 @@ import java.io.Serializable;
  * 会话管理视图对象 chat_session
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 public class ChatSessionVo implements Serializable {
 

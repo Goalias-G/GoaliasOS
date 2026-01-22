@@ -8,8 +8,7 @@ import java.time.LocalDate;
  * openKey信息
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Getter
 @Setter
 @AllArgsConstructor

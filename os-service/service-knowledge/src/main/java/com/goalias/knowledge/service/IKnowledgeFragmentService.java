@@ -13,8 +13,7 @@ import java.util.List;
  * 知识片段Service接口
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 public interface IKnowledgeFragmentService {
 
     /**

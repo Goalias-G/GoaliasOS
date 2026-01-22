@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
  *  动态处理key的鉴权拦截器
  *
  * @author Goalias
- * @since 2023-04-25
- */
+ * @since 2026-01-22 */
 @Getter
 @Slf4j
 public class DynamicKeyOpenAiAuthInterceptor extends OpenAiAuthInterceptor {

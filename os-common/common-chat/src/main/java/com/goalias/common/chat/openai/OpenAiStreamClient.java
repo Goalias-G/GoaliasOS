@@ -61,7 +61,7 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Slf4j
 @Setter
-public class OpenAiStreamClient {
+public class OpenAiStreamClient {//用于语音 文字 互转
 
     @NotNull
     private List<String> apiKey;
@@ -336,8 +336,7 @@ public class OpenAiStreamClient {
      *
      * @param key
      * @return KeyInfo
- * @since 2026-01-16
-     **/
+ * @since 2026-01-22     **/
     public KeyInfo getKeyInfo(String key) {
         Date now = new Date();
         Date start = new Date(now.getTime() - (long) 90 * 24 * 60 * 60 * 1000);
@@ -368,8 +367,7 @@ public class OpenAiStreamClient {
      *
      * @param
      * @return String
- * @since 2026-01-16
-     **/
+ * @since 2026-01-22     **/
     public String getModelName() {
         Single<ModelResponse> models = this.openAiApi.models();
         List<Model> modelList = models.blockingGet().getData();
@@ -462,8 +460,7 @@ public class OpenAiStreamClient {
      *
      * @param textToSpeech 参数
      * @param callback     返回值接收
-     * @since 1.1.2
-     */
+ * @since 2026-01-22     */
     public void textToSpeech(TextToSpeech textToSpeech, retrofit2.Callback callback) {
         Call<ResponseBody> responseBody = this.openAiApi.textToSpeech(textToSpeech);
         responseBody.enqueue(callback);
@@ -473,8 +470,7 @@ public class OpenAiStreamClient {
      * 文本转语音（同步）
      *
      * @param textToSpeech 参数
-     * @since 1.1.3
-     */
+ * @since 2026-01-22     */
     public ResponseBody textToSpeech(TextToSpeech textToSpeech){
         try {
             Call<ResponseBody> responseBody = this.openAiApi.textToSpeech(textToSpeech);

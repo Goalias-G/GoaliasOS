@@ -14,8 +14,7 @@ import java.math.BigDecimal;
  * 支付订单业务对象 chat_pay_order
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ChatPayOrderBo extends BaseEntity {

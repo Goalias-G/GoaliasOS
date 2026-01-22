@@ -59,8 +59,7 @@ import java.util.concurrent.TimeUnit;
  *   open ai 客户端
  *
  * @author Goalias
- * @since 2023-02-11
- */
+ * @since 2026-01-22 */
 
 @Slf4j
 public class OpenAiClient {

@@ -15,8 +15,7 @@ import java.io.Serial;
  * 聊天模型对象 chat_model
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("chat_model")

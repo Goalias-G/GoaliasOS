@@ -9,8 +9,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 用户token使用详情Mapper接口
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Mapper
 public interface ChatUsageTokenMapper extends BaseMapper<ChatUsageToken> {
 

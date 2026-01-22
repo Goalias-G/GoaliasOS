@@ -9,8 +9,7 @@ import java.io.Serializable;
 /**
  *
  * @author Goalias
- * @since 2023-03-02
- */
+ * @since 2026-01-22 */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ChatChoice implements Serializable {

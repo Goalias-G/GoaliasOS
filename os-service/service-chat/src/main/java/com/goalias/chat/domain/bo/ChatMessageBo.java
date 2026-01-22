@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
  * 聊天消息业务对象 chat_message
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ChatMessageBo extends BaseEntity {

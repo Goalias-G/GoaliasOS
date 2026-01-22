@@ -347,8 +347,7 @@ public interface OpenAiApi {
      *
      * @param textToSpeech 参数
      * @return ResponseBody body
-     * @since 1.1.2
-     */
+ * @since 2026-01-22     */
     @POST("v1/audio/speech")
     @Streaming
     Call<ResponseBody> textToSpeech(@Body TextToSpeech textToSpeech);

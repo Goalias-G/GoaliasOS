@@ -11,8 +11,7 @@ import lombok.EqualsAndHashCode;
  * 提示词模板对象 prompt_template
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("prompt_template")

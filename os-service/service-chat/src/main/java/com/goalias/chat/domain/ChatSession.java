@@ -13,8 +13,7 @@ import java.io.Serial;
  * 会话管理对象 chat_session
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("chat_session")

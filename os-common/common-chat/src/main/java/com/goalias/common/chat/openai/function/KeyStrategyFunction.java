@@ -8,8 +8,7 @@ import java.util.function.Function;
  * @see Function
  *
  * @author Goalias
- * @since 2023-04-03
- */
+ * @since 2026-01-22 */
 @FunctionalInterface
 public interface KeyStrategyFunction<T, R> {
 

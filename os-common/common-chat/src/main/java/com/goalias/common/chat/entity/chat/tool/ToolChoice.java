@@ -10,8 +10,7 @@ import java.io.Serializable;
  * choice和object同时存在是以object为准
  *
  * @author Goalias
- * @since 1.1.2
- * 2023-11-09
+ * @since 2026-01-22 * 2023-11-09
  */
 @Data
 public class ToolChoice implements Serializable {

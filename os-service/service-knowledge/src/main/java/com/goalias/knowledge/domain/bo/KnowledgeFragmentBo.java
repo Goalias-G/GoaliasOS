@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
  * 知识片段业务对象 knowledge_fragment
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class KnowledgeFragmentBo extends BaseEntity {

@@ -12,8 +12,7 @@ import java.util.List;
  * 提示词模板Service接口
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 public interface IPromptTemplateService {
 
     /**

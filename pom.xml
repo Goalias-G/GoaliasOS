@@ -10,7 +10,9 @@
 
     <name>GoaliasOS</name>
     <url>https://github.com/Goalias-G/GoaliasOS</url>
-    <description>GoaliasOS | 一个以“个人成长”为核心的操作系统式生活管理服务。在这里，目标是进程，习惯是服务，反思是日志，成长是不断迭代的内核！</description>
+    <description>GoaliasOS |
+        一个以“个人成长”为核心的操作系统式生活管理服务。在这里，目标是进程，习惯是服务，反思是日志，成长是不断迭代的内核！
+    </description>
 
     <modules>
         <module>os-startup</module>
@@ -24,14 +26,11 @@
     <properties>
         <version>1.0.0</version>
         <spring-boot.version>3.4.4</spring-boot.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-ai.version>1.0.0-M7</spring-ai.version>
         <java.version>17</java.version>
         <mysql.version>8.0.33</mysql.version>
         <mybatis.version>3.5.16</mybatis.version>
         <poi.version>5.2.3</poi.version>
-        <easyexcel.version>3.2.1</easyexcel.version>
-<!--        <velocity.version>2.3</velocity.version>-->
         <satoken.version>1.34.0</satoken.version>
         <mybatis-plus.version>3.5.11</mybatis-plus.version>
         <hutool.version>5.8.35</hutool.version>
@@ -47,6 +46,8 @@
         <!-- 插件版本 -->
         <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
         <maven-compiler-plugin.verison>3.11.0</maven-compiler-plugin.verison>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <profiles>
@@ -82,6 +83,12 @@
 
             <dependency>
                 <groupId>com.goalias</groupId>
+                <artifactId>web-chat</artifactId>
+                <version>${version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.goalias</groupId>
                 <artifactId>service-system</artifactId>
                 <version>${version}</version>
             </dependency>
@@ -98,12 +105,6 @@
                 <version>${version}</version>
             </dependency>
 
-            <!--            <dependency>-->
-            <!--                <groupId>com.goalias</groupId>-->
-            <!--                <artifactId>workflow-api</artifactId>-->
-            <!--                <version>${version}</version>-->
-            <!--            </dependency>-->
-
             <dependency>
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
@@ -115,6 +116,14 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>${spring-ai.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -152,17 +161,6 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>${easyexcel.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.poi</groupId>
-                        <artifactId>poi-ooxml-schemas</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- Sa-Token 权限认证, 在线文档：http://sa-token.dev33.cn/ -->
@@ -237,7 +235,6 @@
 
         </dependencies>
     </dependencyManagement>
-
 
 
     <build>

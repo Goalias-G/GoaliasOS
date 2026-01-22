@@ -12,8 +12,7 @@ import lombok.EqualsAndHashCode;
  * 知识库业务对象 knowledge_info
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class KnowledgeInfoBo extends BaseEntity {

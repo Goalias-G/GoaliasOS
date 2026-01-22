@@ -9,8 +9,7 @@ import java.util.List;
 /**
  *
  * @author Goalias
- * @since 2023-03-18
- */
+ * @since 2026-01-22 */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Grants {

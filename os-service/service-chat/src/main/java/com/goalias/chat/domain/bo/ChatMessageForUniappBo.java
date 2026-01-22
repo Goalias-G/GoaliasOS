@@ -15,8 +15,7 @@ import java.util.Map;
  * 聊天消息业务对象(uniapp) chat_message
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 public class ChatMessageForUniappBo implements Serializable {
 

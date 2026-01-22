@@ -22,8 +22,7 @@ import java.util.List;
  * }
  * </pre>
  * @author Goalias
- * @since  2023-06-14
- */
+ * @since 2026-01-22 */
 @Data
 @Builder
 public class Parameters implements Serializable {

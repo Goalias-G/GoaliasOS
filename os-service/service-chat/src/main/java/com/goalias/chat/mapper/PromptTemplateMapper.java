@@ -8,8 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 提示词模板Mapper接口
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Mapper
 public interface PromptTemplateMapper extends BaseMapper<PromptTemplate> {
 

@@ -13,8 +13,7 @@ import com.goalias.common.core.validate.EditGroup;
  * 用户token使用详情业务对象 chat_usage_token
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ChatUsageTokenBo extends BaseEntity {

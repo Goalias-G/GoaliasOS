@@ -103,8 +103,7 @@ public interface ISysUserService {
     /**
      * 注册用户信息
      *
- * @since 2026-01-16
-     * @param user
+ * @since 2026-01-22     * @param user
      * @return SysUser
      **/
     SysUser registerUser(SysUserBo user);

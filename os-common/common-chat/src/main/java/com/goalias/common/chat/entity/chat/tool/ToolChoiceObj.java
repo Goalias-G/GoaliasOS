@@ -4,8 +4,7 @@ import lombok.*;
 
 /**
  * @author Goalias
- * @since 1.1.2
- * 2023-11-09
+ * @since 2026-01-22 * 2023-11-09
  */
 @Data
 @Builder

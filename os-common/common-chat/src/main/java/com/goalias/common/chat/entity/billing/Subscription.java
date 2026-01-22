@@ -7,8 +7,7 @@ import lombok.Data;
  * 账户信息
  *
  * @author Goalias
- * @since  2023-04-08
- */
+ * @since 2026-01-22 */
 @Data
 public class Subscription {
 

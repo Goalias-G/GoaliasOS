@@ -8,8 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
  * 会话管理Mapper接口
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Mapper
 public interface ChatSessionMapper extends BaseMapper<ChatSession> {
 

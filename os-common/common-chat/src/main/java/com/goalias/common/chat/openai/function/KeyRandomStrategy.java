@@ -8,8 +8,7 @@ import java.util.List;
  *  随机策略
  *
  * @author Goalias
- * @since 2023-04-03
- */
+ * @since 2026-01-22 */
 public class KeyRandomStrategy implements KeyStrategyFunction<List<String>, String> {
 
     @Override

@@ -10,8 +10,7 @@ import com.goalias.common.core.validate.EditGroup;
  * 会话管理业务对象 chat_session
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ChatSessionBo extends BaseEntity {

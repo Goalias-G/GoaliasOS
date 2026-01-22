@@ -13,8 +13,7 @@ import java.io.Serial;
  * 知识片段对象 knowledge_fragment
  *
  * @author Goalias
- * @since 2026-01-16
- */
+ * @since 2026-01-22 */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("knowledge_fragment")

@@ -3,8 +3,7 @@ package com.goalias.common.chat.constant;
 /**
  *
  * @author Goalias
- * @since  2023-03-06
- */
+ * @since 2026-01-22 */
 public class OpenAIConst {
 
     public final static String OPENAI_HOST = "https://api.openai.com/";

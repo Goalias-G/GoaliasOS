@@ -45,8 +45,7 @@ import java.util.*;
  * 知识库Service业务层处理
  *
  * @author Goalias
- * @date 2025-04-08
- */
+ * @since 2026-01-22 */
 @RequiredArgsConstructor
 @Service
 public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
