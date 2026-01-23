@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Objects;
 
 
 /**
@@ -52,10 +53,6 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
      */
     @Override
     public void deductToken(ChatRequest chatRequest) {
-        if (chatRequest.getUserId() == null) {
-            log.warn("deductToken->用户ID为空，跳过计费");
-            return;
-        }
 
 //        int tokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
 //        log.debug("deductToken->本次提交token数: {}", tokens);
@@ -67,17 +64,17 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
 
         // 按次计费：每次调用都直接扣费，不累计token
         if (BillingType.TIMES.getCode().equals(chatModel.getModelType())) {
-            BigDecimal numberCost = unitPrice.setScale(2, RoundingMode.HALF_UP);
+            BigDecimal numberCost = BigDecimal.valueOf(1);
             deductUserBalance(chatRequest.getUserId(), numberCost.doubleValue());
             log.debug("deductToken->按次数扣费，费用: {}，模型: {}", numberCost, modelName);
 
             // 清理可能存在的历史累计token（模型计费方式可能发生过变更）
-            ChatUsageToken existingToken = chatTokenService.queryByUserId(chatRequest.getUserId(), modelName);
+/*            ChatUsageToken existingToken = chatTokenService.queryByUserId(chatRequest.getUserId(), modelName);
             if (existingToken != null && existingToken.getToken() > 0) {
                 existingToken.setToken(0);
                 chatTokenService.editToken(existingToken);
                 log.debug("deductToken->按次计费，清理历史累计token: {}", existingToken.getToken());
-            }
+            }*/
 
             // 更新消息的计费信息到备注
             updateMessageBilling(chatRequest, tokens, numberCost.doubleValue(), chatModel.getModelType());
@@ -210,18 +207,14 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
      * 预检查用户余额是否足够支付可能的费用
      */
     private void preCheckBalance(ChatRequest chatRequest) {
-        if (chatRequest.getUserId() == null) {
-            return;
-        }
 
         String modelName = chatRequest.getModel();
         ChatModel chatModel = chatModelService.selectModelByName(modelName);
-        BigDecimal unitPrice = BigDecimal.valueOf(chatModel.getModelPrice());
+        BigDecimal unitPrice = BigDecimal.valueOf(chatModel.getModelPrice());//百万Token 单价
 
-        // 按次计费：直接检查单次费用
+        // 按次计费：直接检查单次费用 (系统只按次计费)
         if (BillingType.TIMES.getCode().equals(chatModel.getModelType())) {
-            BigDecimal numberCost = unitPrice.setScale(2, RoundingMode.HALF_UP);
-            checkUserBalanceWithoutDeduct(chatRequest.getUserId(), numberCost.doubleValue());
+            checkUserTimesWithoutDeduct(chatRequest.getUserId());
             return;
         }
 
@@ -249,17 +242,27 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
      */
     private void checkUserBalanceWithoutDeduct(Long userId, Double numberCost) {
         SysUser sysUser = sysUserMapper.selectById(userId);
-        if (sysUser == null) {
+        if (Objects.isNull(sysUser)) {
             throw new ServiceException("用户不存在");
         }
 
-        BigDecimal userBalance = BigDecimal.valueOf(sysUser.getUserBalance() == null ? 0D : sysUser.getUserBalance())
+        BigDecimal userBalance = BigDecimal.valueOf(Objects.isNull(sysUser.getUserBalance()) ? 0D : sysUser.getUserBalance())
             .setScale(2, RoundingMode.HALF_UP);
         BigDecimal cost = BigDecimal.valueOf(numberCost == null ? 0D : numberCost)
             .setScale(2, RoundingMode.HALF_UP);
 
         if (userBalance.compareTo(cost) < 0 || userBalance.compareTo(BigDecimal.ZERO) == 0) {
             throw new ServiceException("余额不足, 请充值。当前余额: " + userBalance + "，需要: " + cost);
+        }
+    }
+
+    private void checkUserTimesWithoutDeduct(Long userId) {
+        SysUser loginUser = sysUserMapper.selectById(userId);
+        if (Objects.isNull(loginUser)) {
+            throw new SecurityException("用户未登录!");
+        }
+        if (loginUser.getUserBalance() <= 0) {
+            throw new ServiceException("余额不足, 请充值。当前余额: " + loginUser.getUserBalance());
         }
     }
 
@@ -354,9 +357,6 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
     public void deductUserBalance(Long userId, Double numberCost) {
 
         SysUser sysUser = sysUserMapper.selectById(userId);
-        if (sysUser == null) {
-            return;
-        }
 
         BigDecimal userBalance = BigDecimal.valueOf(sysUser.getUserBalance() == null ? 0D : sysUser.getUserBalance())
             .setScale(2, RoundingMode.HALF_UP);
@@ -429,10 +429,6 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
      */
     @Override
     public boolean checkBalanceSufficient(ChatRequest chatRequest) {
-        if (chatRequest.getUserId() == null) {
-            log.warn("当前未登录");
-            return true;
-        }
 
         try {
             // 重用现有的预检查逻辑，但不抛异常，只返回boolean

@@ -2,14 +2,13 @@ package com.goalias.chat.chat.controller.chat;
 
 
 import com.goalias.chat.chat.service.ISseService;
+import com.goalias.common.chat.entity.Tts.TextToSpeech;
+import com.goalias.common.chat.entity.whisper.WhisperResponse;
+import com.goalias.common.chat.request.ChatRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.goalias.common.chat.entity.Tts.TextToSpeech;
-import com.goalias.common.chat.entity.files.UploadFileResponse;
-import com.goalias.common.chat.entity.whisper.WhisperResponse;
-import com.goalias.common.chat.request.ChatRequest;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,15 +39,6 @@ public class ChatController {
         return sseService.sseChat(chatRequest,request);
     }
 
-    /**
-     * 上传文件
-     */
-    @PostMapping("/upload")
-    @ResponseBody
-    public UploadFileResponse upload(@RequestPart("file") MultipartFile file) {
-        return sseService.upload(file);
-    }
-
 
     /**
      * 语音转文本
@@ -58,8 +48,10 @@ public class ChatController {
     @PostMapping("/audio")
     @ResponseBody
     public WhisperResponse audio(@RequestParam("file") MultipartFile file) {
-        return sseService.speechToTextTranscriptionsV2(file);
+//        return sseService.speechToTextTranscriptionsV2(file);
+        return null;
     }
+
 
     /**
      * 文本转语音
@@ -69,7 +61,8 @@ public class ChatController {
     @PostMapping("/speech")
     @ResponseBody
     public ResponseEntity<Resource> speech(@RequestBody TextToSpeech textToSpeech) {
-        return sseService.textToSpeed(textToSpeech);
+//        return sseService.textToSpeed(textToSpeech);
+        return null;
     }
 
 }

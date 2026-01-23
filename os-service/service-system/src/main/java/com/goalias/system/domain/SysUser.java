@@ -127,14 +127,4 @@ public class SysUser extends BaseEntity {
         return LoginHelper.isSuperAdmin(this.userId);
     }
 
-    /**
-     * 知识库角色组类型（role/roleGroup）
-     */
-    private String kroleGroupType;
-
-    /**
-     * 知识库角色组id（role/roleGroup）
-     */
-    private String kroleGroupIds;
-
 }

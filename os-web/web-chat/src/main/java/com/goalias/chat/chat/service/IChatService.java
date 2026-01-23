@@ -51,7 +51,7 @@ public interface IChatService {
     }
 
     /**
-     * 获取此服务支持的模型类别
+     * 获取此服务支持的模型服务商
      */
-    String getCategory();
+    String getProviderName();
 }

@@ -83,15 +83,7 @@ public class LoginUser implements Serializable {
      */
     private String avatar;
 
-    /**
-     * 关联角色类型
-     */
-    private String kroleGroupType;
-
-    /**
-     * 关联角色id
-     */
-    private String kroleGroupIds;
+    private Double userBalance;
 
     /**
      * 获取登录id

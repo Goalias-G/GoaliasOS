@@ -7,7 +7,7 @@ import com.goalias.common.chat.entity.chat.Message;
 import java.util.List;
 
 /**
- *  对话请求对象
+ * 对话请求对象
  *
  * @author Goalias
  * @sine 2023-04-08
@@ -22,13 +22,13 @@ public class ChatRequest {
     private String model;
 
     /**
-     * 提示词
+     * 提示词(自动填充)
      */
     private String prompt;
 
 
     /**
-     * 系统提示词
+     * 系统提示词(自动填充)
      */
     private String sysPrompt;
 
@@ -93,5 +93,18 @@ public class ChatRequest {
      * 会话令牌（为避免在非Web线程中获取Request，入口处注入）
      */
     private String token;
+
+    /**
+     * 采样温度，取值范围[0,2]
+     * 控制随机性强度
+     */
+    private Float temperature = 0.7f;
+
+    /**
+     * 模型采样概率，取值范围[0,1]
+     * P=0.1 → 高确定性（只选高概率词）
+     * P=0.9 → 高多样性（包含更多低概率词）
+     */
+    private Double topP = 0.9;
 
 }

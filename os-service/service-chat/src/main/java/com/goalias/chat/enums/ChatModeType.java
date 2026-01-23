@@ -4,22 +4,19 @@ import lombok.Getter;
 
 @Getter
 public enum ChatModeType {
-    OLLAMA("ollama", "本地部署模型"),
     CHAT("chat", "中转模型"),
-    DIFY("dify", "DIFY"),
     COZE("coze", "扣子"),
 
     ZHIPU("zhipu", "智谱清言"),
 
     DEEPSEEK("deepseek", "深度求索"),
 
-    QIANWEN("qianwen", "通义千问"),
+    QIANWEN("alibailian", "通义千问"),
 
     VECTOR("vector", "知识库向量模型"),
 
     IMAGE("image", "图片识别模型"),
-
-    FASTGPT("fastgpt", "FASTGPT");
+    ;
 
     private final String code;
     private final String description;

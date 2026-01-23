@@ -16,16 +16,10 @@ import com.goalias.chat.enums.promptTemplateEnum;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.chat.service.IChatSessionService;
 import com.goalias.chat.service.IPromptTemplateService;
-import com.goalias.common.chat.entity.Tts.TextToSpeech;
 import com.goalias.common.chat.entity.chat.Message;
-import com.goalias.common.chat.entity.files.UploadFileResponse;
-import com.goalias.common.chat.entity.whisper.WhisperResponse;
-import com.goalias.common.chat.openai.OpenAiStreamClient;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.utils.DateUtils;
 import com.goalias.common.core.utils.StringUtils;
-import com.goalias.common.core.utils.file.FileUtils;
-import com.goalias.common.core.utils.file.MimeTypeUtils;
 import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.knowledge.domain.KnowledgeInfo;
 import com.goalias.knowledge.domain.bo.QueryVectorBo;
@@ -34,11 +28,6 @@ import com.goalias.knowledge.service.VectorStoreService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.ResponseBody;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -51,7 +40,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author Goalias
@@ -60,8 +48,6 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class SseServiceImpl implements ISseService {
-
-    private final Optional<OpenAiStreamClient> openAiStreamClient;
 
     private final VectorStoreService vectorStoreService;
 
@@ -118,7 +104,7 @@ public class SseServiceImpl implements ISseService {
             IChatService chatService = autoSelectModelAndGetService(chatRequest);
 
             // 用户消息只保存不计费，AI回复由BillingChatServiceProxy自动处理计费
-            // chatCostService.publishBillingEvent(chatRequest); // 用户输入不计费
+//             chatCostService.publishBillingEvent(chatRequest); // 用户输入不计费
             if (Boolean.TRUE.equals(chatRequest.getAutoSelectModel())) {
                 ChatModel currentModel = this.chatModel;
                 String currentCategory = currentModel.getCategory();
@@ -134,7 +120,7 @@ public class SseServiceImpl implements ISseService {
                             RetryNotifier.setFailureCallback(sseEmitter, onFailure);
                             try {
                                 autoSelectServiceByCategoryAndInvoke(chatRequest, sseEmitter,
-                                        modelForTry.getCategory());
+                                        modelForTry.getProviderName());
                             } finally {
                                 // 不在此处清理，待下游结束/失败时清理
                             }
@@ -170,7 +156,7 @@ public class SseServiceImpl implements ISseService {
             // 自动设置请求参数中的模型名称
             chatRequest.setModel(chatModel.getModelName());
             // 直接返回对应的聊天服务
-            return chatServiceFactory.getChatService(chatModel.getCategory());
+            return chatServiceFactory.getChatService(chatModel.getProviderName());
         } catch (Exception e) {
             log.error("模型选择和服务获取失败: {}", e.getMessage(), e);
             throw new IllegalStateException("模型选择和服务获取失败: " + e.getMessage());
@@ -180,8 +166,8 @@ public class SseServiceImpl implements ISseService {
     /**
      * 根据给定分类获取服务并发起调用（避免在降级时重复选择模型）
      */
-    private void autoSelectServiceByCategoryAndInvoke(ChatRequest chatRequest, SseEmitter sseEmitter, String category) {
-        IChatService service = chatServiceFactory.getChatService(category);
+    private void autoSelectServiceByCategoryAndInvoke(ChatRequest chatRequest, SseEmitter sseEmitter, String providerName) {
+        IChatService service = chatServiceFactory.getChatService(providerName);
         service.chat(chatRequest, sseEmitter);
     }
 
@@ -250,22 +236,22 @@ public class SseServiceImpl implements ISseService {
      */
     private String processKnowledgeBase(ChatRequest chatRequest, List<Message> messages) {
         if (StringUtils.isEmpty(chatRequest.getKid())) {
-            return getPromptTemplatePrompt(promptTemplateEnum.VECTOR.getDesc());
+            return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
         }
 
         try {
             // 查询知识库信息
             KnowledgeInfo knowledgeInfo = knowledgeInfoService.queryById(Long.valueOf(chatRequest.getKid()));
-            if (knowledgeInfo == null) {
+            if (Objects.isNull(knowledgeInfo)) {
                 log.warn("知识库信息不存在，kid: {}", chatRequest.getKid());
-                return getPromptTemplatePrompt(promptTemplateEnum.VECTOR.getDesc());
+                return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
             }
 
             // 查询向量模型配置信息
             ChatModel chatModel = chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName());
-            if (chatModel == null) {
+            if (Objects.isNull(chatModel)) {
                 log.warn("向量模型配置不存在，模型名称: {}", knowledgeInfo.getEmbeddingModelName());
-                return getPromptTemplatePrompt(promptTemplateEnum.VECTOR.getDesc());
+                return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
             }
 
             // 构建向量查询参数
@@ -282,7 +268,7 @@ public class SseServiceImpl implements ISseService {
 
         } catch (Exception e) {
             log.error("处理知识库信息失败: {}", e.getMessage(), e);
-            return getPromptTemplatePrompt(promptTemplateEnum.VECTOR.getDesc());
+            return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
         }
     }
 
@@ -318,23 +304,6 @@ public class SseServiceImpl implements ISseService {
         }
     }
 
-    /**
-     * 获取知识库系统提示词
-     */
-    private String getKnowledgeSystemPrompt(KnowledgeInfo knowledgeInfo) {
-        String sysPrompt = knowledgeInfo.getSystemPrompt();
-        if (StringUtils.isEmpty(sysPrompt)) {
-            sysPrompt = "###角色设定\n" +
-                    "你是一个智能知识助手，专注于利用上下文中的信息来提供准确和相关的回答。\n" +
-                    "###指令\n" +
-                    "当用户的问题与上下文知识匹配时，利用上下文信息进行回答。如果问题与上下文不匹配，运用自身的推理能力生成合适的回答。\n" +
-                    "###限制\n" +
-                    "确保回答清晰简洁，避免提供不必要的细节。始终保持语气友好\n" +
-                    "当前时间：" + DateUtils.dateTimeNow();
-        }
-        return sysPrompt;
-    }
-
 
     /**
      * 获取提示词模板提示词
@@ -353,76 +322,30 @@ public class SseServiceImpl implements ISseService {
     private String getDefaultSystemPrompt() {
         String sysPrompt = chatModel != null ? chatModel.getSystemPrompt() : null;
         if (StringUtils.isEmpty(sysPrompt)) {
-            sysPrompt = "你是一个由RuoYI-AI开发的人工智能助手，名字叫RuoYI人工智能助手。"
+            sysPrompt = "你是一个由 Goalias(系统开发者英文名) 开发的 GoaliasOS 系统助手，名字叫 GoaliasOS AI。"
                     + "你擅长中英文对话，能够理解并处理各种问题，提供安全、有帮助、准确的回答。"
-                    + "当前时间：" + DateUtils.getDate()
+                    + "语言风格灵动、自然、幽默。"
+                    + "当前时间：" + DateUtils.dateTimeNow()
                     + "#注意：回复之前注意结合上下文和工具返回内容进行回复。";
         }
         return sysPrompt;
     }
 
-
     /**
-     * 文字转语音
+     * 获取知识库系统提示词
      */
-    @Override
-    public ResponseEntity<Resource> textToSpeed(TextToSpeech textToSpeech) {
-        if (openAiStreamClient.isEmpty()){
-            return ResponseEntity.notFound().build();
+    private String getKnowledgeSystemPrompt(KnowledgeInfo knowledgeInfo) {
+        String sysPrompt = knowledgeInfo.getSystemPrompt();
+        if (StringUtils.isEmpty(sysPrompt)) {
+            sysPrompt = "###角色设定\n" +
+                    "你是一个由 Goalias(系统开发者英文名) 开发的 GoaliasOS 系统助手，名字叫 GoaliasOS AI，专注于利用上下文中的信息来提供准确和相关的回答。\n" +
+                    "###指令\n" +
+                    "当用户的问题与上下文知识匹配时，利用上下文信息进行回答。如果问题与上下文不匹配，运用自身的推理能力生成合适的回答。\n" +
+                    "###限制\n" +
+                    "确保回答清晰简洁，避免提供不必要的细节。始终保持语气友好，语言风格灵动、自然、幽默。\n" +
+                    "当前时间：" + DateUtils.dateTimeNow();
         }
-        ResponseBody body = openAiStreamClient.get().textToSpeech(textToSpeech);
-        if (body != null) {
-            // 将ResponseBody转换为InputStreamResource
-            InputStreamResource resource = new InputStreamResource(body.byteStream());
-            // 创建并返回ResponseEntity
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType("audio/mpeg"))
-                    .body(resource);
-        } else {
-            // 如果ResponseBody为空，返回404状态码
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    /**
-     * 语音转文字
-     */
-    @Override
-    public WhisperResponse speechToTextTranscriptionsV2(MultipartFile file) {
-        if (openAiStreamClient.isEmpty()){
-            throw new RuntimeException("OpenAiStreamClient is unabled");
-        }
-        // 确保文件不为空
-        if (file.isEmpty()) {
-            throw new IllegalStateException("Cannot convert an empty MultipartFile");
-        }
-        if (!FileUtils.isValidFileExtention(file, MimeTypeUtils.AUDIO__EXTENSION)) {
-            throw new IllegalStateException("File Extention not supported");
-        }
-        // 创建一个文件对象
-        File fileA = new File(System.getProperty("java.io.tmpdir") + File.separator + file.getOriginalFilename());
-        try {
-            // 将 MultipartFile 的内容写入文件
-            file.transferTo(fileA);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to convert MultipartFile to File", e);
-        }
-        return openAiStreamClient.get().speechToTextTranscriptions(fileA);
-    }
-
-
-    @Override
-    public UploadFileResponse upload(MultipartFile file) {
-        if (openAiStreamClient.isEmpty()){
-            throw new RuntimeException("OpenAiStreamClient is unabled");
-        }
-        if (file.isEmpty()) {
-            throw new IllegalStateException("Cannot upload an empty MultipartFile");
-        }
-        if (!FileUtils.isValidFileExtention(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION)) {
-            throw new IllegalStateException("File Extention not supported");
-        }
-        return openAiStreamClient.get().uploadFile("fine-tune", convertMultiPartToFile(file));
+        return sysPrompt;
     }
 
     private File convertMultiPartToFile(MultipartFile multipartFile) {

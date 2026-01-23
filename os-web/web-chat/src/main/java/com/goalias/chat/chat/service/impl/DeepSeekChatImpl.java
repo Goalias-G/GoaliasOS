@@ -353,7 +353,7 @@ public class DeepSeekChatImpl  implements IChatService {
 
 
     @Override
-    public String getCategory() {
+    public String getProviderName() {
         return ChatModeType.DEEPSEEK.getCode();
     }
 }

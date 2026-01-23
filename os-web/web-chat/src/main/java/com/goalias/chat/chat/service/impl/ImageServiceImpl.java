@@ -1,18 +1,16 @@
 package com.goalias.chat.chat.service.impl;
 
-import com.goalias.chat.chat.config.ChatConfig;
 import com.goalias.chat.chat.listener.SSEEventSourceListener;
 import com.goalias.chat.chat.service.IChatService;
 import com.goalias.chat.chat.support.ChatServiceHelper;
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.enums.ChatModeType;
 import com.goalias.chat.service.IChatModelService;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import com.goalias.common.chat.entity.chat.ChatCompletion;
 import com.goalias.common.chat.entity.chat.Message;
-import com.goalias.common.chat.openai.OpenAiStreamClient;
 import com.goalias.common.chat.request.ChatRequest;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -125,7 +123,6 @@ public class ImageServiceImpl implements IChatService {
         }
 
         // 创建 OpenAI 流客户端
-        OpenAiStreamClient openAiStreamClient = ChatConfig.createOpenAiStreamClient(chatModel.getApiHost(), chatModel.getApiKey());
         List<Message> messages = chatRequest.getMessages();
 
         // 获取会话token（从入口透传，避免非Web线程取值报错）
@@ -143,7 +140,7 @@ public class ImageServiceImpl implements IChatService {
 
         // 发起流式聊天完成请求
         try {
-            openAiStreamClient.streamChatCompletion(completion, listener);
+//            chat
         } catch (Exception ex) {
             ChatServiceHelper.onStreamError(emitter, ex.getMessage());
             throw ex;
@@ -153,7 +150,7 @@ public class ImageServiceImpl implements IChatService {
     }
 
     @Override
-    public String getCategory() {
+    public String getProviderName() {
         return ChatModeType.IMAGE.getCode();
     }
 }

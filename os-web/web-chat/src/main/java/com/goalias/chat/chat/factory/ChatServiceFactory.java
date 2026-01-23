@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -32,7 +33,7 @@ public class ChatServiceFactory  implements ApplicationContextAware {
         for (IChatService service : serviceMap.values()) {
             if (service != null && !isBillingProxy(service)) {
                 // 只收集非代理的原始服务
-                chatServiceMap.put(service.getCategory(), service);
+                chatServiceMap.put(service.getProviderName(), service);
             }
         }
     }
@@ -41,10 +42,10 @@ public class ChatServiceFactory  implements ApplicationContextAware {
      * 根据模型类别获取对应的聊天服务实现
      * 自动应用计费代理包装
      */
-    public IChatService getChatService(String category) {
-        IChatService originalService = chatServiceMap.get(category);
-        if (originalService == null) {
-            throw new IllegalArgumentException("不支持的模型类别: " + category);
+    public IChatService getChatService(String providerName) {
+        IChatService originalService = chatServiceMap.get(providerName);
+        if (Objects.isNull(originalService)) {
+            throw new IllegalArgumentException("不支持的模型服务商: " + providerName);
         }
 
         // 自动包装为计费代理
@@ -54,10 +55,10 @@ public class ChatServiceFactory  implements ApplicationContextAware {
     /**
      * 获取原始服务（不包装代理）
      */
-    public IChatService getOriginalService(String category) {
-        IChatService service = chatServiceMap.get(category);
+    public IChatService getOriginalService(String providerName) {
+        IChatService service = chatServiceMap.get(providerName);
         if (service == null) {
-            throw new IllegalArgumentException("不支持的模型类别: " + category);
+            throw new IllegalArgumentException("不支持的模型服务商: " + providerName);
         }
         return service;
     }

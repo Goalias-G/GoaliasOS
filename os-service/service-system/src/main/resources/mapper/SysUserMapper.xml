@@ -29,9 +29,7 @@
                u.login_date,
                u.create_by,
                u.create_time,
-               u.remark,
-               u.krole_group_type,
-               u.krole_group_ids
+               u.remark
         from sys_user u
     </sql>
 

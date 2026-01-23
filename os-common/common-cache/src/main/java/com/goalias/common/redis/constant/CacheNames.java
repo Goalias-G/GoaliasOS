@@ -31,7 +31,17 @@ public interface CacheNames {
      */
     String SYS_OSS = "sys_oss";
 
+     /**
+     * 知识库信息
+     */
     String KNOWLEDGE_INFO = "knowledge_info";
+
+    /**
+     * 聊天Token信息
+     */
+    String CHAT_TOKEN_INPUT = "chat_token_input:";
+
+    String CHAT_TOKEN_OUTPUT = "chat_token_output:";
 
 
 }

@@ -147,8 +147,7 @@ public class SysLoginService {
         loginUser.setNickName(user.getNickName());
         loginUser.setAvatar(user.getAvatar());
         loginUser.setUserType(user.getUserType());
-        loginUser.setKroleGroupIds(user.getKroleGroupIds());
-        loginUser.setKroleGroupType(user.getKroleGroupType());
+        loginUser.setUserBalance(user.getUserBalance());
         return loginUser;
     }
 

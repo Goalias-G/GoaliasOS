@@ -61,8 +61,8 @@ public class BillingChatServiceProxy implements IChatService {
     }
 
     @Override
-    public String getCategory() {
-        return delegate.getCategory();
+    public String getProviderName() {
+        return delegate.getProviderName();
     }
 
     /**
@@ -136,6 +136,7 @@ public class BillingChatServiceProxy implements IChatService {
                 aiChatRequest.setRole(Message.Role.ASSISTANT.getName());
                 aiChatRequest.setModel(chatRequest.getModel());
                 aiChatRequest.setPrompt(aiResponse);
+                aiChatRequest.setMessageId(chatRequest.getMessageId());
 
                 // 设置会话token供异步线程使用
                 if (chatRequest.getToken() != null) {

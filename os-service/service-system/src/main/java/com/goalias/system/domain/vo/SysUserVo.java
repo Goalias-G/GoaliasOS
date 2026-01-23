@@ -26,16 +26,6 @@ public class SysUserVo implements Serializable {
     private Long userId;
 
     /**
-     * 租户ID
-     */
-    private String tenantId;
-
-    /**
-     * 部门ID
-     */
-    private Long deptId;
-
-    /**
      * 用户账号
      */
     private String userName;
@@ -75,7 +65,6 @@ public class SysUserVo implements Serializable {
      */
     private String avatar;
 
-
     /**
      * 密码
      */
@@ -114,21 +103,6 @@ public class SysUserVo implements Serializable {
     private String domainName;
 
     /**
-     * 角色组
-     */
-    private Long[] roleIds;
-
-    /**
-     * 岗位组
-     */
-    private Long[] postIds;
-
-    /**
-     * 数据权限 当前角色ID
-     */
-    private Long roleId;
-
-    /**
      * 用户等级
      */
     private String userGrade;
@@ -138,13 +112,4 @@ public class SysUserVo implements Serializable {
      */
     private Double userBalance;
 
-    /**
-     * 知识库角色组类型（role/roleGroup）
-     */
-    private String kroleGroupType;
-
-    /**
-     * 知识库角色组id（role/roleGroup）
-     */
-    private String kroleGroupIds;
 }

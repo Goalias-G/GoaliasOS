@@ -24,27 +24,5 @@ public interface ISseService {
      */
     SseEmitter sseChat(ChatRequest chatRequest, HttpServletRequest request);
 
-    /**
-     * 语音转文字
-     * @param file 语音文件
-     */
-   WhisperResponse speechToTextTranscriptionsV2(MultipartFile file);
-
-    /**
-     * 文字转语音
-     *
-     * @param textToSpeech 文本信息
-     * @return 流式语音
-     */
-    ResponseEntity<Resource> textToSpeed(TextToSpeech textToSpeech);
-
-    /**
-     * 上传文件到服务器
-     *
-     * @param file 文件信息
-     * @return 返回文件信息
-     */
-    UploadFileResponse upload(MultipartFile file);
-
 
 }
