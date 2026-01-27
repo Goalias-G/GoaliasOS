@@ -16,7 +16,6 @@ import com.goalias.system.domain.request.UserRequest;
 import com.goalias.system.domain.vo.SysUserInfoVo;
 import com.goalias.system.domain.vo.SysUserOptionVo;
 import com.goalias.system.domain.vo.SysUserVo;
-import com.goalias.system.domain.vo.UserInfoVo;
 import com.goalias.system.service.ISysOssService;
 import com.goalias.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
@@ -76,12 +75,10 @@ public class SysUserController extends BaseController {
      * @return 用户信息
      */
     @GetMapping("/getInfo")
-    public R<UserInfoVo> getInfo() {
-        UserInfoVo userInfoVo = new UserInfoVo();
+    public R<SysUserVo> getInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
         SysUserVo user = userService.selectUserById(loginUser.getUserId());
-        userInfoVo.setUser(user);
-        return R.ok(userInfoVo);
+        return R.ok(user);
     }
 
     /**

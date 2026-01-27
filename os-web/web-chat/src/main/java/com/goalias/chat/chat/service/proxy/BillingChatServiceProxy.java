@@ -6,6 +6,7 @@ import com.goalias.chat.chat.service.IChatService;
 import com.goalias.chat.chat.support.BaseContext;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
+import com.goalias.common.core.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -17,7 +18,6 @@ import java.util.function.Consumer;
 /**
  * 统一计费代理类
  * 自动处理所有ChatService的AI回复保存和计费逻辑
- *
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class BillingChatServiceProxy implements IChatService {
         if (!chatCostService.checkBalanceSufficient(chatRequest)) {
             String errorMsg = "余额不足，无法使用AI服务，请充值后再试";
             log.warn("余额不足阻止AI回复，用户ID: {}, 模型: {}",
-                     chatRequest.getUserId(), chatRequest.getModel());
+                    chatRequest.getUserId(), chatRequest.getModel());
             try {
                 emitter.send(errorMsg);
                 emitter.complete();
@@ -46,17 +46,22 @@ public class BillingChatServiceProxy implements IChatService {
         }
 
         log.debug("余额检查通过，开始AI回复，用户ID: {}, 模型: {}",
-                  chatRequest.getUserId(), chatRequest.getModel());
+                chatRequest.getUserId(), chatRequest.getModel());
 
         // 创建增强的SseEmitter，自动收集AI回复
         BillingSseEmitter billingEmitter = new BillingSseEmitter(emitter, chatRequest, chatCostService);
 
         try {
             // 调用实际的聊天服务
+            if (StringUtils.isNotBlank(chatRequest.getToken())) {
+                BaseContext.setCurrentToken(chatRequest.getToken());
+            }
             return delegate.chat(chatRequest, billingEmitter);
         } catch (Exception e) {
             log.error("聊天服务执行失败", e);
             throw e;
+        } finally {
+            BaseContext.remove();
         }
     }
 
@@ -91,7 +96,6 @@ public class BillingChatServiceProxy implements IChatService {
             String content = extractContentFromSseData(object);
             if (content != null && !content.trim().isEmpty()) {
                 aiResponseBuilder.append(content);
-                log.debug("收集AI回复片段: {}", content);
             }
         }
 
@@ -127,7 +131,7 @@ public class BillingChatServiceProxy implements IChatService {
                 log.warn("AI回复内容为空，跳过保存和计费");
                 return;
             }
-
+            log.debug("保存AI完整回复内容：{}", aiResponse);
             try {
                 // 创建AI回复的ChatRequest
                 ChatRequest aiChatRequest = new ChatRequest();
@@ -138,11 +142,6 @@ public class BillingChatServiceProxy implements IChatService {
                 aiChatRequest.setPrompt(aiResponse);
                 aiChatRequest.setMessageId(chatRequest.getMessageId());
 
-                // 设置会话token供异步线程使用
-                if (chatRequest.getToken() != null) {
-                    BaseContext.setCurrentToken(chatRequest.getToken());
-                }
-
                 // 发布计费事件
                 chatCostService.publishBillingEvent(aiChatRequest);
 
@@ -151,11 +150,11 @@ public class BillingChatServiceProxy implements IChatService {
 
 
                 log.debug("AI回复保存和计费完成，用户ID: {}, 会话ID: {}, 回复长度: {}",
-                          chatRequest.getUserId(), chatRequest.getSessionId(), aiResponse.length());
+                        chatRequest.getUserId(), chatRequest.getSessionId(), aiResponse.length());
 
             } catch (Exception e) {
                 log.error("保存AI回复和计费失败，用户ID: {}, 会话ID: {}",
-                          chatRequest.getUserId(), chatRequest.getSessionId(), e);
+                        chatRequest.getUserId(), chatRequest.getSessionId(), e);
                 // 不抛出异常，避免影响用户体验
             }
         }
@@ -175,32 +174,15 @@ public class BillingChatServiceProxy implements IChatService {
             if (isControlSignal(dataStr)) {
                 return null;
             }
-            //TODO 选择策略
+
             // 策略1: 直接字符串内容（DeepSeek等简单格式）
             String directContent = extractDirectContent(dataStr);
             if (directContent != null) {
                 return directContent;
             }
 
-            // 策略2: 解析JSON格式（OpenAI兼容格式）
-            String jsonContent = extractJsonContent(dataStr);
-            if (jsonContent != null) {
-                return jsonContent;
-            }
-
             // 策略3: SSE事件格式解析
-            String sseContent = extractSseEventContent(dataStr);
-            if (sseContent != null) {
-                return sseContent;
-            }
-
-            // 策略4: 兜底策略 - 如果是纯文本且不是控制信号，直接返回
-            if (isPureTextContent(dataStr)) {
-                return dataStr;
-            }
-
-            log.debug("无法解析的SSE数据格式: {}", dataStr);
-            return null;
+            return extractSseEventContent(dataStr);
         }
 
         /**
@@ -213,10 +195,10 @@ public class BillingChatServiceProxy implements IChatService {
 
             String trimmed = data.trim();
             return "[DONE]".equals(trimmed)
-                || "null".equals(trimmed)
-                || trimmed.startsWith("event:")
-                || trimmed.startsWith("id:")
-                || trimmed.startsWith("retry:");
+                    || "null".equals(trimmed)
+                    || trimmed.startsWith("event:")
+                    || trimmed.startsWith("id:")
+                    || trimmed.startsWith("retry:");
         }
 
         /**
@@ -224,7 +206,7 @@ public class BillingChatServiceProxy implements IChatService {
          */
         private String extractDirectContent(String data) {
             // 如果是纯文本且长度合理，直接返回
-            if (data.length() > 0 && data.length() < 1000 && !data.contains("{") && !data.contains("[")) {
+            if (!data.isEmpty() && data.length() < 1000 && !data.startsWith("{") && !data.startsWith("[")) {
                 return data;
             }
             return null;
@@ -253,31 +235,6 @@ public class BillingChatServiceProxy implements IChatService {
             if (data.startsWith("data:")) {
                 String jsonPart = data.substring(5).trim();
                 return extractJsonContent(jsonPart);
-            }
-            return null;
-        }
-
-        /**
-         * 判断是否为纯文本内容
-         */
-        private boolean isPureTextContent(String data) {
-            return data != null
-                && !data.trim().isEmpty()
-                && !data.contains("{")
-                && !data.contains("[")
-                && !data.contains("data:")
-                && data.length() < 500; // 合理的文本长度
-        }
-
-        /**
-         * 从事件字符串中解析内容
-         */
-        private String parseContentFromEventString(String eventString) {
-            // 简单的字符串解析逻辑，可以根据实际格式优化
-            if (eventString.contains("data:")) {
-                int dataIndex = eventString.indexOf("data:");
-                String dataContent = eventString.substring(dataIndex + 5).trim();
-                return parseContentFromJson(new JSONObject(dataContent));
             }
             return null;
         }

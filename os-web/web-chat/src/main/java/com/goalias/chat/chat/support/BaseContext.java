@@ -1,11 +1,13 @@
 package com.goalias.chat.chat.support;
 
+import com.alibaba.ttl.TransmittableThreadLocal;
+
 /**
- * @apiNote : 基于ThreadLocal封装工具类，用户保存和获取当前登录用户Sa-Token token值
+ * @apiNote : 基于 TransmittableThreadLocal 封装工具类，用户保存和获取当前登录用户Sa-Token token值
  * @author Goalias
  **/
 public class BaseContext {
-    private static final ThreadLocal<String> threadLocal = new ThreadLocal<>();
+    private static final TransmittableThreadLocal<String> threadLocal = new TransmittableThreadLocal<>();
 
     /**
  * @apiNote:: 设置值
@@ -21,5 +23,9 @@ public class BaseContext {
      **/
     public static String getCurrentToken(){
         return threadLocal.get();
+    }
+
+    public static void remove(){
+        threadLocal.remove();
     }
 }

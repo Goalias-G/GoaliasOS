@@ -125,34 +125,6 @@ public class DeepSeekChatImpl  implements IChatService {
     }
 
     /**
-     * 工作流场景：支持 langchain4j handler
-     */
-    @Override
-    public void chat(ChatRequest request, StreamingChatResponseHandler handler) {
-        log.info("workflow chat, model: {}", request.getModel());
-
-        ChatModel chatModel = chatModelService.selectModelByName(request.getModel());
-
-        StreamingChatModel streamingChatModel = OpenAiStreamingChatModel.builder()
-                .baseUrl(chatModel.getApiHost())
-                .apiKey(chatModel.getApiKey())
-                .modelName(chatModel.getModelName())
-                .logRequests(true)
-                .logResponses(true)
-                .temperature(0.7)
-                .build();
-
-        try {
-            // 将 ruoyi-ai 的 ChatRequest 转换为 langchain4j 的格式
-            dev.langchain4j.model.chat.request.ChatRequest chatRequest = convertToLangchainRequest(request);
-            streamingChatModel.chat(chatRequest, handler);
-        } catch (Exception e) {
-            log.error("workflow deepseek请求失败：{}", e.getMessage(), e);
-            throw new RuntimeException("DeepSeek workflow chat failed: " + e.getMessage(), e);
-        }
-    }
-
-    /**
      * 处理启用深度思考的deepseek模型请求
      */
     private SseEmitter handleDeepSeekWithThinking(ChatRequest chatRequest, SseEmitter emitter, ChatModel chatModel) {

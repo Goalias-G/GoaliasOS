@@ -26,6 +26,7 @@ import com.goalias.system.domain.vo.SysUserVo;
 import com.goalias.system.mapper.SysUserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -142,12 +143,7 @@ public class SysLoginService {
      */
     private LoginUser buildLoginUser(SysUserVo user) {
         LoginUser loginUser = new LoginUser();
-        loginUser.setUserId(user.getUserId());
-        loginUser.setUsername(user.getUserName());
-        loginUser.setNickName(user.getNickName());
-        loginUser.setAvatar(user.getAvatar());
-        loginUser.setUserType(user.getUserType());
-        loginUser.setUserBalance(user.getUserBalance());
+        BeanUtils.copyProperties(user, loginUser);
         return loginUser;
     }
 

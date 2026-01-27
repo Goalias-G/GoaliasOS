@@ -13,11 +13,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ThreadPoolProperties {
 
     /**
-     * 是否开启线程池
-     */
-    private boolean enabled;
-
-    /**
      * 队列最大长度
      */
     private int queueCapacity;

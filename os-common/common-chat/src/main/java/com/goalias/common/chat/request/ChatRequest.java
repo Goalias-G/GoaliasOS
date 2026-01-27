@@ -98,7 +98,7 @@ public class ChatRequest {
      * 采样温度，取值范围[0,2]
      * 控制随机性强度
      */
-    private Float temperature = 0.7f;
+    private Double temperature = 0.7;
 
     /**
      * 模型采样概率，取值范围[0,1]

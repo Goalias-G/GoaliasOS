@@ -4,7 +4,6 @@ import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.ChatMessage;
 import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import com.goalias.common.chat.request.ChatRequest;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -25,17 +24,7 @@ public interface IChatService {
      */
     SseEmitter chat(ChatRequest chatRequest, SseEmitter emitter);
 
-    /**
-     * 工作流场景：支持 langchain4j 的 StreamingChatResponseHandler
-     *
-     * @param chatRequest ruoyi-ai 的请求对象
-     * @param handler     langchain4j 的流式响应处理器
-     */
-    default void chat(ChatRequest chatRequest, StreamingChatResponseHandler handler) {
-        throw new UnsupportedOperationException("此服务暂不支持工作流场景");
-    }
-
-    default dev.langchain4j.model.chat.request.ChatRequest convertToLangchainRequest(ChatRequest request) {
+    default dev.langchain4j.model.chat.request.ChatRequest convertToLangChainRequest(ChatRequest request) {
         List<ChatMessage> messages = new ArrayList<>();
         for (com.goalias.common.chat.entity.chat.Message msg : request.getMessages()) {
             // 简单转换，您可以根据实际需求调整

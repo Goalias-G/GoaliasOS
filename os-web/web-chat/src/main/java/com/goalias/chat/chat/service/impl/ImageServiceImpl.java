@@ -1,12 +1,10 @@
 package com.goalias.chat.chat.service.impl;
 
-import com.goalias.chat.chat.listener.SSEEventSourceListener;
 import com.goalias.chat.chat.service.IChatService;
 import com.goalias.chat.chat.support.ChatServiceHelper;
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.enums.ChatModeType;
 import com.goalias.chat.service.IChatModelService;
-import com.goalias.common.chat.entity.chat.ChatCompletion;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
 import lombok.SneakyThrows;
@@ -128,15 +126,8 @@ public class ImageServiceImpl implements IChatService {
         // 获取会话token（从入口透传，避免非Web线程取值报错）
         String token = chatRequest.getToken();
         // 创建 SSE 事件源监听器
-        SSEEventSourceListener listener = ChatServiceHelper.createOpenAiListener(emitter, chatRequest);
 
         // 构建聊天完成请求
-        ChatCompletion completion = ChatCompletion
-                .builder()
-                .messages(messages)
-                .model(chatModel.getModelName()) // 使用数据库中配置的模型名称
-                .stream(true)
-                .build();
 
         // 发起流式聊天完成请求
         try {

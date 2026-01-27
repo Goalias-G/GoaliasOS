@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import com.goalias.common.chat.entity.chat.tool.ToolCalls;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  *  
@@ -29,23 +27,6 @@ public class Message extends BaseMessage implements Serializable {
         return new Builder();
     }
 
-    /**
-     * 构造函数
-     *
-     * @param role         角色
-     * @param name         name
-     * @param content      content
-     * @param functionCall functionCall
-     */
-    public Message(String role, String name, String content, List<ToolCalls> toolCalls, String toolCallId, FunctionCall functionCall) {
-        this.content = content;
-        super.setRole(role);
-        super.setName(name);
-        super.setToolCalls(toolCalls);
-        super.setToolCallId(toolCallId);
-        super.setFunctionCall(functionCall);
-    }
-
     public Message() {
     }
 
@@ -53,18 +34,12 @@ public class Message extends BaseMessage implements Serializable {
         setContent(builder.content);
         super.setRole(builder.role);
         super.setName(builder.name);
-        super.setFunctionCall(builder.functionCall);
-        super.setToolCalls(builder.toolCalls);
-        super.setToolCallId(builder.toolCallId);
     }
 
     public static final class Builder {
         private String role;
         private String content;
         private String name;
-        private String toolCallId;
-        private List<ToolCalls> toolCalls;
-        private FunctionCall functionCall;
 
         public Builder() {
         }
@@ -86,21 +61,6 @@ public class Message extends BaseMessage implements Serializable {
 
         public Builder name(String name) {
             this.name = name;
-            return this;
-        }
-
-        public Builder functionCall(FunctionCall functionCall) {
-            this.functionCall = functionCall;
-            return this;
-        }
-
-        public Builder toolCalls(List<ToolCalls> toolCalls) {
-            this.toolCalls = toolCalls;
-            return this;
-        }
-
-        public Builder toolCallId(String toolCallId) {
-            this.toolCallId = toolCallId;
             return this;
         }
 

@@ -27,6 +27,7 @@
         <version>1.0.0</version>
         <spring-boot.version>3.4.4</spring-boot.version>
         <spring-ai.version>1.0.0-M7</spring-ai.version>
+        <langchain4j.version>1.8.0</langchain4j.version>
         <java.version>17</java.version>
         <mysql.version>8.0.33</mysql.version>
         <mybatis.version>3.5.16</mybatis.version>
@@ -42,6 +43,7 @@
         <commons-compress.version>1.26.2</commons-compress.version>
         <!-- SMS 配置 -->
         <aliyun.sms.version>2.0.23</aliyun.sms.version>
+        <transmittable-thread-local.version>2.14.2</transmittable-thread-local.version>
 
         <!-- 插件版本 -->
         <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
@@ -147,6 +149,14 @@
             </dependency>
 
             <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-bom</artifactId>
+                <version>${langchain4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
@@ -233,6 +243,11 @@
                 <version>${commons-compress.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>transmittable-thread-local</artifactId>
+                <version>${transmittable-thread-local.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

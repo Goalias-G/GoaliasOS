@@ -1,12 +1,15 @@
 package com.goalias.common.core.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.goalias.common.core.domain.dto.RoleDTO;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -34,24 +37,14 @@ public class LoginUser implements Serializable {
     private String token;
 
     /**
-     * 用户类型
+     * 用户套餐
      */
-    private String userType;
-
-    /**
-     * 登录时间
-     */
-    private Long loginTime;
-
-    /**
-     * 过期时间
-     */
-    private Long expireTime;
+    private String userPlan;
 
     /**
      * 登录IP地址
      */
-    private String ipaddr;
+    private String loginIp;
 
     /**
      * 登录地点
@@ -59,14 +52,10 @@ public class LoginUser implements Serializable {
     private String loginLocation;
 
     /**
-     * 浏览器类型
+     * 最后登录时间
      */
-    private String browser;
-
-    /**
-     * 操作系统
-     */
-    private String os;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date loginDate;
 
     /**
      * 用户名
@@ -83,19 +72,14 @@ public class LoginUser implements Serializable {
      */
     private String avatar;
 
-    private Double userBalance;
-
     /**
      * 获取登录id
      */
     public String getLoginId() {
-        if (userType == null) {
-            throw new IllegalArgumentException("用户类型不能为空");
-        }
-        if (userId == null) {
+        if (Objects.isNull(userId)) {
             throw new IllegalArgumentException("用户ID不能为空");
         }
-        return userType + ":" + userId;
+        return String.valueOf(userId);
     }
 
 }
