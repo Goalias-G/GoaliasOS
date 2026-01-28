@@ -55,10 +55,10 @@ public class VectorStoreServiceImpl implements VectorStoreService {
     }
 
     @Override
-    public void removeByKid(String id, String modelName) {
-        log.info("根据ID删除向量数据: id={}, modelName={}", id, modelName);
+    public void removeByKid(String kid) {
+        log.info("根据ID删除向量数据: kid={}", kid);
         VectorStoreService strategy = getCurrentStrategy();
-        strategy.removeByKid(id, modelName);
+        strategy.removeByKid(kid);
     }
 
     @Override

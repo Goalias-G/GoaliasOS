@@ -26,7 +26,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/system/promptTemplate")
+@RequestMapping("/chat/promptTemplate")
 public class PromptTemplateController extends BaseController {
 
     private final IPromptTemplateService promptTemplateService;

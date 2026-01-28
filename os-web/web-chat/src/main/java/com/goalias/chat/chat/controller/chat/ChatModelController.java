@@ -27,7 +27,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/system/model")
+@RequestMapping("/chat/model")
 public class ChatModelController extends BaseController {
 
     private final IChatModelService chatModelService;

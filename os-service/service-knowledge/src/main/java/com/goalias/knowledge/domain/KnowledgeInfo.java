@@ -44,11 +44,6 @@ public class KnowledgeInfo extends BaseEntity {
     private String kname;
 
     /**
-     * 是否公开知识库（0 否 1是）
-     */
-    private Integer share;
-
-    /**
      * 描述
      */
     private String description;
@@ -79,11 +74,6 @@ public class KnowledgeInfo extends BaseEntity {
     private Long textBlockSize;
 
     /**
-     * 向量库模型名称
-     */
-    private String vectorModelName;
-
-    /**
      * 向量化模型id
      */
     private Long embeddingModelId;
@@ -92,11 +82,6 @@ public class KnowledgeInfo extends BaseEntity {
      * 向量化模型名称
      */
     private String embeddingModelName;
-
-    /**
-     * 系统提示词
-     */
-    private String systemPrompt;
 
     /**
      * 备注

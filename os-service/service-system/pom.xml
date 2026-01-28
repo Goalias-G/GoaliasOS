@@ -17,6 +17,11 @@
             <groupId>com.goalias</groupId>
             <artifactId>common-oss</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>common-rateLimiter</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

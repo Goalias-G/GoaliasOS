@@ -29,7 +29,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/system/message")
+@RequestMapping("/chat/message")
 public class ChatMessageController extends BaseController {
 
     private final IChatMessageService chatMessageService;

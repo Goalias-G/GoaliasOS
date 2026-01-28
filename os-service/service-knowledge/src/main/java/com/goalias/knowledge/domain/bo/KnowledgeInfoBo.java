@@ -42,12 +42,6 @@ public class KnowledgeInfoBo extends BaseEntity {
     private String kname;
 
     /**
-     * 是否公开知识库（0 否 1是）
-     */
-    @NotNull(message = "是否公开知识库（0 否 1是）不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Integer share;
-
-    /**
      * 描述
      */
     private String description;
@@ -76,30 +70,19 @@ public class KnowledgeInfoBo extends BaseEntity {
     /**
      * 文本块大小
      */
-    @NotNull(message = "文本块大小不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long textBlockSize;
 
     /**
-     * 向量库模型名称
+     * 向量化模型id
      */
-    @NotBlank(message = "向量库不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String vectorModelName;
-
-    /**
-     * 向量化模型名称
-     */
+    @NotNull(message = "向量化模型id不能为空", groups = { AddGroup.class, EditGroup.class })
     private Long embeddingModelId;
 
     /**
      * 向量化模型名称
      */
+    @NotBlank(message = "向量模型不能为空", groups = { AddGroup.class, EditGroup.class })
     private String embeddingModelName;
-
-
-    /**
-     * 系统提示词
-     */
-    private String systemPrompt;
 
     /**
      * 备注

@@ -60,11 +60,6 @@ public class ChatModelBo extends BaseEntity {
     private String modelShow;
 
     /**
-     * 系统提示词
-     */
-    private String systemPrompt;
-
-    /**
      * 请求地址
      */
     @NotBlank(message = "请求地址不能为空", groups = { AddGroup.class, EditGroup.class })

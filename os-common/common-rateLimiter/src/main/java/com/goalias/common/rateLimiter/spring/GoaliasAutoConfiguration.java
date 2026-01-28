@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class GoaliasAutoConfiguration {
 
     @Bean
-    public GoaliasScanner goaliasScanner()
+    public static GoaliasScanner goaliasScanner()
     {
         return new GoaliasScanner();
     }

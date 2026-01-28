@@ -21,7 +21,7 @@ public interface VectorStoreService {
     /**
      * 根据 kid 删除向量数据
      */
-    void removeByKid(String kid, String modelName) throws ServiceException;
+    void removeByKid(String kid) throws ServiceException;
 
     /**
      * 根据上传所属文件 删除相关向量数据(docId)

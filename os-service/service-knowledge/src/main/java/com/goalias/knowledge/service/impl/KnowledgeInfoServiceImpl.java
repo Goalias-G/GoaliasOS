@@ -98,7 +98,6 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
         lqw.eq(StringUtils.isNotBlank(bo.getKid()), KnowledgeInfo::getKid, bo.getKid());
         lqw.eq(bo.getUid() != null, KnowledgeInfo::getUid, bo.getUid());
         lqw.like(StringUtils.isNotBlank(bo.getKname()), KnowledgeInfo::getKname, bo.getKname());
-        lqw.eq(bo.getShare() != null, KnowledgeInfo::getShare, bo.getShare());
         lqw.eq(StringUtils.isNotBlank(bo.getDescription()), KnowledgeInfo::getDescription,
                 bo.getDescription());
         lqw.eq(StringUtils.isNotBlank(bo.getKnowledgeSeparator()), KnowledgeInfo::getKnowledgeSeparator,
@@ -160,12 +159,10 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
         KnowledgeInfo knowledgeInfo = MapstructUtils.convert(bo, KnowledgeInfo.class);
         if (StringUtils.isBlank(bo.getKid())) {
             String kid = RandomUtil.randomString(10);
-            if (knowledgeInfo != null) {
+            if (Objects.nonNull(knowledgeInfo)) {
                 knowledgeInfo.setKid(kid);
                 knowledgeInfo.setUid(LoginHelper.getLoginUser().getUserId());
-            }
-            baseMapper.insert(knowledgeInfo);
-            if (knowledgeInfo != null) {
+                baseMapper.insert(knowledgeInfo);
                 vectorStoreService.createSchema(String.valueOf(knowledgeInfo.getId()), bo.getEmbeddingModelName());
             }
         } else {
@@ -183,7 +180,7 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
         check(knowledgeInfo);
         map.put("kid", knowledgeInfo.getKid());
         // 删除向量数据
-        vectorStoreService.removeByKid(String.valueOf(knowledgeInfo.getId()), knowledgeInfo.getVectorModelName());
+        vectorStoreService.removeByKid(String.valueOf(knowledgeInfo.getId()));
         // 删除附件和知识片段
         fragmentMapper.deleteByMap(map);
         attachMapper.deleteByMap(map);
@@ -237,24 +234,23 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
         attachMapper.insert(knowledgeAttach);
 
         // 通过kid查询知识库信息
-        KnowledgeInfo knowledgeInfoVo = baseMapper.selectOne(Wrappers.<KnowledgeInfo>lambdaQuery()
+        KnowledgeInfo knowledgeInfo = baseMapper.selectOne(Wrappers.<KnowledgeInfo>lambdaQuery()
                 .eq(KnowledgeInfo::getId, kid));
 
         // 通过向量模型查询模型信息
-        ChatModel chatModelVo = chatModelService.selectModelByName(knowledgeInfoVo.getEmbeddingModelName());
+        ChatModel chatModel = chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName());
         // 未查到指定模型时，回退为向量分类最高优先级模型
-        if (chatModelVo == null) {
-            chatModelVo = chatModelService.selectModelByCategoryWithHighestPriority(ChatModeType.VECTOR.getCode());
+        if (chatModel == null) {
+            chatModel = chatModelService.selectModelByCategoryWithHighestPriority(ChatModeType.VECTOR.getCode());
         }
         StoreEmbeddingBo storeEmbeddingBo = new StoreEmbeddingBo();
         storeEmbeddingBo.setKid(kid);
         storeEmbeddingBo.setDocId(docId);
         storeEmbeddingBo.setFids(fids);
         storeEmbeddingBo.setChunkList(chunkList);
-        storeEmbeddingBo.setVectorStoreName(knowledgeInfoVo.getVectorModelName());
-        storeEmbeddingBo.setEmbeddingModelName(knowledgeInfoVo.getEmbeddingModelName());
-        storeEmbeddingBo.setApiKey(chatModelVo.getApiKey());
-        storeEmbeddingBo.setBaseUrl(chatModelVo.getApiHost());
+        storeEmbeddingBo.setEmbeddingModelName(knowledgeInfo.getEmbeddingModelName());
+        storeEmbeddingBo.setApiKey(chatModel.getApiKey());
+        storeEmbeddingBo.setBaseUrl(chatModel.getApiHost());
         vectorStoreService.storeEmbeddings(storeEmbeddingBo);
     }
 

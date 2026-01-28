@@ -121,7 +121,7 @@ public class PineconeVectorStoreStrategy extends AbstractVectorStoreStrategy {
 
     @Override
     @SneakyThrows
-    public void removeByKid(String kid, String modelName) {
+    public void removeByKid(String kid) {
         EmbeddingStore<TextSegment> embeddingStore = getPineconeStore(getNameSpace(kid));
         embeddingStore.removeAll();
         log.info("Pinecone成功删除 kid={} 的所有向量数据", kid);

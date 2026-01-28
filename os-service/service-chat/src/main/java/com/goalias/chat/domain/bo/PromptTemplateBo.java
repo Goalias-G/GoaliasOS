@@ -13,7 +13,8 @@ import com.goalias.common.core.validate.EditGroup;
  * 提示词模板业务对象 prompt_template
  *
  * @author Goalias
- * @since 2026-01-22 */
+ * @since 2026-01-22
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PromptTemplateBo extends BaseEntity {
@@ -47,4 +48,10 @@ public class PromptTemplateBo extends BaseEntity {
      */
     @NotBlank(message = "备注不能为空", groups = {AddGroup.class, EditGroup.class})
     private String remark;
+
+    /**
+     * 优先级
+     */
+    @NotNull(message = "优先级不能为空", groups = {AddGroup.class, EditGroup.class})
+    private Integer priority;
 }

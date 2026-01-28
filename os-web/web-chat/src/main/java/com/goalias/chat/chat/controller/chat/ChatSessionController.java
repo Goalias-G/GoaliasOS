@@ -29,7 +29,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/system/session")
+@RequestMapping("/chat/session")
 public class ChatSessionController extends BaseController {
 
     private final IChatSessionService chatSessionService;

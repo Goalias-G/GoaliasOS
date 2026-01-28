@@ -7,11 +7,15 @@ import com.goalias.chat.domain.PromptTemplate;
 import com.goalias.chat.domain.bo.PromptTemplateBo;
 import com.goalias.chat.mapper.PromptTemplateMapper;
 import com.goalias.chat.service.IPromptTemplateService;
+import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import lombok.RequiredArgsConstructor;
 import com.goalias.common.core.utils.MapstructUtils;
 import com.goalias.common.core.utils.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -70,6 +74,7 @@ public class PromptTemplateServiceImpl implements IPromptTemplateService {
      * 新增提示词模板
      */
     @Override
+    @CacheEvict(cacheNames = CacheNames.CHAT_PROMPT, key = "#bo.category")
     public Boolean insertByBo(PromptTemplateBo bo) {
         PromptTemplate add = MapstructUtils.convert(bo, PromptTemplate.class);
         validEntityBeforeSave(add);
@@ -84,6 +89,7 @@ public class PromptTemplateServiceImpl implements IPromptTemplateService {
      * 修改提示词模板
      */
     @Override
+    @CacheEvict(cacheNames = CacheNames.CHAT_PROMPT, key = "#bo.category")
     public Boolean updateByBo(PromptTemplateBo bo) {
         PromptTemplate update = MapstructUtils.convert(bo, PromptTemplate.class);
         validEntityBeforeSave(update);
@@ -101,6 +107,7 @@ public class PromptTemplateServiceImpl implements IPromptTemplateService {
      * 批量删除提示词模板
      */
     @Override
+    @CacheEvict(cacheNames = CacheNames.CHAT_PROMPT)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
@@ -109,10 +116,11 @@ public class PromptTemplateServiceImpl implements IPromptTemplateService {
     }
 
     @Override
+    @Cacheable(cacheNames = CacheNames.CHAT_PROMPT, key = "#category", unless = "#result == null")
     public PromptTemplate queryByCategory(String category) {
         LambdaQueryWrapper<PromptTemplate> queryWrapper = Wrappers.lambdaQuery(PromptTemplate.class);
         queryWrapper.eq(PromptTemplate::getCategory, category);
-        queryWrapper.orderByDesc(PromptTemplate::getUpdateTime);
+        queryWrapper.orderByDesc(PromptTemplate::getPriority);
         return baseMapper.selectOne(queryWrapper, false);
     }
 }

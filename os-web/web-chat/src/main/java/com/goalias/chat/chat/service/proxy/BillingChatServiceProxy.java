@@ -52,10 +52,6 @@ public class BillingChatServiceProxy implements IChatService {
         BillingSseEmitter billingEmitter = new BillingSseEmitter(emitter, chatRequest, chatCostService);
 
         try {
-            // 调用实际的聊天服务
-            if (StringUtils.isNotBlank(chatRequest.getToken())) {
-                BaseContext.setCurrentToken(chatRequest.getToken());
-            }
             return delegate.chat(chatRequest, billingEmitter);
         } catch (Exception e) {
             log.error("聊天服务执行失败", e);

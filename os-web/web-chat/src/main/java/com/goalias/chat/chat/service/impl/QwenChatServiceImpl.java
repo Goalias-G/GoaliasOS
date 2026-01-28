@@ -1,5 +1,6 @@
 package com.goalias.chat.chat.service.impl;
 
+import com.goalias.chat.chat.enums.EnableSearchType;
 import com.goalias.chat.chat.handler.FunctionCallExecutor;
 import com.goalias.chat.chat.factory.FunctionCallsFactory;
 import com.goalias.chat.chat.handler.FunctionCallResponseHandler;
@@ -11,15 +12,19 @@ import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.redis.service.RedisService;
 import dev.langchain4j.agent.tool.ToolSpecification;
+import dev.langchain4j.community.model.dashscope.QwenChatModel;
 import dev.langchain4j.community.model.dashscope.QwenStreamingChatModel;
+import dev.langchain4j.community.model.dashscope.spi.QwenStreamingChatModelBuilderFactory;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
+import dev.langchain4j.model.chat.request.ResponseFormat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -28,7 +33,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class QianWenAiChatServiceImpl implements IChatService {
+public class QwenChatServiceImpl implements IChatService {
 
     private final IChatModelService chatModelService;
     private final RedisService redisService;
@@ -47,6 +52,7 @@ public class QianWenAiChatServiceImpl implements IChatService {
                 .modelName(chatModel.getModelName())
                 .temperature(chatRequest.getTemperature().floatValue())
                 .topP(chatRequest.getTopP())
+                .enableSearch(Objects.equals(chatModel.getEnableSearch(), EnableSearchType.YES.getCode()) ? chatRequest.getEnableSearch() : false)
                 .defaultRequestParameters(ChatRequestParameters.builder().toolSpecifications(tools).build())
                 .build();
 

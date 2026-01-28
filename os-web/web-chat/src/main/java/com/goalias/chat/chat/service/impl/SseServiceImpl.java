@@ -6,13 +6,14 @@ import com.goalias.chat.chat.factory.ChatServiceFactory;
 import com.goalias.chat.chat.service.IChatCostService;
 import com.goalias.chat.chat.service.IChatService;
 import com.goalias.chat.chat.service.ISseService;
+import com.goalias.chat.chat.support.BaseContext;
 import com.goalias.chat.chat.support.ChatRetryHelper;
 import com.goalias.chat.chat.support.RetryNotifier;
 import com.goalias.chat.chat.util.SSEUtil;
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.PromptTemplate;
 import com.goalias.chat.domain.bo.ChatSessionBo;
-import com.goalias.chat.enums.promptTemplateEnum;
+import com.goalias.chat.enums.PromptTemplateEnum;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.chat.service.IChatSessionService;
 import com.goalias.chat.service.IPromptTemplateService;
@@ -72,34 +73,30 @@ public class SseServiceImpl implements ISseService {
         SseEmitter sseEmitter = new SseEmitter(0L);
         try {
             // 记录当前会话令牌，供异步线程使用
-            try {
-                chatRequest.setToken(StpUtil.getTokenValue());
-            } catch (Exception ignore) {
-                // 保底：无token场景下忽略
-            }
+            chatRequest.setToken(StpUtil.getTokenValue());
+            BaseContext.setCurrentToken(chatRequest.getToken());
+
             // 构建消息列表
             buildChatMessageList(chatRequest);
             // 设置对话角色
             chatRequest.setRole(Message.Role.USER.getName());
 
-            if (LoginHelper.isLogin()) {
 
-                // 设置用户id
-                chatRequest.setUserId(LoginHelper.getUserId());
+            // 设置用户id
+            chatRequest.setUserId(LoginHelper.getUserId());
 
-                // 设置会话id
-                if (chatRequest.getSessionId() == null) {
-                    ChatSessionBo chatSessionBo = new ChatSessionBo();
-                    chatSessionBo.setUserId(chatCostService.getUserId());
-                    chatSessionBo.setSessionTitle(getFirst10Characters(chatRequest.getPrompt()));
-                    chatSessionBo.setSessionContent(chatRequest.getPrompt());
-                    chatSessionService.insertByBo(chatSessionBo);
-                    chatRequest.setSessionId(chatSessionBo.getId());
-                }
-                
-                // 保存用户消息
-                chatCostService.saveMessage(chatRequest);
+            // 设置会话id
+            if (chatRequest.getSessionId() == null) {
+                ChatSessionBo chatSessionBo = new ChatSessionBo();
+                chatSessionBo.setUserId(chatCostService.getUserId());
+                chatSessionBo.setSessionTitle(getFirst10Characters(chatRequest.getPrompt()));
+                chatSessionBo.setSessionContent(chatRequest.getPrompt());
+                chatSessionService.insertByBo(chatSessionBo);
+                chatRequest.setSessionId(chatSessionBo.getId());
             }
+
+            // 保存用户消息
+            chatCostService.saveMessage(chatRequest);
             // 自动选择模型并获取对应的聊天服务
             IChatService chatService = autoSelectModelAndGetService(chatRequest);
 
@@ -118,12 +115,8 @@ public class SseServiceImpl implements ISseService {
                             chatRequest.setModel(modelForTry.getModelName());
                             // 以 emitter 实例为唯一键注册失败回调
                             RetryNotifier.setFailureCallback(sseEmitter, onFailure);
-                            try {
-                                autoSelectServiceByCategoryAndInvoke(chatRequest, sseEmitter,
-                                        modelForTry.getProviderName());
-                            } finally {
-                                // 不在此处清理，待下游结束/失败时清理
-                            }
+                            autoSelectServiceByCategoryAndInvoke(chatRequest, sseEmitter,
+                                    modelForTry.getProviderName());
                         }
                 );
             } else {
@@ -236,7 +229,7 @@ public class SseServiceImpl implements ISseService {
      */
     private String processKnowledgeBase(ChatRequest chatRequest, List<Message> messages) {
         if (StringUtils.isEmpty(chatRequest.getKid())) {
-            return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
+            return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
         }
 
         try {
@@ -244,14 +237,14 @@ public class SseServiceImpl implements ISseService {
             KnowledgeInfo knowledgeInfo = knowledgeInfoService.queryById(Long.valueOf(chatRequest.getKid()));
             if (Objects.isNull(knowledgeInfo)) {
                 log.warn("知识库信息不存在，kid: {}", chatRequest.getKid());
-                return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
+                return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
             }
 
             // 查询向量模型配置信息
             ChatModel chatModel = chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName());
             if (Objects.isNull(chatModel)) {
                 log.warn("向量模型配置不存在，模型名称: {}", knowledgeInfo.getEmbeddingModelName());
-                return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
+                return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
             }
 
             // 构建向量查询参数
@@ -264,11 +257,11 @@ public class SseServiceImpl implements ISseService {
             addKnowledgeMessages(messages, nearestList);
 
             // 返回知识库系统提示词
-            return getKnowledgeSystemPrompt(knowledgeInfo);
+            return getPromptTemplatePrompt(PromptTemplateEnum.KNOWLEDGE.getDesc());
 
         } catch (Exception e) {
             log.error("处理知识库信息失败: {}", e.getMessage(), e);
-            return getPromptTemplatePrompt(promptTemplateEnum.CHAT.getDesc());
+            return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
         }
     }
 
@@ -284,7 +277,6 @@ public class SseServiceImpl implements ISseService {
         queryVectorBo.setKid(chatRequest.getKid());
         queryVectorBo.setApiKey(chatModel.getApiKey());
         queryVectorBo.setBaseUrl(chatModel.getApiHost());
-        queryVectorBo.setVectorModelName(knowledgeInfo.getVectorModelName());
         queryVectorBo.setEmbeddingModelName(knowledgeInfo.getEmbeddingModelName());
         queryVectorBo.setMaxResults(Math.toIntExact(knowledgeInfo.getRetrieveLimit()));
 
@@ -313,39 +305,20 @@ public class SseServiceImpl implements ISseService {
         if (Objects.isNull(promptTemplate) || StringUtils.isEmpty(promptTemplate.getTemplateContent())) {
             return getDefaultSystemPrompt();
         }
-        return promptTemplate.getTemplateContent();
+        return promptTemplate.getTemplateContent().replace("{datetime}", DateUtils.dateTimeNow());
     }
 
     /**
      * 获取默认系统提示词
      */
     private String getDefaultSystemPrompt() {
-        String sysPrompt = chatModel != null ? chatModel.getSystemPrompt() : null;
-        if (StringUtils.isEmpty(sysPrompt)) {
-            sysPrompt = "你是一个由 Goalias(系统开发者英文名) 开发的 GoaliasOS 系统助手，名字叫 GoaliasOS AI。"
-                    + "你擅长中英文对话，能够理解并处理各种问题，提供安全、有帮助、准确的回答。"
-                    + "语言风格灵动、自然、幽默。"
-                    + "当前时间：" + DateUtils.dateTimeNow()
-                    + "#注意：回复之前注意结合上下文和工具返回内容进行回复。(如有多个工具返回，其结果已合并)";
-        }
-        return sysPrompt;
-    }
-
-    /**
-     * 获取知识库系统提示词
-     */
-    private String getKnowledgeSystemPrompt(KnowledgeInfo knowledgeInfo) {
-        String sysPrompt = knowledgeInfo.getSystemPrompt();
-        if (StringUtils.isEmpty(sysPrompt)) {
-            sysPrompt = "###角色设定\n" +
-                    "你是一个由 Goalias(系统开发者英文名) 开发的 GoaliasOS 系统助手，名字叫 GoaliasOS AI，专注于利用上下文中的信息来提供准确和相关的回答。\n" +
-                    "###指令\n" +
-                    "当用户的问题与上下文知识匹配时，利用上下文信息和工具返回内容进行回复。如果问题与上下文不匹配，运用自身的推理能力生成合适的回答。(如有多个工具返回，其结果已合并)\n" +
-                    "###限制\n" +
-                    "确保回答清晰简洁，始终保持语气友好，语言风格灵动、自然、幽默。\n" +
-                    "当前时间：" + DateUtils.dateTimeNow();
-        }
-        return sysPrompt;
+        return "###角色设定\n" +
+                "你是一个由 Goalias(系统开发者英文名) 开发的 GoaliasOS 系统助手，名字叫 GoaliasOS AI，专注于利用上下文中的信息来提供准确和相关的回答。\n" +
+                "###指令\n" +
+                "当用户的问题与上下文知识匹配时，利用上下文信息和工具返回内容进行回复。如果问题与上下文不匹配，运用自身的推理能力生成合适的回答。(如有多个工具返回，其结果已合并)\n" +
+                "###限制\n" +
+                "确保回答清晰简洁，始终保持语气友好，语言风格灵动、自然、幽默。\n" +
+                "当前时间：" + DateUtils.dateTimeNow();
     }
 
     private File convertMultiPartToFile(MultipartFile multipartFile) {

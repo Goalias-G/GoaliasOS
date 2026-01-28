@@ -10,9 +10,9 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum promptTemplateEnum {
+public enum PromptTemplateEnum {
     CHAT(1, "chat"),
-    VECTOR(2, "vector"),
+    KNOWLEDGE(2, "knowledge"),
     ;
 
     private final Integer code;

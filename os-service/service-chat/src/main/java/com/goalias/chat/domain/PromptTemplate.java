@@ -34,9 +34,14 @@ public class PromptTemplate extends BaseEntity {
     private String templateContent;
 
     /**
-     * 提示词分类，knowledge 知识库类型，chat 对话类型，draw绘画类型 ...
+     * 提示词分类: promptTemplateEnum
      */
     private String category;
+
+    /**
+     * 提示词优先级
+     */
+    private Integer priority;
 
     /**
      * 备注

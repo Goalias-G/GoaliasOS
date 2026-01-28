@@ -61,11 +61,6 @@ public class ChatModel extends BaseEntity {
     private String modelShow;
 
     /**
-     * 系统提示词
-     */
-    private String systemPrompt;
-
-    /**
      * 请求地址
      */
     private String apiHost;
@@ -75,6 +70,11 @@ public class ChatModel extends BaseEntity {
      * 密钥
      */
     private String apiKey;
+
+    /**
+     * 是否支持联网搜索(0-否 1-是)
+     */
+    private Integer enableSearch;
 
     /**
      * 优先级

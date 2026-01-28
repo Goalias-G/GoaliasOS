@@ -59,11 +59,6 @@ public class ChatRequest {
     private Long sessionId;
 
     /**
-     * 应用ID
-     */
-    private String appId;
-
-    /**
      * 对话角色
      */
     private String role;
@@ -83,6 +78,11 @@ public class ChatRequest {
      * 是否启用深度思考
      */
     private Boolean enableThinking;
+
+    /**
+     * 是否联网搜索(若支持)(0-否 1-是)
+     */
+    private Boolean enableSearch;
 
     /**
      * 是否自动切换模型
