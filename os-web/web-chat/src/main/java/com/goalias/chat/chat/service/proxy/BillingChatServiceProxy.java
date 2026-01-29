@@ -3,10 +3,8 @@ package com.goalias.chat.chat.service.proxy;
 import cn.hutool.json.JSONObject;
 import com.goalias.chat.chat.service.IChatCostService;
 import com.goalias.chat.chat.service.IChatService;
-import com.goalias.chat.chat.support.BaseContext;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
-import com.goalias.common.core.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -45,7 +43,7 @@ public class BillingChatServiceProxy implements IChatService {
             return emitter;
         }
 
-        log.debug("余额检查通过，开始AI回复，用户ID: {}, 模型: {}",
+        log.info("余额检查通过，开始AI回复，用户ID: {}, 模型: {}",
                 chatRequest.getUserId(), chatRequest.getModel());
 
         // 创建增强的SseEmitter，自动收集AI回复
@@ -56,8 +54,6 @@ public class BillingChatServiceProxy implements IChatService {
         } catch (Exception e) {
             log.error("聊天服务执行失败", e);
             throw e;
-        } finally {
-            BaseContext.remove();
         }
     }
 
@@ -102,7 +98,6 @@ public class BillingChatServiceProxy implements IChatService {
                     // AI回复完成，保存消息和计费
                     saveAiResponseAndBilling();
                     delegate.complete();
-                    log.debug("AI回复完成，已保存并计费");
                 } catch (Exception e) {
                     log.error("保存AI回复和计费失败", e);
                     delegate.completeWithError(e);
@@ -145,7 +140,7 @@ public class BillingChatServiceProxy implements IChatService {
                 chatCostService.saveMessage(aiChatRequest);
 
 
-                log.debug("AI回复保存和计费完成，用户ID: {}, 会话ID: {}, 回复长度: {}",
+                log.info("AI回复保存和计费完成，用户ID: {}, 会话ID: {}, 回复长度: {}",
                         chatRequest.getUserId(), chatRequest.getSessionId(), aiResponse.length());
 
             } catch (Exception e) {

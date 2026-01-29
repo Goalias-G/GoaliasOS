@@ -12,16 +12,20 @@
     <artifactId>service-knowledge</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>service-chat</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>service-system</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.17.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.goalias</groupId>
-            <artifactId>service-chat</artifactId>
         </dependency>
 
         <!-- pdf解析器 -->

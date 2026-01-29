@@ -58,7 +58,7 @@ public class MilvusVectorStoreStrategy extends AbstractVectorStoreStrategy {
     }
 
     @Override
-    public void createSchema(String kid, String modelName) {
+    public void createSchema(String kid) {
         String collectionName = vectorStoreProperties.getMilvus().getCollectionname() + kid;
         // 使用缓存获取连接以确保只初始化一次
         EmbeddingStore<TextSegment> store = getMilvusStore(collectionName, true);

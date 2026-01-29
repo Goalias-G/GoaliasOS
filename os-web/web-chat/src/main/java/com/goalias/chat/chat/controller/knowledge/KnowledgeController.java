@@ -17,6 +17,7 @@ import com.goalias.knowledge.domain.bo.KnowledgeInfoUploadBo;
 import com.goalias.knowledge.service.IKnowledgeAttachService;
 import com.goalias.knowledge.service.IKnowledgeFragmentService;
 import com.goalias.knowledge.service.IKnowledgeInfoService;
+import com.goalias.system.domain.SysOss;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,8 @@ import java.util.Objects;
  * 知识库管理
  *
  * @author Goalias
- * @since 2026-01-22 */
+ * @since 2026-01-22
+ */
 @Validated
 @RequiredArgsConstructor
 @RestController
@@ -98,9 +100,9 @@ public class KnowledgeController extends BaseController {
      * 上传知识库附件
      */
     @PostMapping(value = "/attach/upload")
-    public R<String> upload(KnowledgeInfoUploadBo bo) throws Exception {
-        knowledgeInfoService.upload(bo);
-        return R.ok("上传知识库附件成功!");
+    public R<SysOss> upload(KnowledgeInfoUploadBo bo) throws Exception {
+        SysOss upload = knowledgeInfoService.upload(bo);
+        return R.ok("上传知识库附件成功!", upload);
     }
 
     /**
@@ -110,17 +112,17 @@ public class KnowledgeController extends BaseController {
      */
     @GetMapping("attach/info/{id}")
     public R<KnowledgeAttach> getAttachInfo(@NotNull(message = "主键不能为空")
-                                              @PathVariable Long id) {
+                                            @PathVariable Long id) {
         return R.ok(attachService.queryById(id));
     }
 
     /**
      * 删除知识库附件
      */
-    @PostMapping("attach/remove/{kid}")
+    @PostMapping("attach/remove/{docId}")
     public R<Void> removeAttach(@NotEmpty(message = "主键不能为空")
-                                @PathVariable String kid) {
-        attachService.removeKnowledgeAttach(kid);
+                                @PathVariable String docId) {
+        attachService.removeKnowledgeAttach(docId);
         return R.ok();
     }
 

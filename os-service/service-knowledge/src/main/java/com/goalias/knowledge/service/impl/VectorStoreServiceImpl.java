@@ -33,9 +33,9 @@ public class VectorStoreServiceImpl implements VectorStoreService {
     }
 
     @Override
-    public void createSchema(String kid, String modelName) {
+    public void createSchema(String kid) {
         VectorStoreService strategy = getCurrentStrategy();
-        strategy.createSchema(kid, modelName);
+        strategy.createSchema(kid);
     }
 
     @Override

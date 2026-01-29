@@ -590,13 +590,4 @@ public class MinioService implements IFileService, InitializingBean {
         }
     }
 
-    /**
-     * 获取时间层次的文件夹路径
-     *
-     * @return 如：/2026/01/07/
-     */
-    public static String getTimeFilePath(Long userId, String fileName) {
-        String timePath = new SimpleDateFormat("/yyyy/MM/dd").format(new Date()) + "/";
-        return userId + timePath + fileName;
-    }
 }

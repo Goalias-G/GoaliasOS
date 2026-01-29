@@ -111,7 +111,7 @@ public class EmbeddingModelFactory {
             BaseEmbedModelService model = applicationContext.getBean(factory, BaseEmbedModelService.class);
             // 配置模型参数
             model.configure(config);
-            log.info("成功创建嵌入模型: factory={}, modelId={}", config.getProviderName(), config.getId());
+            log.debug("成功创建嵌入模型: factory={}, modelId={}", config.getProviderName(), config.getId());
 
             return model;
         } catch (NoSuchBeanDefinitionException e) {

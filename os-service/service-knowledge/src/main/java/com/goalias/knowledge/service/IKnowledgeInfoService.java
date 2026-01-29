@@ -6,6 +6,7 @@ import com.goalias.common.web.domain.TableDataInfo;
 import com.goalias.knowledge.domain.KnowledgeInfo;
 import com.goalias.knowledge.domain.bo.KnowledgeInfoBo;
 import com.goalias.knowledge.domain.bo.KnowledgeInfoUploadBo;
+import com.goalias.system.domain.SysOss;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +21,7 @@ public interface IKnowledgeInfoService {
     /**
      * 查询知识库
      */
-    KnowledgeInfo queryById(Long id);
+    KnowledgeInfo queryByKid(String kid);
 
     /**
      * 查询知识库列表
@@ -61,5 +62,5 @@ public interface IKnowledgeInfoService {
     /**
      * 上传附件
      */
-    void upload(KnowledgeInfoUploadBo bo) throws Exception;
+    SysOss upload(KnowledgeInfoUploadBo bo) throws Exception;
 }

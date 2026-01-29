@@ -45,5 +45,7 @@ public interface CacheNames {
 
     String CHAT_PROMPT = "chat_prompt:";
 
+    String CHAT_MODEL = "chat_model:";
+
 
 }

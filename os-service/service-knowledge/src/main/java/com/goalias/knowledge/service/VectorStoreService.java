@@ -16,7 +16,7 @@ public interface VectorStoreService {
 
     List<String> getQueryVector(QueryVectorBo queryVectorBo);
 
-    void createSchema(String kid, String embeddingModelName);
+    void createSchema(String kid);
 
     /**
      * 根据 kid 删除向量数据

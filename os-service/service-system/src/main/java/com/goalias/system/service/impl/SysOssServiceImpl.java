@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goalias.common.core.exception.ServiceException;
 import com.goalias.common.core.utils.StringUtils;
+import com.goalias.common.oss.core.IFileService;
 import com.goalias.common.oss.core.MinioService;
 import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.satoken.utils.LoginHelper;
@@ -34,7 +35,7 @@ import java.util.Map;
 public class SysOssServiceImpl implements ISysOssService {
 
     private final SysOssMapper baseMapper;
-    private final MinioService minioService;
+    private final IFileService minioService;
 
     @Override
     public TableDataInfo<SysOss> queryPageList(SysOss bo, PageQuery pageQuery) {
@@ -72,7 +73,7 @@ public class SysOssServiceImpl implements ISysOssService {
     @Override
     public SysOss upload(MultipartFile file) {
         // 生成文件存储路径：userId/年/月/日/文件名
-        String objectName = MinioService.getTimeFilePath(LoginHelper.getUserId(), file.getOriginalFilename());
+        String objectName = minioService.getTimeFilePath(LoginHelper.getUserId(), file.getOriginalFilename());
 
         String originalFilename = file.getOriginalFilename();
         String suffix = StringUtils.substring(originalFilename, originalFilename.lastIndexOf("."),

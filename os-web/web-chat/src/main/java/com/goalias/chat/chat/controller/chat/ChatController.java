@@ -45,9 +45,10 @@ public class ChatController {
     }
     public void sseChatFallback(HttpServletResponse response) throws IOException {
         response.setContentType("text/event-stream;charset=UTF-8");
-        R<Object> fail = R.fail("AI访问过于火爆，请稍后再试~");
+        R<Object> fail = R.fail("不好意思，刚才与 Goalias AI 交流的人太多了，请让我休息下稍后再试~");
         response.getWriter().write(JSONUtil.toJsonStr(fail));
         response.getWriter().flush();
+        log.info("fallback sseChat");
     }
 
     /**

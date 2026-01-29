@@ -105,7 +105,7 @@ public class CodeTextSplitter implements TextSplitter {
         // 尝试从数据库获取配置（如果存在则覆盖）
         try {
             if (StringUtils.isNotBlank(kid)) {
-                KnowledgeInfo knowledgeInfo = knowledgeInfoService.queryById(Long.valueOf(kid));
+                KnowledgeInfo knowledgeInfo = knowledgeInfoService.queryByKid(kid);
                 if (knowledgeInfo != null) {
                     if (Objects.nonNull(knowledgeInfo.getTextBlockSize())) {
                         config.textBlockSize = Math.toIntExact(knowledgeInfo.getTextBlockSize());

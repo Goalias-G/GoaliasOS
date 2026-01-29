@@ -7,11 +7,15 @@ import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.bo.ChatModelBo;
 import com.goalias.chat.mapper.ChatModelMapper;
 import com.goalias.chat.service.IChatModelService;
+import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import lombok.RequiredArgsConstructor;
 import com.goalias.common.core.utils.MapstructUtils;
 import com.goalias.common.core.utils.StringUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -22,7 +26,8 @@ import java.util.Map;
  * 聊天模型Service业务层处理
  *
  * @author Goalias
- * @since 2026-01-22 */
+ * @since 2026-01-22
+ */
 @RequiredArgsConstructor
 @Service
 public class ChatModelServiceImpl implements IChatModelService {
@@ -87,6 +92,7 @@ public class ChatModelServiceImpl implements IChatModelService {
      * 修改聊天模型
      */
     @Override
+    @CacheEvict(value = CacheNames.CHAT_MODEL, key = "#bo.modelName")
     public Boolean updateByBo(ChatModelBo bo) {
         ChatModel update = MapstructUtils.convert(bo, ChatModel.class);
         if (update != null) {
@@ -110,6 +116,7 @@ public class ChatModelServiceImpl implements IChatModelService {
      * 批量删除聊天模型
      */
     @Override
+    @CacheEvict(value = CacheNames.CHAT_MODEL)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
@@ -121,6 +128,7 @@ public class ChatModelServiceImpl implements IChatModelService {
      * 通过模型名称获取模型信息
      */
     @Override
+    @Cacheable(value = CacheNames.CHAT_MODEL, key = "#modelName")
     public ChatModel selectModelByName(String modelName) {
         return baseMapper.selectOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getModelName, modelName));
     }

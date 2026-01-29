@@ -9,8 +9,11 @@ import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.enums.ChatModeType;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.core.domain.model.LoginUser;
+import com.goalias.common.core.exception.ServiceException;
 import com.goalias.common.core.utils.MapstructUtils;
 import com.goalias.common.core.utils.StringUtils;
+import com.goalias.common.oss.core.IFileService;
+import com.goalias.common.oss.core.MinioService;
 import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.common.web.domain.PageQuery;
@@ -28,6 +31,8 @@ import com.goalias.knowledge.mapper.KnowledgeFragmentMapper;
 import com.goalias.knowledge.mapper.KnowledgeInfoMapper;
 import com.goalias.knowledge.service.IKnowledgeInfoService;
 import com.goalias.knowledge.service.VectorStoreService;
+import com.goalias.system.domain.SysOss;
+import com.goalias.system.service.ISysOssService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,13 +69,15 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
 
     private final IChatModelService chatModelService;
 
+    private final ISysOssService ossService;
+
     /**
      * 查询知识库
      */
     @Override
-    @Cacheable(cacheNames = CacheNames.KNOWLEDGE_INFO, key = "#id")
-    public KnowledgeInfo queryById(Long id) {
-        return baseMapper.selectById(id);
+    @Cacheable(cacheNames = CacheNames.KNOWLEDGE_INFO, key = "#kid")
+    public KnowledgeInfo queryByKid(String kid) {
+        return baseMapper.selectByKid(kid);
     }
 
     /**
@@ -98,15 +105,6 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
         lqw.eq(StringUtils.isNotBlank(bo.getKid()), KnowledgeInfo::getKid, bo.getKid());
         lqw.eq(bo.getUid() != null, KnowledgeInfo::getUid, bo.getUid());
         lqw.like(StringUtils.isNotBlank(bo.getKname()), KnowledgeInfo::getKname, bo.getKname());
-        lqw.eq(StringUtils.isNotBlank(bo.getDescription()), KnowledgeInfo::getDescription,
-                bo.getDescription());
-        lqw.eq(StringUtils.isNotBlank(bo.getKnowledgeSeparator()), KnowledgeInfo::getKnowledgeSeparator,
-                bo.getKnowledgeSeparator());
-        lqw.eq(StringUtils.isNotBlank(bo.getQuestionSeparator()), KnowledgeInfo::getQuestionSeparator,
-                bo.getQuestionSeparator());
-        lqw.eq(bo.getOverlapChar() != null, KnowledgeInfo::getOverlapChar, bo.getOverlapChar());
-        lqw.eq(bo.getRetrieveLimit() != null, KnowledgeInfo::getRetrieveLimit, bo.getRetrieveLimit());
-        lqw.eq(bo.getTextBlockSize() != null, KnowledgeInfo::getTextBlockSize, bo.getTextBlockSize());
         return lqw;
     }
 
@@ -163,7 +161,7 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
                 knowledgeInfo.setKid(kid);
                 knowledgeInfo.setUid(LoginHelper.getLoginUser().getUserId());
                 baseMapper.insert(knowledgeInfo);
-                vectorStoreService.createSchema(String.valueOf(knowledgeInfo.getId()), bo.getEmbeddingModelName());
+                vectorStoreService.createSchema(String.valueOf(knowledgeInfo.getId()));
             }
         } else {
             baseMapper.updateById(knowledgeInfo);
@@ -189,13 +187,15 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
     }
 
     @Override
-    public void upload(KnowledgeInfoUploadBo bo) {
-        storeContent(bo.getFile(), bo.getKid());
+    public SysOss upload(KnowledgeInfoUploadBo bo) {
+        SysOss upload = ossService.upload(bo.getFile());
+        storeContent(bo.getFile(), bo.getKid(), upload.getOssId());
+        return upload;
     }
 
-    public void storeContent(MultipartFile file, String kid) {
+    public void storeContent(MultipartFile file, String kid, Long ossId) {
         String fileName = file.getOriginalFilename();
-        List<String> chunkList = new ArrayList<>();
+        List<String> chunkList;
         KnowledgeAttach knowledgeAttach = new KnowledgeAttach();
         knowledgeAttach.setKid(kid);
         String docId = RandomUtil.randomString(10);
@@ -211,6 +211,7 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
             chunkList = resourceLoader.getChunkList(content, kid);
             List<KnowledgeFragment> knowledgeFragmentList = new ArrayList<>();
             if (CollUtil.isNotEmpty(chunkList)) {
+                chunkList = chunkList.stream().filter(StringUtils::isNotBlank).toList();
                 for (int i = 0; i < chunkList.size(); i++) {
                     // 生成知识片段ID
                     String fid = RandomUtil.randomString(10);
@@ -226,16 +227,15 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
                 }
             }
             fragmentMapper.insertBatch(knowledgeFragmentList);
-        } catch (IOException e) {
-            log.error("保存知识库信息失败！{}", e.getMessage());
-        }
+
         knowledgeAttach.setContent(content);
+        knowledgeAttach.setOssId(ossId);
         knowledgeAttach.setCreateTime(new Date());
         attachMapper.insert(knowledgeAttach);
 
         // 通过kid查询知识库信息
         KnowledgeInfo knowledgeInfo = baseMapper.selectOne(Wrappers.<KnowledgeInfo>lambdaQuery()
-                .eq(KnowledgeInfo::getId, kid));
+                .eq(KnowledgeInfo::getKid, kid));
 
         // 通过向量模型查询模型信息
         ChatModel chatModel = chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName());
@@ -248,10 +248,17 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
         storeEmbeddingBo.setDocId(docId);
         storeEmbeddingBo.setFids(fids);
         storeEmbeddingBo.setChunkList(chunkList);
-        storeEmbeddingBo.setEmbeddingModelName(knowledgeInfo.getEmbeddingModelName());
+        storeEmbeddingBo.setEmbeddingModelName(chatModel.getModelName());
         storeEmbeddingBo.setApiKey(chatModel.getApiKey());
         storeEmbeddingBo.setBaseUrl(chatModel.getApiHost());
         vectorStoreService.storeEmbeddings(storeEmbeddingBo);
+        } catch (Exception e) {
+            log.error("保存知识库向量化信息失败！", e);
+            attachMapper.deleteById(knowledgeAttach.getId());
+            fragmentMapper.delete(new LambdaQueryWrapper<KnowledgeFragment>().in(KnowledgeFragment::getFid, fids));
+            ossService.deleteWithValidByIds(Collections.singletonList(ossId), false);
+            throw new ServiceException("保存知识库向量化信息失败！");
+        }
     }
 
     /**

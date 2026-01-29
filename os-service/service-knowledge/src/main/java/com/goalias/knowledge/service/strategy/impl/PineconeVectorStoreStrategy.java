@@ -55,7 +55,7 @@ public class PineconeVectorStoreStrategy extends AbstractVectorStoreStrategy {
     }
 
     @Override
-    public void createSchema(String kid, String modelName) {
+    public void createSchema(String kid) {
         String spaceName = getNameSpace(kid);
         // 使用缓存获取连接以确保只初始化一次
         EmbeddingStore<TextSegment> store = getPineconeStore(spaceName);
@@ -110,6 +110,8 @@ public class PineconeVectorStoreStrategy extends AbstractVectorStoreStrategy {
 //                .minScore(0.3)
                 .build();
         List<EmbeddingMatch<TextSegment>> matches = embeddingStore.search(request).matches();
+        log.info("Pinecone查询结果条数: {}，详情:{}", matches.size(), matches);
+
         for (EmbeddingMatch<TextSegment> match : matches) {
             TextSegment segment = match.embedded();
             if (Objects.nonNull(segment)) {

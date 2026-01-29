@@ -8,6 +8,8 @@ import com.goalias.common.oss.domain.vo.UploadResultVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public interface IFileService {
@@ -36,5 +38,16 @@ public interface IFileService {
     void abortMultipartUpload(String objectName, String uploadId);
 
     List<Integer> getUploadedChunks(String uploadId);
+
+
+    /**
+     * 获取时间层次的文件夹路径
+     *
+     * @return 如：/2026/01/07/
+     */
+    default String getTimeFilePath(Long userId, String fileName) {
+        String timePath = new SimpleDateFormat("/yyyy/MM/dd").format(new Date()) + "/";
+        return userId + timePath + fileName;
+    }
 
 }
