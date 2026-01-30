@@ -49,7 +49,7 @@ public class SysRegisterService {
         if (!userService.checkUserNameUnique(sysUser)) {
             throw new UserException("添加用户失败", username);
         }
-        sysUser.setUserBalance(10.0);
+        sysUser.setUserBalance(20.0);
         SysUser user = userService.registerUser(sysUser);
         if (user == null) {
             throw new UserException("用户注册失败!");
