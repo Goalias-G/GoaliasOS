@@ -1,0 +1,41 @@
+# 数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${GOALIAS_SERVER_IP}:6661/goalias-os?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
+    username: root
+    password: ${GOALIAS_PASSWORD}
+  data:
+    redis:
+      host: ${GOALIAS_SERVER_IP}
+      port: 6662
+      # 数据库索引
+      database: 5
+      password: ${GOALIAS_PASSWORD}
+      # 连接超时时间
+      timeout: 10S
+  mail:
+    host: smtp.qq.com
+    port: 465
+    username: ${GOALIAS_MAIL_USERNAME:12345678@qq.com}
+    password: ${GOALIAS_MAIL_PASSWORD:12345678}
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+minio:
+  endpoint: http://${GOALIAS_SERVER_IP}:6663
+  accessKey: root
+  secretKey: ${GOALIAS_PASSWORD}
+  media-url: http://${GOALIAS_SERVER_IP}:6663/
+  bucketName: goalias
+
+
+# sms aliyun短信
+notice:
+  sms:
+    enabled: false
+    accessKeyId: ${GOALIAS_SMS_ID:12345678}
+    accessKeySecret: ${GOALIAS_SMS_SECRET:12345678}
+    signName: 测试
