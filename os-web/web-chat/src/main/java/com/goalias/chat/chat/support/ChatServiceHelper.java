@@ -2,10 +2,15 @@ package com.goalias.chat.chat.support;
 
 import cn.hutool.json.JSONObject;
 import com.goalias.chat.chat.util.SSEUtil;
+import com.goalias.common.core.utils.SpringUtils;
+import com.goalias.common.redis.constant.CacheNames;
+import com.goalias.common.redis.service.RedisService;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 抽取各聊天实现类的通用逻辑：
@@ -16,6 +21,31 @@ import java.io.IOException;
  */
 @Slf4j
 public class ChatServiceHelper {
+
+
+    /**
+     * 记录 Token 使用情况
+     *
+     * @param response AI 响应
+     */
+    public static void recordTokenUsage(ChatResponse response) {
+        RedisService redisService = SpringUtils.getBean(RedisService.class);
+        if (Objects.nonNull(response.tokenUsage())) {
+            String modelName = response.modelName();
+            Integer inputTokens = response.tokenUsage().inputTokenCount();
+            Integer outputTokens = response.tokenUsage().outputTokenCount();
+
+            if (Objects.nonNull(inputTokens)) {
+                redisService.hIncr(CacheNames.CHAT_TOKEN_INPUT, modelName, inputTokens.longValue());
+            }
+            if (Objects.nonNull(outputTokens)) {
+                redisService.hIncr(CacheNames.CHAT_TOKEN_OUTPUT, modelName, outputTokens.longValue());
+            }
+
+            log.info("记录 Token 使用: 模型={}, 输入={}, 输出={}",
+                    modelName, inputTokens, outputTokens);
+        }
+    }
 
     public static void onStreamError(SseEmitter emitter, String errorMessage) {
         SSEUtil.sendErrorEvent(emitter, errorMessage);

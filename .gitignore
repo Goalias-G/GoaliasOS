@@ -25,6 +25,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 
 ######################################################################
+# AI
+AGENTS.md
 # IDE
 
 .kiro

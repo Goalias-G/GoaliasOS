@@ -39,7 +39,6 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     private final StreamingChatModel model;
     private final List<dev.langchain4j.agent.tool.ToolSpecification> tools;
     private final FunctionCallExecutor toolExecutor;
-    private final RedisService redisService;
 
     /**
      * 处理部分响应（流式文本片段）
@@ -66,8 +65,7 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     @Override
     public void onCompleteResponse(ChatResponse completeResponse) {
         try {
-            // 记录 Token 使用情况
-            recordTokenUsage(completeResponse);
+            ChatServiceHelper.recordTokenUsage(completeResponse);
 
             // 检查是否有工具调用请求
             if (completeResponse.aiMessage().hasToolExecutionRequests()) {
@@ -201,10 +199,8 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
         @Override
         public void onCompleteResponse(ChatResponse completeResponse) {
             try {
-                // 记录 Token 使用情况
-                recordTokenUsage(completeResponse);
+                ChatServiceHelper.recordTokenUsage(completeResponse);
 
-                // 检查是否还有工具调用请求（支持多轮工具调用）
                 if (completeResponse.aiMessage().hasToolExecutionRequests()) {
                     log.debug("检测到后续工具调用请求，继续处理");
                     handleToolCalls(completeResponse);
@@ -238,29 +234,6 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     }
 
     // ==================== 辅助方法 ====================
-
-    /**
-     * 记录 Token 使用情况
-     *
-     * @param response AI 响应
-     */
-    private void recordTokenUsage(ChatResponse response) {
-        if (response.tokenUsage() != null) {
-            String modelName = response.modelName();
-            Integer inputTokens = response.tokenUsage().inputTokenCount();
-            Integer outputTokens = response.tokenUsage().outputTokenCount();
-
-            if (inputTokens != null) {
-                redisService.hIncr(CacheNames.CHAT_TOKEN_INPUT, modelName, inputTokens.longValue());
-            }
-            if (outputTokens != null) {
-                redisService.hIncr(CacheNames.CHAT_TOKEN_OUTPUT, modelName, outputTokens.longValue());
-            }
-
-            log.debug("记录 Token 使用: 模型={}, 输入={}, 输出={}",
-                    modelName, inputTokens, outputTokens);
-        }
-    }
 
     /**
      * 转换消息格式

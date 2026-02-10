@@ -64,10 +64,6 @@ public interface IChatModelService {
      * 在同一分类下，查找优先级小于当前优先级的最高优先级模型（用于降级）。
      */
     ChatModel selectFallbackModelByCategoryAndLessPriority(String category, Integer currentPriority);
-    
-    /**
-     * 获取ppt模型信息
-     */
-    ChatModel getPPT();
+
 
 }

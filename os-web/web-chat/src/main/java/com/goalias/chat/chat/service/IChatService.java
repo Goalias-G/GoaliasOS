@@ -24,6 +24,8 @@ public interface IChatService {
      */
     SseEmitter chat(ChatRequest chatRequest, SseEmitter emitter);
 
+    String simpleChat(ChatRequest chatRequest);
+
     default dev.langchain4j.model.chat.request.ChatRequest convertToLangChainRequest(ChatRequest request) {
         List<ChatMessage> messages = new ArrayList<>();
         for (com.goalias.common.chat.entity.chat.Message msg : request.getMessages()) {

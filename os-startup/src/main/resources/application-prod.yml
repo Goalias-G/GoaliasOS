@@ -2,16 +2,16 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/goalias-os?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://mysql:6661/goalias-os?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true
     username: root
     password: ${GOALIAS_PASSWORD}
   data:
     redis:
       host: redis
-      port: 6379
+      port: 6662
       # 数据库索引
-      database: 5
-      # password: 123456
+      database: 2
+      password: ${GOALIAS_PASSWORD}
       # 连接超时时间
       timeout: 10S
   mail:

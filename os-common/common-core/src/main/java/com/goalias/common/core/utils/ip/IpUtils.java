@@ -58,7 +58,7 @@ public class IpUtils {
         if (!StringUtils.hasText(ip)){
             return UNKNOWN;
         }
-        if (ip.equals("127.0.0.1")){
+        if (ip.equals("127.0.0.1") || ip.equals("0:0:0:0:0:0:0:1")){
             return "本机";
         }
         HttpResponse httpResponse = HttpUtil.createGet("https://opendata.baidu.com/api.php")

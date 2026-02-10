@@ -65,7 +65,7 @@ public class SseServiceImpl implements ISseService {
 
 
     @Override
-    public SseEmitter sseChat(ChatRequest chatRequest, HttpServletRequest request) {
+    public SseEmitter sseChat(ChatRequest chatRequest) {
         SseEmitter sseEmitter = new SseEmitter(0L);
         try {
             // 记录当前会话令牌，供异步线程使用
@@ -129,6 +129,19 @@ public class SseServiceImpl implements ISseService {
             chatModelHolder.remove();
         }
         return sseEmitter;
+    }
+
+    @Override
+    public String simpleChat(ChatRequest chatRequest, PromptTemplateEnum promptTemplate) {
+        chatRequest.setAutoSelectModel(Boolean.TRUE);
+        IChatService chatService = autoSelectModelAndGetService(chatRequest);
+        if (Objects.nonNull(promptTemplate)){
+            Message sysPrompt = new Message();
+            sysPrompt.setRole(Message.Role.SYSTEM.getName());
+            sysPrompt.setContent(getPromptTemplatePrompt(promptTemplate.getDesc()));
+            chatRequest.getMessages().add(0, sysPrompt);
+        }
+        return chatService.simpleChat(chatRequest);
     }
 
     /**

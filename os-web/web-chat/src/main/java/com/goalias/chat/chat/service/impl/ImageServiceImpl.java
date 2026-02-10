@@ -141,6 +141,11 @@ public class ImageServiceImpl implements IChatService {
     }
 
     @Override
+    public String simpleChat(ChatRequest chatRequest) {
+        return null;
+    }
+
+    @Override
     public String getProviderName() {
         return ChatModeType.IMAGE.getCode();
     }

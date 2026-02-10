@@ -18,6 +18,7 @@ import dev.langchain4j.community.model.dashscope.spi.QwenStreamingChatModelBuild
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.request.ResponseFormat;
+import dev.langchain4j.model.chat.response.ChatResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,6 @@ import java.util.Objects;
 public class QwenChatServiceImpl implements IChatService {
 
     private final IChatModelService chatModelService;
-    private final RedisService redisService;
     private final FunctionCallsFactory toolFactory;
     private final FunctionCallExecutor toolExecutor;
 
@@ -65,8 +65,7 @@ public class QwenChatServiceImpl implements IChatService {
                     chatRequest,
                     model,
                     tools,
-                    toolExecutor,
-                    redisService
+                    toolExecutor
             ));
         } catch (Exception e) {
             log.error("千问请求失败：{}", e.getMessage());
@@ -74,6 +73,21 @@ public class QwenChatServiceImpl implements IChatService {
         }
 
         return emitter;
+    }
+
+    @Override
+    public String simpleChat(ChatRequest chatRequest) {
+        ChatModel chatModel = chatModelService.selectModelByName(chatRequest.getModel());
+
+        QwenChatModel model = QwenChatModel.builder()
+                .apiKey(chatModel.getApiKey())
+                .modelName(chatModel.getModelName())
+                .temperature(chatRequest.getTemperature().floatValue())
+                .topP(chatRequest.getTopP())
+                .build();
+        ChatResponse response = model.chat(convertToLangChainRequest(chatRequest));
+        ChatServiceHelper.recordTokenUsage(response);
+        return response.aiMessage().text();
     }
 
     @Override

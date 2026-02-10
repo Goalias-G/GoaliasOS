@@ -67,8 +67,6 @@ public class ChatModelServiceImpl implements IChatModelService {
         LambdaQueryWrapper<ChatModel> lqw = Wrappers.lambdaQuery();
         lqw.eq(StringUtils.isNotBlank(bo.getCategory()), ChatModel::getCategory, bo.getCategory());
         lqw.like(StringUtils.isNotBlank(bo.getModelName()), ChatModel::getModelName, bo.getModelName());
-        lqw.eq(StringUtils.isNotBlank(bo.getModelDescribe()), ChatModel::getModelDescribe, bo.getModelDescribe());
-        lqw.eq(bo.getModelPrice() != null, ChatModel::getModelPrice, bo.getModelPrice());
         lqw.eq(StringUtils.isNotBlank(bo.getModelType()), ChatModel::getModelType, bo.getModelType());
         lqw.eq(StringUtils.isNotBlank(bo.getModelShow()), ChatModel::getModelShow, bo.getModelShow());
         return lqw;
@@ -166,10 +164,5 @@ public class ChatModelServiceImpl implements IChatModelService {
                         .orderByDesc(ChatModel::getPriority),
                 false
         );
-    }
-
-    @Override
-    public ChatModel getPPT() {
-        return baseMapper.selectOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getModelName, "ppt"));
     }
 }

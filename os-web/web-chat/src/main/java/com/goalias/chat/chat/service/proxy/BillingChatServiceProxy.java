@@ -58,6 +58,11 @@ public class BillingChatServiceProxy implements IChatService {
     }
 
     @Override
+    public String simpleChat(ChatRequest chatRequest) {
+        return delegate.simpleChat(chatRequest);
+    }
+
+    @Override
     public String getProviderName() {
         return delegate.getProviderName();
     }

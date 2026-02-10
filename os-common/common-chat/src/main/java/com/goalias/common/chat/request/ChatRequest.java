@@ -18,40 +18,7 @@ public class ChatRequest {
     @NotEmpty(message = "对话消息不能为空")
     List<Message> messages;
 
-    @NotEmpty(message = "传入的模型不能为空")
     private String model;
-
-    /**
-     * 提示词(自动填充)
-     */
-    private String prompt;
-
-
-    /**
-     * 系统提示词(自动填充)
-     */
-    private String sysPrompt;
-
-
-    /**
-     * 消息id
-     */
-    private Long messageId;
-
-    /**
-     * 是否开启流式对话
-     */
-    private Boolean stream = Boolean.TRUE;
-
-    /**
-     * 知识库id
-     */
-    private String kid;
-
-    /**
-     * 用户id
-     */
-    private Long userId;
 
     /**
      * 会话id
@@ -59,25 +26,9 @@ public class ChatRequest {
     private Long sessionId;
 
     /**
-     * 对话角色
+     * 知识库id
      */
-    private String role;
-
-
-    /**
-     * 对话id(每个聊天窗口都不一样)
-     */
-    private Long uuid;
-
-    /**
-     * 是否有附件
-     */
-    private Boolean hasAttachment;
-
-    /**
-     * 是否启用深度思考
-     */
-    private Boolean enableThinking;
+    private String kid;
 
     /**
      * 是否联网搜索(若支持)(0-否 1-是)
@@ -90,9 +41,9 @@ public class ChatRequest {
     private Boolean autoSelectModel;
 
     /**
-     * 会话令牌（为避免在非Web线程中获取Request，入口处注入）
+     * 是否有附件
      */
-    private String token;
+    private Boolean hasAttachment;
 
     /**
      * 采样温度，取值范围[0,2]
@@ -106,5 +57,40 @@ public class ChatRequest {
      * P=0.9 → 高多样性（包含更多低概率词）
      */
     private Double topP = 0.9;
+
+//    -----------------------------
+
+    /**
+     * 消息id
+     */
+    private Long messageId;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
+
+
+    /**
+     * 对话角色
+     */
+    private String role;
+
+
+    /**
+     * 会话令牌（为避免在非Web线程中获取Request，入口处注入）
+     */
+    private String token;
+
+    /**
+     * 提示词(自动填充)
+     */
+    private String prompt;
+
+
+    /**
+     * 系统提示词(自动填充)
+     */
+    private String sysPrompt;
 
 }

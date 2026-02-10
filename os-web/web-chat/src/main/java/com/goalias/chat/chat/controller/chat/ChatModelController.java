@@ -49,14 +49,6 @@ public class ChatModelController extends BaseController {
         return R.ok(chatModelService.queryList(bo));
     }
 
-
-    /**
-     * 查询ppt模型信息
-     */
-    @GetMapping("/getPPT")
-    public R<ChatModel> getPPT() {
-        return R.ok(chatModelService.getPPT());
-    }
     /**
      * 获取聊天模型详细信息
      *
