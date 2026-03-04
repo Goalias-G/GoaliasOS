@@ -124,10 +124,14 @@ public class PineconeVectorStoreStrategy extends AbstractVectorStoreStrategy {
     @Override
     @SneakyThrows
     public void removeByKid(String kid) {
-        EmbeddingStore<TextSegment> embeddingStore = getPineconeStore(getNameSpace(kid));
-        embeddingStore.removeAll();
-        log.info("Pinecone成功删除 kid={} 的所有向量数据", kid);
-        storeCache.remove(getNameSpace(kid));
+        try {
+            EmbeddingStore<TextSegment> embeddingStore = getPineconeStore(getNameSpace(kid));
+            embeddingStore.removeAll();
+        } catch (Exception ignore) {
+        } finally {
+            storeCache.remove(getNameSpace(kid));
+            log.info("Pinecone成功删除 kid={} 的所有向量数据", kid);
+        }
 //        embeddingStore.remove(kid);
     }
 

@@ -178,7 +178,7 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
         check(knowledgeInfo);
         map.put("kid", knowledgeInfo.getKid());
         // 删除向量数据
-        vectorStoreService.removeByKid(String.valueOf(knowledgeInfo.getId()));
+        vectorStoreService.removeByKid(String.valueOf(knowledgeInfo.getKid()));
         // 删除附件和知识片段
         fragmentMapper.deleteByMap(map);
         attachMapper.deleteByMap(map);

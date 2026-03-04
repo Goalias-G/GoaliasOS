@@ -211,6 +211,8 @@ public class SseServiceImpl implements ISseService {
      */
     private void buildChatMessageList(ChatRequest chatRequest) {
         List<Message> messages = chatRequest.getMessages();
+        Message chatMessage = messages.get(messages.size() - 1);
+        String chatString = chatMessage.getContent().toString();
 
         // 处理知识库相关逻辑
         String sysPrompt = processKnowledgeBase(chatRequest, messages);
@@ -224,17 +226,17 @@ public class SseServiceImpl implements ISseService {
 
         chatRequest.setSysPrompt(sysPrompt);
 
-        // 用户对话内容
-        String chatString = null;
-        // 获取用户对话信息
-        Object content = messages.get(messages.size() - 1).getContent();
-        if (content instanceof List<?> listContent) {
-            if (CollectionUtil.isNotEmpty(listContent)) {
-                chatString = listContent.get(0).toString();
-            }
-        } else {
-            chatString = content.toString();
-        }
+//        // 用户对话内容
+//        String chatString = null;
+//        // 获取用户对话信息
+//        Object content = messages.get(messages.size() - 1).getContent();
+//        if (content instanceof List<?> listContent) {
+//            if (CollectionUtil.isNotEmpty(listContent)) {
+//                chatString = listContent.get(0).toString();
+//            }
+//        } else {
+//            chatString = content.toString();
+//        }
         chatRequest.setPrompt(chatString);
     }
 
@@ -310,7 +312,7 @@ public class SseServiceImpl implements ISseService {
                 .map(doc -> "[知识片段]\n" + doc)
                 .collect(Collectors.joining("\n\n"));
         String enhancedPrompt = String.format("""
-                如有与问题匹配，请结合并摘选总结以下知识库信息回答问题。注意：优先使用背景知识，知识不足时诚实说明。
+                如有与问题匹配，请结合并摘选总结以下知识库信息回答[用户问题]。注意：优先使用背景知识，知识不足时诚实说明。
                 [参考资料]
                 %s
                 

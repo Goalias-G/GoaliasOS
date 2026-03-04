@@ -29,15 +29,17 @@ ENV JAVA_OPTS="-Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseS
 
 # 启动命令
 # 定义启动命令
-ENTRYPOINT ["java", "$JAVA_OPTS", "-jar", "GoaliasOS.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar GoaliasOS.jar"]
 
-#    docker build -t goaliasos:latest .
+#docker build -t goaliasos:latest .
 #
-#    docker run -d \
-#            --name goaliasos \
-#            --restart always \
-#            -p 7000:7000 \
-#            -v $(pwd)/config:/app/os-startup/src/main/resources \
-#            -v $(pwd)/logs:/app/logs \
-#    goaliasos:latest
-
+#docker run -d \
+#        --name goaliasos \
+#        --restart always \
+#        --network blog \
+#        -p 7000:7000 \
+#        -v $(pwd)/config:/app/os-startup/src/main/resources \
+#        -v $(pwd)/logs:/app/logs \
+#        -e GOALIAS_PASSWORD=$GOALIAS_PASSWORD \
+#        -e GOALIAS_SERVER_IP=$GOALIAS_SERVER_IP \
+#goaliasos:latest

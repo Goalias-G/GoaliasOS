@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.bo.ChatModelBo;
+import com.goalias.chat.domain.vo.ChatModelVo;
 import com.goalias.chat.mapper.ChatModelMapper;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.redis.constant.CacheNames;
@@ -39,17 +40,18 @@ public class ChatModelServiceImpl implements IChatModelService {
      * 查询聊天模型
      */
     @Override
-    public ChatModel queryById(Long id) {
-        return baseMapper.selectById(id);
+    public ChatModelVo queryById(Long id) {
+        return MapstructUtils.convert(baseMapper.selectById(id), ChatModelVo.class);
     }
 
     /**
      * 查询聊天模型列表
      */
     @Override
-    public TableDataInfo<ChatModel> queryPageList(ChatModelBo bo, PageQuery pageQuery) {
+    public TableDataInfo queryPageList(ChatModelBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<ChatModel> lqw = buildQueryWrapper(bo);
         Page<ChatModel> result = baseMapper.selectPage(pageQuery.build(), lqw);
+        result.convert(v -> MapstructUtils.convert(v, ChatModelVo.class));
         return TableDataInfo.build(result);
     }
 
@@ -57,9 +59,9 @@ public class ChatModelServiceImpl implements IChatModelService {
      * 查询聊天模型列表
      */
     @Override
-    public List<ChatModel> queryList(ChatModelBo bo) {
+    public List<ChatModelVo> queryList(ChatModelBo bo) {
         LambdaQueryWrapper<ChatModel> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectList(lqw);
+        return MapstructUtils.convert(baseMapper.selectList(lqw), ChatModelVo.class);
     }
 
     private LambdaQueryWrapper<ChatModel> buildQueryWrapper(ChatModelBo bo) {

@@ -1,10 +1,9 @@
-package com.goalias.chat.domain;
+package com.goalias.chat.domain.vo;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goalias.common.web.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,7 +19,7 @@ import java.io.Serial;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("chat_model")
-public class ChatModel extends BaseEntity {
+public class ChatModelVo extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -46,15 +45,13 @@ public class ChatModel extends BaseEntity {
      */
     private String modelDescribe;
 
-    /**
-     * 模型价格
-     */
-    private Double modelPrice;
 
     /**
      * 计费类型
      */
     private String modelType;
+
+    private Double modelPrice;
 
     /**
      * 是否显示
@@ -62,25 +59,10 @@ public class ChatModel extends BaseEntity {
     private String modelShow;
 
     /**
-     * 请求地址
-     */
-    private String apiHost;
-
-
-    /**
-     * 密钥
-     */
-    private String apiKey;
-
-    /**
      * 是否支持联网搜索(0-否 1-是)
      */
     private Integer enableSearch;
 
-    /**
-     * 优先级
-     */
-    private Integer priority;
 
     /**
      * 模型供应商
@@ -92,11 +74,6 @@ public class ChatModel extends BaseEntity {
      */
     private String remark;
 
-
-    /**
-     * 模型维度
-     */
-    private Integer dimension;
 
 
 }

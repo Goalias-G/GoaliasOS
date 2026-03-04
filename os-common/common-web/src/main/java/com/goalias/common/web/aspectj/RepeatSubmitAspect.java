@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 防止重复提交(参考美团GTIS防重系统)
@@ -60,8 +61,8 @@ public class RepeatSubmitAspect {
         submitKey = SecureUtil.md5(submitKey + ":" + nowParams);
         // 唯一标识（指定key + url + 消息头）
         String cacheRepeatKey = GlobalConstants.REPEAT_SUBMIT_KEY + url + submitKey;
-        String key = redisService.get(cacheRepeatKey).toString();
-        if (key == null) {
+        Object key = redisService.get(cacheRepeatKey);
+        if (Objects.isNull(key)) {
             redisService.set(cacheRepeatKey, "", interval / 1000);
             KEY_CACHE.set(cacheRepeatKey);
         } else {

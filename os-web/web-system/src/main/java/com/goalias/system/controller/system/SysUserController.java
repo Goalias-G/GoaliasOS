@@ -78,6 +78,7 @@ public class SysUserController extends BaseController {
     public R<SysUserVo> getInfo() {
         LoginUser loginUser = LoginHelper.getLoginUser();
         SysUserVo user = userService.selectUserById(loginUser.getUserId());
+        user.setIsAdmin(LoginHelper.isSuperAdmin());
         return R.ok(user);
     }
 
@@ -92,6 +93,7 @@ public class SysUserController extends BaseController {
         SysUserInfoVo userInfoVo = new SysUserInfoVo();
         if (ObjectUtil.isNotNull(userId)) {
             SysUserVo sysUser = userService.selectUserById(userId);
+            sysUser.setIsAdmin(LoginHelper.isSuperAdmin(userId));
             userInfoVo.setUser(sysUser);
         }
         return R.ok(userInfoVo);

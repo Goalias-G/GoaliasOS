@@ -112,4 +112,6 @@ public class SysUserVo implements Serializable {
      */
     private Double userBalance;
 
+    private Boolean isAdmin;
+
 }

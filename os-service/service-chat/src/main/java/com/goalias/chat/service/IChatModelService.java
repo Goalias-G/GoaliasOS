@@ -2,6 +2,7 @@ package com.goalias.chat.service;
 
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.bo.ChatModelBo;
+import com.goalias.chat.domain.vo.ChatModelVo;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 
@@ -18,17 +19,17 @@ public interface IChatModelService {
     /**
      * 查询聊天模型
      */
-    ChatModel queryById(Long id);
+    ChatModelVo queryById(Long id);
 
     /**
      * 查询聊天模型列表
      */
-    TableDataInfo<ChatModel> queryPageList(ChatModelBo bo, PageQuery pageQuery);
+    TableDataInfo<ChatModelVo> queryPageList(ChatModelBo bo, PageQuery pageQuery);
 
     /**
      * 查询聊天模型列表
      */
-    List<ChatModel> queryList(ChatModelBo bo);
+    List<ChatModelVo> queryList(ChatModelBo bo);
 
     /**
      * 新增聊天模型

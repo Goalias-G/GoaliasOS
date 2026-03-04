@@ -33,7 +33,7 @@ public class ChatRequest {
     /**
      * 是否联网搜索(若支持)(0-否 1-是)
      */
-    private Boolean enableSearch;
+    private Boolean enableSearch =  false;
 
     /**
      * 是否自动切换模型

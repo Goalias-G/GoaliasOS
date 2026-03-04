@@ -2,6 +2,7 @@ package com.goalias.chat.chat.controller.chat;
 
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.bo.ChatModelBo;
+import com.goalias.chat.domain.vo.ChatModelVo;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.web.annotation.RepeatSubmit;
 import com.goalias.common.web.core.BaseController;
@@ -36,7 +37,7 @@ public class ChatModelController extends BaseController {
      * 查询聊天模型列表
      */
     @GetMapping("/list")
-    public TableDataInfo<ChatModel> list(ChatModelBo bo, PageQuery pageQuery) {
+    public TableDataInfo<ChatModelVo> list(ChatModelBo bo, PageQuery pageQuery) {
         return chatModelService.queryPageList(bo, pageQuery);
     }
 
@@ -44,7 +45,7 @@ public class ChatModelController extends BaseController {
      * 查询用户模型列表
      */
     @GetMapping("/modelList")
-    public R<List<ChatModel>> modelList(ChatModelBo bo) {
+    public R<List<ChatModelVo>> modelList(ChatModelBo bo) {
         bo.setModelShow(DisplayType.VISIBLE.getCode());
         return R.ok(chatModelService.queryList(bo));
     }
@@ -55,7 +56,7 @@ public class ChatModelController extends BaseController {
      * @param id 主键
      */
     @GetMapping("/{id}")
-    public R<ChatModel> getInfo(@NotNull(message = "主键不能为空")
+    public R<ChatModelVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long id) {
         return R.ok(chatModelService.queryById(id));
     }

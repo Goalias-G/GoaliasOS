@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpStatus;
 import com.goalias.common.core.domain.R;
 import com.goalias.common.core.exception.ServiceException;
+import com.goalias.common.core.exception.base.BaseException;
 import com.goalias.common.core.utils.StreamUtils;
 import com.goalias.common.core.utils.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -66,10 +67,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public R<Void> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e,
-                                                                HttpServletRequest request) {
+                                                       HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',不支持'{}'请求", requestURI, e.getMethod());
-        return R.fail(e.getMessage());
+        return R.fail("请求方法不支持，请使用正确的HTTP方法");
     }
 
     /**
@@ -85,11 +86,11 @@ public class GlobalExceptionHandler {
     /**
      * 拦截未知的运行时异常
      */
-    @ExceptionHandler(RuntimeException.class)
-    public R<Void> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+    @ExceptionHandler(BaseException.class)
+    public R<Void> handleRuntimeException(BaseException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生未知异常.", requestURI, e);
-        return R.fail(e.getMessage());
+        return R.fail(e.getDefaultMessage());
     }
 
     /**
@@ -99,7 +100,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleException(Exception e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生系统异常.", requestURI, e);
-        return R.fail(e.getMessage());
+        return R.fail("系统繁忙，请稍后重试");
     }
 
     /**
@@ -139,7 +140,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateKeyException.class)
     public R<Void> handleDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
-        log.error("请求地址'{}',数据库中已存在记录'{}'", requestURI, e.getMessage());
+        log.error("请求地址'{}',数据库中已存在记录", requestURI, e);
         return R.fail("数据库中已存在该记录!");
     }
 
@@ -155,6 +156,6 @@ public class GlobalExceptionHandler {
             return R.fail("未找到数据源!");
         }
         log.error("请求地址'{}', Mybatis系统异常", requestURI, e);
-        return R.fail(message);
+        return R.fail("数据访问异常，请稍后重试");
     }
 }

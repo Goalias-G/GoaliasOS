@@ -22,16 +22,6 @@ public class TableDataInfo<T> implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 总记录数
-     */
-    private long total;
-
-    /**
-     * 列表数据
-     */
-    private List<T> rows;
-
-    /**
      * 消息状态码
      */
     private int code;
@@ -41,6 +31,8 @@ public class TableDataInfo<T> implements Serializable {
      */
     private String message;
 
+    private TableDataInfo.Data<T> data;
+
     /**
      * 分页
      *
@@ -48,8 +40,8 @@ public class TableDataInfo<T> implements Serializable {
      * @param total 总记录数
      */
     public TableDataInfo(List<T> list, long total) {
-        this.rows = list;
-        this.total = total;
+        this.data.list = list;
+        this.data.total = total;
         this.code = HttpStatus.HTTP_OK;
         this.message = "查询成功";
     }
@@ -61,8 +53,7 @@ public class TableDataInfo<T> implements Serializable {
         TableDataInfo<T> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.HTTP_OK);
         rspData.setMessage("查询成功");
-        rspData.setRows(page.getRecords());
-        rspData.setTotal(page.getTotal());
+        rspData.setData(new TableDataInfo.Data<>(page.getRecords(), page.getTotal()));
         return rspData;
     }
 
@@ -73,8 +64,7 @@ public class TableDataInfo<T> implements Serializable {
         TableDataInfo<T> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.HTTP_OK);
         rspData.setMessage("查询成功");
-        rspData.setRows(list);
-        rspData.setTotal(list.size());
+        rspData.setData(new TableDataInfo.Data<>(list, list.size()));
         return rspData;
     }
 
@@ -86,6 +76,18 @@ public class TableDataInfo<T> implements Serializable {
         rspData.setCode(HttpStatus.HTTP_OK);
         rspData.setMessage("查询成功");
         return rspData;
+    }
+
+    @lombok.Data
+    @NoArgsConstructor
+    public static class Data<T> {
+        private List<T> list;
+        private long total;
+
+        public Data(List<T> list, long total) {
+            this.list = list;
+            this.total = total;
+        }
     }
 
 }

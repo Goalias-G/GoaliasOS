@@ -47,7 +47,7 @@ public class SysRegisterService {
         sysUser.setPassword(BCrypt.hashpw(password));
         sysUser.setUserType(UserConstants.SYS_USER);
         if (!userService.checkUserNameUnique(sysUser)) {
-            throw new UserException("添加用户失败", username);
+            throw new UserException("添加用户失败");
         }
         sysUser.setUserBalance(20.0);
         SysUser user = userService.registerUser(sysUser);

@@ -130,10 +130,10 @@ public class SysLoginService {
                 .eq(SysUser::getUserName, username));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", username);
-            throw new UserException("user.not.exists", username);
+            throw new UserException("登录用户不存在");
         } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
             log.info("登录用户：{} 已被停用.", username);
-            throw new UserException("user.blocked", username);
+            throw new UserException("登录用户账号异常");
         }
         return userMapper.selectUserByUserName(username);
     }

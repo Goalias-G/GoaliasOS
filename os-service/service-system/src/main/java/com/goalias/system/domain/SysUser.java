@@ -119,6 +119,9 @@ public class SysUser extends BaseEntity {
      */
     private String userGrade;
 
+    @TableField(exist = false)
+    private Boolean isAdmin = isSuperAdmin();
+
     public SysUser(Long userId) {
         this.userId = userId;
     }

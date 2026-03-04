@@ -2,20 +2,17 @@ package com.goalias.chat.chat.controller.chat;
 
 import com.goalias.chat.domain.ChatMessage;
 import com.goalias.chat.domain.bo.ChatMessageBo;
-import com.goalias.chat.domain.bo.ChatMessageForUniappBo;
-import com.goalias.chat.domain.vo.ChatMessageVo;
 import com.goalias.chat.service.IChatMessageService;
+import com.goalias.common.core.domain.R;
+import com.goalias.common.core.validate.AddGroup;
+import com.goalias.common.core.validate.EditGroup;
 import com.goalias.common.web.annotation.RepeatSubmit;
 import com.goalias.common.web.core.BaseController;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import com.goalias.common.core.domain.R;
-import com.goalias.common.core.validate.AddGroup;
-import com.goalias.common.core.validate.EditGroup;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,35 +60,6 @@ public class ChatMessageController extends BaseController {
     public R<ChatMessage> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long id) {
         return R.ok(chatMessageService.queryById(id));
-    }
-
-
-
-    /**
-     * 查询聊天消息列表 uniapp
-     */
-    @GetMapping("/listForUniapp")
-    public TableDataInfo<ChatMessage> list(ChatMessageForUniappBo uniappBo, PageQuery pageQuery) {
-        ChatMessageBo bo = new ChatMessageBo();
-        bo.setUserId(uniappBo.getUserId());
-        bo.setSessionId(Long.parseLong(uniappBo.getUserId().toString() + "2024"));
-        return chatMessageService.queryPageList(bo, pageQuery);
-    }
-
-
-    /**
-     * 新增聊天消息 uniapp
-     */
-    @RepeatSubmit()
-    @PostMapping("/addForUniapp")
-    public R<Long> addForUniapp(@Validated(AddGroup.class) @RequestBody ChatMessageForUniappBo uniappBo) {
-        ChatMessageBo bo = new ChatMessageBo();
-        bo.setUserId(uniappBo.getUserId());
-        bo.setRole(uniappBo.getRole());
-        bo.setContent(uniappBo.getContent());
-        bo.setSessionId(Long.parseLong(uniappBo.getUserId().toString() + "2024"));
-        chatMessageService.insertByBo(bo);
-        return R.ok(uniappBo.getId());
     }
 
 
