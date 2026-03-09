@@ -93,4 +93,6 @@ public class ChatRequest {
      */
     private String sysPrompt;
 
+    private Boolean enableTool = true;
+
 }

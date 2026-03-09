@@ -100,7 +100,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleException(Exception e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生系统异常.", requestURI, e);
-        return R.fail("系统繁忙，请稍后重试");
+        return R.fail("Goalias OS 系统开小差了,请刷新重试...");
     }
 
     /**

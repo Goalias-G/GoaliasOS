@@ -65,20 +65,4 @@ public class KnowledgeAttach extends BaseEntity {
   private Long ossId;
 
 
-
-  /**
-   * 拆解图片状态10未开始，20进行中，30已完成
-   */
-  private Integer picStatus;
-
-  /**
-   * 分析图片状态10未开始，20进行中，30已完成
-   */
-  private Integer picAnysStatus;
-
-  /**
-   * 写入向量数据库状态10未开始，20进行中，30已完成
-   */
-  private Integer vectorStatus;
-
 }

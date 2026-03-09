@@ -4,22 +4,20 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.goalias.chat.chat.event.ChatMessageCreatedEvent;
 import com.goalias.chat.chat.service.IChatCostService;
 import com.goalias.chat.domain.ChatModel;
-import com.goalias.chat.domain.ChatUsageToken;
 import com.goalias.chat.domain.bo.ChatMessageBo;
+import com.goalias.chat.enums.BillingType;
+import com.goalias.chat.enums.UserGradeType;
 import com.goalias.chat.service.IChatMessageService;
 import com.goalias.chat.service.IChatModelService;
-import com.goalias.chat.service.IChatTokenService;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.domain.model.LoginUser;
 import com.goalias.common.core.exception.ServiceException;
 import com.goalias.common.core.exception.base.BaseException;
 import com.goalias.common.satoken.utils.LoginHelper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import com.goalias.chat.enums.BillingType;
-import com.goalias.chat.enums.UserGradeType;
 import com.goalias.system.domain.SysUser;
 import com.goalias.system.mapper.SysUserMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -42,8 +40,6 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
 
     private final IChatMessageService chatMessageService;
 
-    private final IChatTokenService chatTokenService;
-
     private final IChatModelService chatModelService;
 
     private final ApplicationEventPublisher eventPublisher;
@@ -60,10 +56,10 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
 
         String modelName = chatRequest.getModel();
         com.goalias.chat.domain.ChatModel chatModel = chatModelService.selectModelByName(modelName);
-        BigDecimal unitPrice = BigDecimal.valueOf(chatModel.getModelPrice());
+//        BigDecimal unitPrice = BigDecimal.valueOf(chatModel.getModelPrice());
 
         // 按次计费：每次调用都直接扣费，不累计token
-        if (BillingType.TIMES.getCode().equals(chatModel.getModelType())) {
+//        if (BillingType.TIMES.getCode().equals(chatModel.getModelType())) {
             BigDecimal numberCost = BigDecimal.valueOf(1);
             deductUserBalance(chatRequest.getUserId(), numberCost.doubleValue());
             log.debug("deductToken->按次数扣费，费用: {}，模型: {}", numberCost, modelName);
@@ -78,66 +74,8 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
 
             // 更新消息的计费信息到备注
             updateMessageBilling(chatRequest, tokens, numberCost.doubleValue(), chatModel.getModelType());
-            return;
-        }
-
-        // 按token计费：累加并按阈值批量扣费，保留余数
-        final int threshold = 1000;
-
-        // 获得记录的累计token数
-        // TODO: 这里存在并发竞态条件，需要在chatTokenService层面添加乐观锁或分布式锁
-        ChatUsageToken chatToken = chatTokenService.queryByUserId(chatRequest.getUserId(), modelName);
-        if (chatToken == null) {
-            chatToken = new ChatUsageToken();
-            chatToken.setToken(0);
-            chatToken.setModelName(modelName);
-            chatToken.setUserId(chatRequest.getUserId());
-        }
-
-        int previousUnpaid = chatToken.getToken();
-        int totalTokens = previousUnpaid + tokens;
-        log.debug("deductToken->未付费token数: {}，本次累计后总数: {}", previousUnpaid, totalTokens);
-
-        int billable = (totalTokens / threshold) * threshold; // 可计费整批token数
-        int remainder = totalTokens - billable;               // 结算后保留的余数
-
-        if (billable > 0) {
-            // 计算批次数：每1000个Token为一批，每批扣费单价
-            int batches = billable / threshold;
-            BigDecimal numberCost = unitPrice
-                .multiply(BigDecimal.valueOf(batches))
-                .setScale(2, RoundingMode.HALF_UP);
-            log.debug("deductToken->按token扣费，结算token数量: {}，批次数: {}，单价: {}，费用: {}",
-                      billable, batches, unitPrice, numberCost);
-
-            try {
-                // 先尝试扣费
-                deductUserBalance(chatRequest.getUserId(), numberCost.doubleValue());
-                // 扣费成功后，保存余数
-                chatToken.setModelName(modelName);
-                chatToken.setUserId(chatRequest.getUserId());
-                chatToken.setToken(remainder);
-                chatTokenService.editToken(chatToken);
-                log.debug("deductToken->扣费成功，更新余数: {}", remainder);
-
-                // 更新消息的计费信息到备注
-                updateMessageBilling(chatRequest, billable, numberCost.doubleValue(), chatModel.getModelType());
-            } catch (ServiceException e) {
-                // 余额不足时，不更新token累计，保持原有累计数
-                log.warn("deductToken->余额不足，本次token累计保持不变: {}", totalTokens);
-                throw e; // 重新抛出异常
-            }
-        } else {
-            // 未达阈值，累积token
-            log.debug("deductToken->未达到计费阈值({})，累积到下次", threshold);
-            chatToken.setModelName(modelName);
-            chatToken.setUserId(chatRequest.getUserId());
-            chatToken.setToken(totalTokens);
-            chatTokenService.editToken(chatToken);
-
-            // 虽未扣费，但要更新消息的基本信息（实际token数、计费类型等）
-            updateMessageWithoutBilling(chatRequest, tokens, chatModel.getModelType());
-        }
+//            return;
+//        }
     }
 
     /**
@@ -213,28 +151,10 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
         BigDecimal unitPrice = BigDecimal.valueOf(chatModel.getModelPrice());//百万Token 单价
 
         // 按次计费：直接检查单次费用 (系统只按次计费)
-        if (BillingType.TIMES.getCode().equals(chatModel.getModelType())) {
+//        if (BillingType.TIMES.getCode().equals(chatModel.getModelType())) {
             checkUserTimesWithoutDeduct(chatRequest.getUserId());
             return;
-        }
-
-        // 按token计费：检查累计后可能的费用
-//        int tokens = TikTokensUtil.tokens(chatRequest.getModel(), chatRequest.getPrompt());
-        int tokens = -1;
-        final int threshold = 1000;
-        ChatUsageToken chatToken = chatTokenService.queryByUserId(chatRequest.getUserId(), modelName);
-        int previousUnpaid = (chatToken == null) ? 0 : chatToken.getToken();
-        int totalTokens = previousUnpaid + tokens;
-
-        int billable = (totalTokens / threshold) * threshold;
-        if (billable > 0) {
-            // 计算批次数：每1000个Token为一批，每批扣费单价
-            int batches = billable / threshold;
-            BigDecimal numberCost = unitPrice
-                .multiply(BigDecimal.valueOf(batches))
-                .setScale(2, RoundingMode.HALF_UP);
-            checkUserBalanceWithoutDeduct(chatRequest.getUserId(), numberCost.doubleValue());
-        }
+//        }
     }
 
     /**

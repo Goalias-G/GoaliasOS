@@ -1,7 +1,7 @@
 package com.goalias.chat.chat.service.impl;
 
-import com.goalias.chat.chat.enums.EnableSearchType;
 import com.goalias.chat.chat.handler.FunctionCallExecutor;
+import com.goalias.chat.chat.factory.FunctionCallsFactory;
 import com.goalias.chat.chat.handler.FunctionCallResponseHandler;
 import com.goalias.chat.chat.service.IChatService;
 import com.goalias.chat.chat.support.ChatServiceHelper;
@@ -9,8 +9,9 @@ import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.enums.ChatModeType;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.chat.request.ChatRequest;
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.community.model.dashscope.QwenChatModel;
-import dev.langchain4j.community.model.dashscope.QwenStreamingChatModel;
+import dev.langchain4j.community.model.zhipu.ZhipuAiStreamingChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +19,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.Objects;
+import java.util.List;
 
 
 /**
- * 阿里通义千问
+ * 智谱模型
  */
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class QwenChatServiceImpl implements IChatService {
+public class GlmChatServiceImpl implements IChatService {
 
     private final IChatModelService chatModelService;
     private final FunctionCallExecutor toolExecutor;
@@ -36,12 +37,11 @@ public class QwenChatServiceImpl implements IChatService {
     public SseEmitter chat(ChatRequest chatRequest, SseEmitter emitter) {
         ChatModel chatModel = chatModelService.selectModelByName(chatRequest.getModel());
 
-        StreamingChatModel model = QwenStreamingChatModel.builder()
+        StreamingChatModel model = ZhipuAiStreamingChatModel.builder()
                 .apiKey(chatModel.getApiKey())
-                .modelName(chatModel.getModelName())
-                .temperature(chatRequest.getTemperature().floatValue())
+                .model(chatModel.getModelName())
+                .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
-                .enableSearch(Objects.equals(chatModel.getEnableSearch(), EnableSearchType.YES.getCode()) ? chatRequest.getEnableSearch() : false)
                 .build();
 
         dev.langchain4j.model.chat.request.ChatRequest langChainRequest = toLangChainToolRequest(chatRequest);
@@ -55,7 +55,7 @@ public class QwenChatServiceImpl implements IChatService {
                     toolExecutor
             ));
         } catch (Exception e) {
-            log.error("千问请求失败：{}", e.getMessage());
+            log.error("智谱请求失败：{}", e.getMessage());
             ChatServiceHelper.onStreamError(emitter, e.getMessage());
         }
 
@@ -80,6 +80,6 @@ public class QwenChatServiceImpl implements IChatService {
 
     @Override
     public String getProviderName() {
-        return ChatModeType.QIANWEN.getCode();
+        return ChatModeType.GLM.getCode();
     }
 }

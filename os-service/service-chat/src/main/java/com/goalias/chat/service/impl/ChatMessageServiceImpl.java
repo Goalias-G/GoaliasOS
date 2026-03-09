@@ -72,6 +72,7 @@ public class ChatMessageServiceImpl implements IChatMessageService {
         lqw.eq(bo.getSessionId() != null, ChatMessage::getSessionId, bo.getSessionId());
         lqw.like(StringUtils.isNotBlank(bo.getRole()), ChatMessage::getRole, bo.getRole());
         lqw.like(StringUtils.isNotBlank(bo.getModelName()), ChatMessage::getModelName, bo.getModelName());
+        lqw.orderByDesc(ChatMessage::getCreateTime);
         return lqw;
     }
 

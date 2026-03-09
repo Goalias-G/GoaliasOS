@@ -1,28 +1,27 @@
 package com.goalias.chat.chat.tools;
 
-import cn.hutool.core.bean.BeanUtil;
-import com.goalias.chat.chat.support.BaseContext;
-import com.goalias.common.core.domain.model.LoginUser;
 import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.system.domain.vo.SysUserVo;
 import com.goalias.system.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class DemoTool implements OsToolProvider {
+public class UserTool implements OsToolProvider {
 
     private final ISysUserService userService;
 
     @OsTool(name = "getUserInfo", description = "获取用户的信息，不传参数则是当前登录用户")
     public SysUserVo getUserInfo(@OsToolParam(name = "userId", description = "用户ID") Long userId) {
-        if (Objects.isNull(userId)) {
-            LoginUser loginUser = LoginHelper.getLoginUser(BaseContext.getCurrentToken());
-            return BeanUtil.copyProperties(loginUser, SysUserVo.class);
+        Long id = Optional.ofNullable(userId).orElse(LoginHelper.getUserId());
+        if (!LoginHelper.isSuperAdmin(LoginHelper.getUserId()) && !LoginHelper.getUserId().equals(id)){
+            return null;
         }
-        return userService.selectUserById(userId);
+        SysUserVo sysUserVo = userService.selectUserById(id);
+        sysUserVo.setIsAdmin(LoginHelper.isSuperAdmin(id));
+        return sysUserVo;
     }
 }

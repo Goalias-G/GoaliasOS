@@ -21,10 +21,11 @@ import java.io.IOException;
 
 
 /**
- *  聊天管理(工厂实现类模型chat)
+ * 聊天管理(工厂实现类模型chat)
  *
  * @author Goalias
- * @since 2026-01-22 */
+ * @since 2026-01-22
+ */
 @RestController
 @Slf4j
 @RequestMapping("/chat")
@@ -41,13 +42,17 @@ public class ChatController {
     public SseEmitter sseChat(@RequestBody @Valid ChatRequest chatRequest) {
         return sseService.sseChat(chatRequest);
     }
+
     @SuppressWarnings("unused")
-    public void sseChatFallback(HttpServletResponse response) throws IOException {
-        response.setContentType("text/event-stream;charset=UTF-8");
-        R<Object> fail = R.fail("不好意思，刚才与 Goalias AI 交流的人太多了，请让我休息下稍后再试~");
-        response.getWriter().write(JSONUtil.toJsonStr(fail));
-        response.getWriter().flush();
+    public SseEmitter sseChatFallback(ChatRequest chatRequest) throws IOException {
         log.info("fallback sseChat");
+        SseEmitter sseEmitter = new SseEmitter(0L);
+        sseEmitter.send("不好意思，刚才与 Goalias AI 交流的人太多了，请让我休息下稍后再试~");
+//        response.setContentType("text/event-stream;charset=UTF-8");
+//        R<Object> fail = R.fail("不好意思，刚才与 Goalias AI 交流的人太多了，请让我休息下稍后再试~");
+//        response.getWriter().write(JSONUtil.toJsonStr(fail));
+//        response.getWriter().flush();
+        return sseEmitter;
     }
 
     @PostMapping("/simple")

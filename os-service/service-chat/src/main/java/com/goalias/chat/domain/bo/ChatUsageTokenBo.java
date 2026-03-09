@@ -25,28 +25,22 @@ public class ChatUsageTokenBo extends BaseEntity {
     private Long id;
 
     /**
-     * 用户
-     */
-    @NotNull(message = "用户不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Long userId;
-
-    /**
-     * 待结算token
-     */
-    @NotNull(message = "待结算token不能为空", groups = { AddGroup.class, EditGroup.class })
-    private Integer token;
-
-    /**
      * 模型名称
      */
     @NotBlank(message = "模型名称不能为空", groups = { AddGroup.class, EditGroup.class })
     private String modelName;
 
     /**
-     * 累计使用token
+     * 模型输入token
      */
-    @NotBlank(message = "累计使用token不能为空", groups = { AddGroup.class, EditGroup.class })
-    private String totalToken;
+    @NotNull(message = "模型输入token不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long inputToken;
+
+    /**
+     * 输出token
+     */
+    @NotNull(message = "输出token不能为空", groups = { AddGroup.class, EditGroup.class })
+    private Long outputToken;
 
 
 }

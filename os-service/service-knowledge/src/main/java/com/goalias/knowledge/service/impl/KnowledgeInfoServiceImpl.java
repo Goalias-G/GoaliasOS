@@ -238,11 +238,10 @@ public class KnowledgeInfoServiceImpl implements IKnowledgeInfoService {
                 .eq(KnowledgeInfo::getKid, kid));
 
         // 通过向量模型查询模型信息
-        ChatModel chatModel = chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName());
-        // 未查到指定模型时，回退为向量分类最高优先级模型
-        if (chatModel == null) {
-            chatModel = chatModelService.selectModelByCategoryWithHighestPriority(ChatModeType.VECTOR.getCode());
-        }
+        ChatModel chatModel = StringUtils.isNotBlank(knowledgeInfo.getEmbeddingModelName())
+                ? chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName())
+                : chatModelService.selectModelByCategoryWithHighestPriority("vector");
+
         StoreEmbeddingBo storeEmbeddingBo = new StoreEmbeddingBo();
         storeEmbeddingBo.setKid(kid);
         storeEmbeddingBo.setDocId(docId);

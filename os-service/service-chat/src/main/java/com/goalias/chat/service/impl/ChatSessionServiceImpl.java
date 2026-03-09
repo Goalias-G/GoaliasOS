@@ -3,10 +3,13 @@ package com.goalias.chat.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.goalias.chat.domain.ChatMessage;
 import com.goalias.chat.domain.ChatSession;
 import com.goalias.chat.domain.bo.ChatSessionBo;
+import com.goalias.chat.mapper.ChatMessageMapper;
 import com.goalias.chat.mapper.ChatSessionMapper;
 import com.goalias.chat.service.IChatSessionService;
+import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +25,20 @@ import java.util.Map;
  * 会话管理Service业务层处理
  *
  * @author Goalias
- * @since 2026-01-22 */
+ * @since 2026-01-22
+ */
 @RequiredArgsConstructor
 @Service
 public class ChatSessionServiceImpl implements IChatSessionService {
 
     private final ChatSessionMapper baseMapper;
+    private final ChatMessageMapper messageMapper;
 
     /**
      * 查询会话管理
      */
     @Override
-    public ChatSession queryById(Long id){
+    public ChatSession queryById(Long id) {
         return baseMapper.selectById(id);
     }
 
@@ -92,7 +97,7 @@ public class ChatSessionServiceImpl implements IChatSessionService {
     /**
      * 保存前的数据校验
      */
-    private void validEntityBeforeSave(ChatSession entity){
+    private void validEntityBeforeSave(ChatSession entity) {
         //TODO 做一些数据校验,如唯一约束
     }
 
@@ -101,9 +106,16 @@ public class ChatSessionServiceImpl implements IChatSessionService {
      */
     @Override
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        boolean isSuccess = baseMapper.deleteBatchIds(ids) > 0;
+        if (isSuccess) {
+            LambdaQueryWrapper<ChatMessage> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(ChatMessage::getUserId, LoginHelper.getUserId());
+            queryWrapper.in(ChatMessage::getSessionId, ids);
+            messageMapper.delete(queryWrapper);
+        }
+        return isSuccess;
     }
 }

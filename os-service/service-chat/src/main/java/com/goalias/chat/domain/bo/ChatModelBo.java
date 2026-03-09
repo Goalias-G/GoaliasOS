@@ -38,19 +38,16 @@ public class ChatModelBo extends BaseEntity {
     /**
      * 模型描述
      */
-    @NotBlank(message = "模型描述不能为空", groups = { AddGroup.class, EditGroup.class })
     private String modelDescribe;
 
     /**
      * 模型价格
      */
-    @NotNull(message = "模型价格不能为空", groups = { AddGroup.class, EditGroup.class })
     private Double modelPrice;
 
     /**
      * 计费类型
      */
-    @NotBlank(message = "计费类型不能为空", groups = { AddGroup.class, EditGroup.class })
     private String modelType;
 
     /**
@@ -68,6 +65,7 @@ public class ChatModelBo extends BaseEntity {
     /**
      * 优先级
      */
+    @NotNull(message = "模型请求优先级不能为空", groups = { AddGroup.class, EditGroup.class })
     private Integer priority;
 
     /**
@@ -79,7 +77,8 @@ public class ChatModelBo extends BaseEntity {
     /**
      * 模型供应商
      */
-    private String ProviderName;
+    @NotBlank(message = "模型提供商不能为空", groups = { AddGroup.class, EditGroup.class })
+    private String providerName;
 
     /**
      * 备注

@@ -28,12 +28,12 @@ public class FallBackStrategy implements GoaliasStrategy{
             fallbackMethod = fallBackMethodMap.get(fallbackMethodName);
         }else{
             fallbackMethod = ReflectUtil.getMethod(bean.getClass(), fallbackMethodName, method.getParameterTypes());
+            if (ObjectUtil.isNull(fallbackMethod)){
+                throw new RuntimeException(StrUtil.format("[Goalias] Can't find fallback method [{}] in bean [{}]", fallbackMethodName, bean.getClass().getName()));
+            }
             fallBackMethodMap.put(fallbackMethodName, fallbackMethod);
         }
 
-        if (ObjectUtil.isNull(fallbackMethod)){
-            throw new RuntimeException(StrUtil.format("[Goalias] Can't find fallback method [{}] in bean [{}]", fallbackMethodName, bean.getClass().getName()));
-        }
         return ReflectUtil.invoke(bean, fallbackMethod, args);
     }
 }

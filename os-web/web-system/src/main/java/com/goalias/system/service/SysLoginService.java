@@ -17,6 +17,7 @@ import com.goalias.common.core.utils.DateUtils;
 import com.goalias.common.core.utils.ServletUtils;
 import com.goalias.common.core.utils.SpringUtils;
 import com.goalias.common.core.utils.StringUtils;
+import com.goalias.common.core.utils.ip.IpUtils;
 import com.goalias.common.redis.constant.GlobalConstants;
 import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.satoken.utils.LoginHelper;
@@ -156,6 +157,7 @@ public class SysLoginService {
         SysUser sysUser = new SysUser();
         sysUser.setUserId(userId);
         sysUser.setLoginIp(ServletUtils.getClientIP());
+        sysUser.setLoginLocation(IpUtils.getCityInfo(sysUser.getLoginIp()));
         sysUser.setLoginDate(DateUtils.getNowDate());
         sysUser.setUpdateBy(userId);
         userMapper.updateById(sysUser);

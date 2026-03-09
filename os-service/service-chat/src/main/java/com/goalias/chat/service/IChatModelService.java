@@ -24,7 +24,7 @@ public interface IChatModelService {
     /**
      * 查询聊天模型列表
      */
-    TableDataInfo<ChatModelVo> queryPageList(ChatModelBo bo, PageQuery pageQuery);
+    TableDataInfo<ChatModel> queryPageList(ChatModelBo bo, PageQuery pageQuery);
 
     /**
      * 查询聊天模型列表

@@ -22,6 +22,11 @@ public interface IChatUsageTokenService {
     ChatUsageToken queryById(Long id);
 
     /**
+     * 根据模型名称查询使用量
+     */
+    ChatUsageToken queryByModelName(String modelName);
+
+    /**
      * 查询用户token使用详情列表
      */
     TableDataInfo<ChatUsageToken> queryPageList(ChatUsageTokenBo bo, PageQuery pageQuery);
@@ -45,4 +50,14 @@ public interface IChatUsageTokenService {
      * 校验并批量删除用户token使用详情信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 从数据库加载所有记录到Redis
+     */
+    void loadToRedis();
+
+    /**
+     * 从Redis同步到数据库（每6小时定时任务）
+     */
+    void syncToDatabase();
 }

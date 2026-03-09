@@ -48,10 +48,10 @@ public class ChatModelServiceImpl implements IChatModelService {
      * 查询聊天模型列表
      */
     @Override
-    public TableDataInfo queryPageList(ChatModelBo bo, PageQuery pageQuery) {
+    public TableDataInfo<ChatModel> queryPageList(ChatModelBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<ChatModel> lqw = buildQueryWrapper(bo);
+        lqw.orderByDesc(ChatModel::getCreateTime);
         Page<ChatModel> result = baseMapper.selectPage(pageQuery.build(), lqw);
-        result.convert(v -> MapstructUtils.convert(v, ChatModelVo.class));
         return TableDataInfo.build(result);
     }
 
@@ -128,7 +128,7 @@ public class ChatModelServiceImpl implements IChatModelService {
      * 通过模型名称获取模型信息
      */
     @Override
-    @Cacheable(value = CacheNames.CHAT_MODEL, key = "#modelName")
+    @Cacheable(value = CacheNames.CHAT_MODEL, key = "#modelName", unless = "#result == null")
     public ChatModel selectModelByName(String modelName) {
         return baseMapper.selectOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getModelName, modelName));
     }

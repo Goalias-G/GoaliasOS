@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * 用户token使用详情对象 chat_usage_token
@@ -27,24 +28,24 @@ public class ChatUsageToken implements Serializable {
     private Long id;
 
     /**
-     * 用户
-     */
-    private Long userId;
-
-    /**
-     * 待结算token
-     */
-    private Integer token;
-
-    /**
      * 模型名称
      */
     private String modelName;
 
     /**
-     * 累计使用token
+     * 模型输入token
      */
-    private String totalToken;
+    private Long inputToken;
+
+    /**
+     * 输出token
+     */
+    private Long outputToken;
+
+    /**
+     * 更新时间
+     */
+    private LocalDateTime updateTime;
 
 
 }

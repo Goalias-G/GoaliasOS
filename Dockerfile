@@ -36,7 +36,7 @@ ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar GoaliasOS.jar"]
 #docker run -d \
 #        --name goaliasos \
 #        --restart always \
-#        --network blog \
+#        --network goaliasNet \
 #        -p 7000:7000 \
 #        -v $(pwd)/config:/app/os-startup/src/main/resources \
 #        -v $(pwd)/logs:/app/logs \

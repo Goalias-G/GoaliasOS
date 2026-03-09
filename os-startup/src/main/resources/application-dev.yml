@@ -25,10 +25,10 @@ spring:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
 minio:
-  endpoint: http://${GOALIAS_SERVER_IP}:6663
+  endpoint: http://${GOALIAS_DOMAIN_NAME}:6663
   accessKey: root
   secretKey: ${GOALIAS_PASSWORD}
-  media-url: http://${GOALIAS_SERVER_IP}:6663/
+  media-url: https://${GOALIAS_DOMAIN_NAME}/media/
   bucketName: goalias
 
 

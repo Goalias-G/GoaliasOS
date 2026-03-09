@@ -45,7 +45,6 @@ public class ChatModelVo extends BaseEntity {
      */
     private String modelDescribe;
 
-
     /**
      * 计费类型
      */
@@ -54,15 +53,9 @@ public class ChatModelVo extends BaseEntity {
     private Double modelPrice;
 
     /**
-     * 是否显示
-     */
-    private String modelShow;
-
-    /**
      * 是否支持联网搜索(0-否 1-是)
      */
     private Integer enableSearch;
-
 
     /**
      * 模型供应商

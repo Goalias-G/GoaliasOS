@@ -262,7 +262,7 @@ public class SseServiceImpl implements ISseService {
                 chatModel = chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName());
             }
             if (Objects.isNull(chatModel)) {
-                chatModel = chatModelService.selectModelByCategoryWithHighestPriority(ChatModeType.VECTOR.getCode());
+                chatModel = chatModelService.selectModelByCategoryWithHighestPriority("vector");
             }
 
             // 构建向量查询参数
@@ -362,7 +362,7 @@ public class SseServiceImpl implements ISseService {
                 - 当检测到用户情绪低落时，主动提供鼓励（但不过度）
                 
                 当前系统时间：%s
-                """.formatted(DateUtils.dateTimeNow());
+                """.formatted(DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS));
     }
 
 //            ## 开场白示例（首次对话使用）

@@ -1,8 +1,10 @@
 package com.goalias.chat.chat.handler;
 
+import com.goalias.chat.chat.factory.FunctionCallsFactory;
 import com.goalias.chat.chat.support.ChatServiceHelper;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
+import com.goalias.common.core.utils.SpringUtils;
 import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.redis.service.RedisService;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
@@ -37,7 +39,6 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     private final SseEmitter emitter;
     private final ChatRequest originalRequest;
     private final StreamingChatModel model;
-    private final List<dev.langchain4j.agent.tool.ToolSpecification> tools;
     private final FunctionCallExecutor toolExecutor;
 
     /**
@@ -167,12 +168,14 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
         // 发送 AI 思考事件
         ChatServiceHelper.sendAIThinkingEvent(emitter);
 
+        FunctionCallsFactory toolFactory = SpringUtils.getBean(FunctionCallsFactory.class);
+
         // 构建新请求（包含工具规范，以便 AI 可以继续调用工具）
         dev.langchain4j.model.chat.request.ChatRequest feedbackRequest =
                 dev.langchain4j.model.chat.request.ChatRequest.builder()
                         .messages(messages)
                         .parameters(ChatRequestParameters.builder()
-                                .toolSpecifications(tools)
+                                .toolSpecifications(toolFactory.getToolSpecifications())
                                 .build())
                         .build();
 
@@ -237,9 +240,8 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
 
     /**
      * 转换消息格式
-     * 将 ruoyi-ai 的消息格式转换为 langchain4j 的格式
+     * 将消息格式转换为 langchain4j 的格式
      *
-     * @param msg ruoyi-ai 消息
      * @return langchain4j 消息
      */
     private ChatMessage convertMessage(Message msg) {

@@ -1,5 +1,6 @@
 package com.goalias.chat.chat.controller.chat;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.bo.ChatModelBo;
 import com.goalias.chat.domain.vo.ChatModelVo;
@@ -37,7 +38,7 @@ public class ChatModelController extends BaseController {
      * 查询聊天模型列表
      */
     @GetMapping("/list")
-    public TableDataInfo<ChatModelVo> list(ChatModelBo bo, PageQuery pageQuery) {
+    public TableDataInfo<ChatModel> list(ChatModelBo bo, PageQuery pageQuery) {
         return chatModelService.queryPageList(bo, pageQuery);
     }
 
