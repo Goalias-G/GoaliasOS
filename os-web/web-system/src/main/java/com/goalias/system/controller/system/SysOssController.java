@@ -86,9 +86,9 @@ public class SysOssController extends BaseController {
      *
      * @param ossId OSS对象ID
      */
-    @GetMapping("/info/{ossId}")
-    public R<SysOss> info(@PathVariable Long ossId) {
-        return R.ok(ossService.getById(ossId));
+    @GetMapping("/info/{ossIds}")
+    public R<List<SysOssUploadVo>> info(@PathVariable Long[] ossIds) {
+        return R.ok(ossService.getByIds(ossIds));
     }
 
     /**

@@ -3,6 +3,7 @@ package com.goalias.system.service;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import com.goalias.system.domain.SysOss;
+import com.goalias.system.domain.vo.SysOssUploadVo;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +22,7 @@ public interface ISysOssService {
 
   List<SysOss> listByIds(Collection<Long> ossIds);
 
-  SysOss getById(Long ossId);
+  List<SysOssUploadVo> getByIds(Long[] ossId);
 
   SysOss upload(MultipartFile file);
 

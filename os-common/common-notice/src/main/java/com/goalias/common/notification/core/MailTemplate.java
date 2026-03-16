@@ -53,7 +53,7 @@ public class MailTemplate {
      * @param filePath 附件路径
      * @throws MessagingException
      */
-    public void sendMailWithAttachment(String to, String subject, String text, String filePath){//文件存储方式？
+    public void sendMailWithAttachment(String to, String subject, String text, File file){//文件存储方式？
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
@@ -62,8 +62,7 @@ public class MailTemplate {
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(text);
-            FileSystemResource file = new FileSystemResource(new File(filePath));
-            helper.addAttachment(Objects.requireNonNull(file.getFilename()), file);
+            helper.addAttachment(file.getName(), file);
         } catch (Exception e) {
             throw new UtilException("附件邮件发送失败");
         }

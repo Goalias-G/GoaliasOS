@@ -3,7 +3,7 @@ package com.goalias.chat.enums;
 import lombok.Getter;
 
 @Getter
-public enum ChatModeType {
+public enum ChatModeType {//用于查找模型Implementation
 
     QIANWEN("alibailian", "通义千问"),
 

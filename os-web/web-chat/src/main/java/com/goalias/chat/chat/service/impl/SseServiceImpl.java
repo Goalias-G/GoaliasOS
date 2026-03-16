@@ -6,19 +6,17 @@ import com.goalias.chat.chat.factory.ChatServiceFactory;
 import com.goalias.chat.chat.service.IChatCostService;
 import com.goalias.chat.chat.service.IChatService;
 import com.goalias.chat.chat.service.ISseService;
-import com.goalias.chat.chat.support.BaseContext;
+import com.goalias.chat.chat.support.TtlTokenContext;
 import com.goalias.chat.chat.support.ChatRetryHelper;
 import com.goalias.chat.chat.support.RetryNotifier;
 import com.goalias.chat.chat.util.SSEUtil;
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.PromptTemplate;
 import com.goalias.chat.domain.bo.ChatSessionBo;
-import com.goalias.chat.enums.ChatModeType;
 import com.goalias.chat.enums.PromptTemplateEnum;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.chat.service.IChatSessionService;
 import com.goalias.chat.service.IPromptTemplateService;
-import com.goalias.common.chat.entity.chat.BaseMessage;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.utils.DateUtils;
@@ -28,7 +26,6 @@ import com.goalias.knowledge.domain.KnowledgeInfo;
 import com.goalias.knowledge.domain.bo.QueryVectorBo;
 import com.goalias.knowledge.service.IKnowledgeInfoService;
 import com.goalias.knowledge.service.VectorStoreService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -70,7 +67,7 @@ public class SseServiceImpl implements ISseService {
         try {
             // 记录当前会话令牌，供异步线程使用
             chatRequest.setToken(StpUtil.getTokenValue());
-            BaseContext.setCurrentToken(chatRequest.getToken());
+            TtlTokenContext.setCurrentToken(chatRequest.getToken());
 
             // 构建消息列表
             buildChatMessageList(chatRequest);
@@ -125,7 +122,7 @@ public class SseServiceImpl implements ISseService {
             log.error(e.getMessage(), e);
             SSEUtil.sendErrorEvent(sseEmitter, e.getMessage());
         } finally {
-            BaseContext.remove();
+            TtlTokenContext.remove();
             chatModelHolder.remove();
         }
         return sseEmitter;

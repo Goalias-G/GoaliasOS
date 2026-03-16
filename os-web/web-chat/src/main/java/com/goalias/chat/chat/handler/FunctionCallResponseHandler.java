@@ -12,16 +12,14 @@ import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.PartialThinking;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Function Call 响应处理器
@@ -50,8 +48,10 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     public void onPartialResponse(String partialResponse) {
         try {
             // 流式返回文本片段给客户端
-            emitter.send(partialResponse);
-        } catch (IOException e) {
+            if (Objects.nonNull(partialResponse)){
+                emitter.send(partialResponse);
+            }
+        } catch (Exception e) {
             log.error("发送消息片段失败", e);
             ChatServiceHelper.onStreamError(emitter, "发送消息失败: " + e.getMessage());
         }

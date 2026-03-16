@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.goalias.common.core.exception.ServiceException;
+import com.goalias.common.core.utils.MapstructUtils;
 import com.goalias.common.core.utils.StringUtils;
 import com.goalias.common.oss.core.IFileService;
 import com.goalias.common.oss.core.MinioService;
@@ -13,6 +14,7 @@ import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import com.goalias.system.domain.SysOss;
+import com.goalias.system.domain.vo.SysOssUploadVo;
 import com.goalias.system.mapper.SysOssMapper;
 import com.goalias.system.service.ISysOssService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -64,10 +67,10 @@ public class SysOssServiceImpl implements ISysOssService {
         return lqw;
     }
 
-    @Cacheable(cacheNames = CacheNames.SYS_OSS, key = "#ossId")
     @Override
-    public SysOss getById(Long ossId) {
-        return baseMapper.selectById(ossId);
+    public List<SysOssUploadVo> getByIds(Long[] ossId) {
+        List<SysOss> ossList = baseMapper.selectByIds(Arrays.asList(ossId));
+        return MapstructUtils.convert(ossList, SysOssUploadVo.class);
     }
 
     @Override
@@ -94,7 +97,6 @@ public class SysOssServiceImpl implements ISysOssService {
     }
 
     @Override
-    @CacheEvict(cacheNames = CacheNames.SYS_OSS)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
             // 做一些业务上的校验,判断是否需要校验

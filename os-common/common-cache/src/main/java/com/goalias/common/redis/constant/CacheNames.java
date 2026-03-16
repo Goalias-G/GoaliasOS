@@ -43,9 +43,9 @@ public interface CacheNames {
 
     String CHAT_TOKEN_OUTPUT = "chat_token_output:";
 
-    String CHAT_PROMPT = "chat_prompt:";
+    String CHAT_PROMPT = "chat_prompt";
 
-    String CHAT_MODEL = "chat_model:";
+    String CHAT_MODEL = "chat_model";
 
 
 }

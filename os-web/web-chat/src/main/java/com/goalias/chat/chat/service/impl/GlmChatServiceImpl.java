@@ -11,9 +11,11 @@ import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.chat.request.ChatRequest;
 import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.community.model.dashscope.QwenChatModel;
+import dev.langchain4j.community.model.zhipu.ZhipuAiChatModel;
 import dev.langchain4j.community.model.zhipu.ZhipuAiStreamingChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,10 +68,10 @@ public class GlmChatServiceImpl implements IChatService {
     public String simpleChat(ChatRequest chatRequest) {
         ChatModel chatModel = chatModelService.selectModelByName(chatRequest.getModel());
 
-        QwenChatModel model = QwenChatModel.builder()
+        ZhipuAiChatModel model = ZhipuAiChatModel.builder()
                 .apiKey(chatModel.getApiKey())
-                .modelName(chatModel.getModelName())
-                .temperature(chatRequest.getTemperature().floatValue())
+                .model(chatModel.getModelName())
+                .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
                 .build();
         chatRequest.setEnableTool(false);
