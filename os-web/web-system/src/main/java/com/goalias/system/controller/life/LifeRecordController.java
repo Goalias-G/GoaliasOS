@@ -56,6 +56,7 @@ public class LifeRecordController extends BaseController {
      */
     @PostMapping
     public R<Void> add(@Validated @RequestBody LifeRecordBo bo) {
+        bo.setUserId(LoginHelper.getUserId());
         return toAjax(lifeRecordService.insertByBo(bo));
     }
 

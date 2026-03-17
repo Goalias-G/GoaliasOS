@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import com.goalias.common.chat.entity.chat.Message;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ import java.util.List;
 public class ChatRequest {
 
     @NotEmpty(message = "对话消息不能为空")
-    List<Message> messages;
+    List<Message> messages = new ArrayList<>();
 
     private String model;
 
@@ -92,7 +93,5 @@ public class ChatRequest {
      * 系统提示词(自动填充)
      */
     private String sysPrompt;
-
-    private Boolean enableTool = true;
 
 }

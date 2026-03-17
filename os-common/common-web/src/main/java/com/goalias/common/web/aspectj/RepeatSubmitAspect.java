@@ -3,6 +3,7 @@ package com.goalias.common.web.aspectj;
 import cn.dev33.satoken.SaManager;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.hutool.json.JSONUtil;
 import com.goalias.common.core.domain.R;
 import com.goalias.common.core.exception.ServiceException;
 import com.goalias.common.core.utils.ServletUtils;
@@ -10,7 +11,6 @@ import com.goalias.common.core.utils.StringUtils;
 import com.goalias.common.redis.constant.GlobalConstants;
 import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.web.annotation.RepeatSubmit;
-import com.goalias.common.web.utils.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -112,7 +112,7 @@ public class RepeatSubmitAspect {
             for (Object o : paramsArray) {
                 if (ObjectUtil.isNotNull(o) && !isFilterObject(o)) {
                     try {
-                        params.append(JsonUtils.toJsonString(o)).append(" ");
+                        params.append(JSONUtil.toJsonStr(o)).append(" ");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

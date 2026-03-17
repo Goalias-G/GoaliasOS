@@ -9,6 +9,7 @@ import dev.langchain4j.data.message.SystemMessage;
 import dev.langchain4j.data.message.UserMessage;
 import com.goalias.common.chat.request.ChatRequest;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
+import dev.langchain4j.model.chat.request.ResponseFormat;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.ArrayList;
@@ -30,12 +31,7 @@ public interface IChatService {
 
     String simpleChat(ChatRequest chatRequest);
 
-    default dev.langchain4j.model.chat.request.ChatRequest toLangChainToolRequest(ChatRequest request) {
-        List<ToolSpecification> tools = new ArrayList<>();
-        if (request.getEnableTool()) {
-            FunctionCallsFactory toolFactory = SpringUtils.getBean(FunctionCallsFactory.class);
-            tools = toolFactory.getToolSpecifications();
-        }
+    default dev.langchain4j.model.chat.request.ChatRequest.Builder toLangChainToolRequest(ChatRequest request) {
         List<ChatMessage> messages = new ArrayList<>();
         for (com.goalias.common.chat.entity.chat.Message msg : request.getMessages()) {
             // 简单转换，您可以根据实际需求调整
@@ -48,9 +44,7 @@ public interface IChatService {
             }
         }
         return dev.langchain4j.model.chat.request.ChatRequest.builder()
-                .messages(messages)
-                .toolSpecifications(tools)
-                .build();
+                .messages(messages);
     }
 
     /**

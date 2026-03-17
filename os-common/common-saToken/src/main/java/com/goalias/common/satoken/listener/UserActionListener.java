@@ -9,7 +9,7 @@ import com.goalias.common.core.domain.dto.UserOnlineDTO;
 import com.goalias.common.core.domain.model.LoginUser;
 import com.goalias.common.core.utils.ServletUtils;
 import com.goalias.common.core.utils.ip.IpUtils;
-import com.goalias.common.redis.constant.CacheConstants;
+import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.satoken.utils.LoginHelper;
 import lombok.RequiredArgsConstructor;
@@ -48,9 +48,9 @@ public class UserActionListener implements SaTokenListener {
         dto.setTokenId(tokenValue);
         dto.setUserName(user.getUsername());
         if (tokenConfig.getTimeout() == -1) {
-            redisService.set(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto);
+            redisService.set(CacheNames.ONLINE_TOKEN_KEY + tokenValue, dto);
         } else {
-            redisService.set(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto, Duration.ofSeconds(tokenConfig.getTimeout()));
+            redisService.set(CacheNames.ONLINE_TOKEN_KEY + tokenValue, dto, Duration.ofSeconds(tokenConfig.getTimeout()));
         }
         log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue);
     }
@@ -60,7 +60,7 @@ public class UserActionListener implements SaTokenListener {
      */
     @Override
     public void doLogout(String loginType, Object loginId, String tokenValue) {
-        redisService.del(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        redisService.del(CacheNames.ONLINE_TOKEN_KEY + tokenValue);
         log.info("user doLogout, userId:{}, token:{}", loginId, tokenValue);
     }
 
@@ -69,7 +69,7 @@ public class UserActionListener implements SaTokenListener {
      */
     @Override
     public void doKickout(String loginType, Object loginId, String tokenValue) {
-        redisService.del(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        redisService.del(CacheNames.ONLINE_TOKEN_KEY + tokenValue);
         log.info("user doKickout, userId:{}, token:{}", loginId, tokenValue);
     }
 
@@ -78,7 +78,7 @@ public class UserActionListener implements SaTokenListener {
      */
     @Override
     public void doReplaced(String loginType, Object loginId, String tokenValue) {
-        redisService.del(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        redisService.del(CacheNames.ONLINE_TOKEN_KEY + tokenValue);
         log.info("user doReplaced, userId:{}, token:{}", loginId, tokenValue);
     }
 

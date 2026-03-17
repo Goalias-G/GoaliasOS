@@ -57,7 +57,7 @@ public class ToolMetadata {
      * 执行超时时间（毫秒）
      */
     @Builder.Default
-    private long timeout = 30000;
+    private long timeout = 10000;
     
     /**
      * 是否启用

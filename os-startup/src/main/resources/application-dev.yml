@@ -10,7 +10,7 @@ spring:
       host: ${GOALIAS_SERVER_IP}
       port: 6662
       # 数据库索引
-      database: 5
+      database: 4
       password: ${GOALIAS_PASSWORD}
       # 连接超时时间
       timeout: 10S

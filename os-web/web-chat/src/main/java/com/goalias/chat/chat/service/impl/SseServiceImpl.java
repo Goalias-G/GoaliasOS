@@ -2,6 +2,7 @@ package com.goalias.chat.chat.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.map.MapUtil;
 import com.goalias.chat.chat.factory.ChatServiceFactory;
 import com.goalias.chat.chat.service.IChatCostService;
 import com.goalias.chat.chat.service.IChatService;
@@ -21,6 +22,8 @@ import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.utils.DateUtils;
 import com.goalias.common.core.utils.StringUtils;
+import com.goalias.common.redis.constant.CacheNames;
+import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.knowledge.domain.KnowledgeInfo;
 import com.goalias.knowledge.domain.bo.QueryVectorBo;
@@ -31,7 +34,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -55,10 +60,12 @@ public class SseServiceImpl implements ISseService {
 
     private final IKnowledgeInfoService knowledgeInfoService;
 
-    private static final ThreadLocal<ChatModel> chatModelHolder = new ThreadLocal<>();
-
     // 提示词模板服务
     private final IPromptTemplateService promptTemplateService;
+
+    private final RedisService redisService;
+
+    private static final ThreadLocal<ChatModel> chatModelHolder = new ThreadLocal<>();
 
 
     @Override
@@ -69,16 +76,15 @@ public class SseServiceImpl implements ISseService {
             chatRequest.setToken(StpUtil.getTokenValue());
             TtlTokenContext.setCurrentToken(chatRequest.getToken());
 
+            // 设置用户id
+            chatRequest.setUserId(LoginHelper.getUserId());
+
             // 构建消息列表
             buildChatMessageList(chatRequest);
 
             log.debug("用户请求处理后请求：{}", chatRequest.getMessages());
             // 设置对话角色
             chatRequest.setRole(Message.Role.USER.getName());
-
-
-            // 设置用户id
-            chatRequest.setUserId(LoginHelper.getUserId());
 
             // 设置会话id
             if (chatRequest.getSessionId() == null) {
@@ -129,14 +135,14 @@ public class SseServiceImpl implements ISseService {
     }
 
     @Override
-    public String simpleChat(ChatRequest chatRequest, PromptTemplateEnum promptTemplate) {
+    public String simpleChat(ChatRequest chatRequest, PromptTemplateEnum promptTemplate, Object... args) {
         chatRequest.setAutoSelectModel(Boolean.TRUE);
         IChatService chatService = autoSelectModelAndGetService(chatRequest);
-        if (Objects.nonNull(promptTemplate)){
-            Message sysPrompt = new Message();
-            sysPrompt.setRole(Message.Role.SYSTEM.getName());
-            sysPrompt.setContent(getPromptTemplatePrompt(promptTemplate.getDesc()));
-            chatRequest.getMessages().add(0, sysPrompt);
+        if (Objects.nonNull(promptTemplate)) {
+            Message userPrompt = new Message();
+            userPrompt.setRole(Message.Role.USER.getName());
+            userPrompt.setContent(getPromptTemplatePrompt(promptTemplate.getDesc()).formatted(args));
+            chatRequest.getMessages().add(userPrompt);
         }
         return chatService.simpleChat(chatRequest);
     }
@@ -214,6 +220,12 @@ public class SseServiceImpl implements ISseService {
         // 处理知识库相关逻辑
         String sysPrompt = processKnowledgeBase(chatRequest, messages);
 
+        Map<String, Object> userContext = redisService.hmGet(CacheNames.CHAT_USER_CONTEXT + chatRequest.getUserId());
+        if (MapUtil.isEmpty(userContext)) {
+            userContext = new HashMap<>();
+        }
+
+        sysPrompt = sysPrompt.formatted(DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS), userContext);
         // 设置系统提示词
         Message sysMessage = Message.builder()
                 .content(sysPrompt)
@@ -226,7 +238,7 @@ public class SseServiceImpl implements ISseService {
 //        // 用户对话内容
 //        String chatString = null;
 //        // 获取用户对话信息
-//        Object content = messages.get(messages.size() - 1).getContent();
+//        Object content = messages.get(messages.size() - 1).getDescribe();
 //        if (content instanceof List<?> listContent) {
 //            if (CollectionUtil.isNotEmpty(listContent)) {
 //                chatString = listContent.get(0).toString();
@@ -255,7 +267,7 @@ public class SseServiceImpl implements ISseService {
 
             // 查询向量模型配置信息
             ChatModel chatModel = null;
-            if (StringUtils.isNotBlank(knowledgeInfo.getEmbeddingModelName())){
+            if (StringUtils.isNotBlank(knowledgeInfo.getEmbeddingModelName())) {
                 chatModel = chatModelService.selectModelByName(knowledgeInfo.getEmbeddingModelName());
             }
             if (Objects.isNull(chatModel)) {
@@ -328,7 +340,7 @@ public class SseServiceImpl implements ISseService {
         if (Objects.isNull(promptTemplate) || StringUtils.isEmpty(promptTemplate.getTemplateContent())) {
             return getDefaultSystemPrompt();
         }
-        return promptTemplate.getTemplateContent().replace("{datetime}", DateUtils.dateTimeNow());
+        return promptTemplate.getTemplateContent();
     }
 
     /**
@@ -357,9 +369,13 @@ public class SseServiceImpl implements ISseService {
                 ### 3. 人格边界
                 - 默认使用中文回答，除非用户明确使用其他语言
                 - 当检测到用户情绪低落时，主动提供鼓励（但不过度）
+                - 可在合适场景询问用户生活场景以及最近活动
                 
-                当前系统时间：%s
-                """.formatted(DateUtils.dateTimeNow(DateUtils.YYYY_MM_DD_HH_MM_SS));
+                ## 当前系统时间：%s
+                
+                ## 当前已知用户画像
+                %s
+                """;
     }
 
 //            ## 开场白示例（首次对话使用）
@@ -367,3 +383,5 @@ public class SseServiceImpl implements ISseService {
 
 //    此系统主题[健康(作息、饮食),生活(日程、提示),记录(指标、活动),提升(思维、运动)]的「副驾驶」——
 }
+
+

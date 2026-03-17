@@ -80,7 +80,7 @@ public class ChatUsageTokenServiceImpl implements IChatUsageTokenService {
     /**
      * 每6小时同步Redis数据到数据库
      */
-//    @Scheduled(fixedRate = 6 * 60 * 60 * 1000)
+    @Scheduled(fixedRate = 6 * 60 * 60 * 1000)
     public void syncToDatabase() {
         log.info("开始同步Redis Token使用量到数据库...");
         try {

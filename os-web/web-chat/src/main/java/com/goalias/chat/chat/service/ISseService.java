@@ -18,7 +18,7 @@ public interface ISseService {
      */
     SseEmitter sseChat(ChatRequest chatRequest);
 
-    String simpleChat(ChatRequest chatRequest, PromptTemplateEnum promptTemplate);
+    String simpleChat(ChatRequest chatRequest, PromptTemplateEnum promptTemplate, Object... args);
 
 
 }

@@ -5,9 +5,9 @@
 <mapper namespace="com.goalias.knowledge.mapper.KnowledgeFragmentMapper">
 
     <insert id="insertBatch">
-        insert into knowledge_fragment (doc_id, idx, fid, kid, content, remark) values
+        insert into knowledge_fragment (doc_id, idx, fid, kid, describe, remark) values
         <foreach collection="list" item="item" separator=",">
-            (#{item.docId}, #{item.idx},#{item.fid}, #{item.kid}, #{item.content}, #{item.remark})
+            (#{item.docId}, #{item.idx},#{item.fid}, #{item.kid}, #{item.describe}, #{item.remark})
         </foreach>
     </insert>
 </mapper>

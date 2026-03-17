@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.*;
 
 /**
@@ -241,8 +242,8 @@ public class FunctionCallExecutor {
      * @return JSON 字符串
      */
     private String buildSuccessResult(Object result) {
-        if (result == null) {
-            return "{\"success\": true, \"result\": \"执行成功\"}";
+        if (Objects.isNull(result)) {
+            return "{\"success\": false, \"result\": \"执行失败\"}";
         }
 
         // 如果结果已经是字符串，直接返回

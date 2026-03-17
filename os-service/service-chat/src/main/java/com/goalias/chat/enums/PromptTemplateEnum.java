@@ -13,7 +13,7 @@ import lombok.Getter;
 public enum PromptTemplateEnum {
     CHAT(1, "chat"),
     KNOWLEDGE(2, "knowledge"),
-    SUMMARY(3, "summary"),
+    USER_CONTEXT(3, "userContext"),
     ;
 
     private final Integer code;

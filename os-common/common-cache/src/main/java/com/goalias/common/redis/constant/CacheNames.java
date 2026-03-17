@@ -17,6 +17,11 @@ public interface CacheNames {
 
 
     /**
+     * 在线用户 redis key
+     */
+    String ONLINE_TOKEN_KEY = "online_tokens:";
+
+    /**
      * 系统配置
      */
     String SYS_CONFIG = "sys_config";
@@ -39,13 +44,15 @@ public interface CacheNames {
     /**
      * 聊天Token信息
      */
-    String CHAT_TOKEN_INPUT = "chat_token_input:";
+    String CHAT_TOKEN_INPUT = "chat_token_input";
 
-    String CHAT_TOKEN_OUTPUT = "chat_token_output:";
+    String CHAT_TOKEN_OUTPUT = "chat_token_output";
 
     String CHAT_PROMPT = "chat_prompt";
 
     String CHAT_MODEL = "chat_model";
+
+    String CHAT_USER_CONTEXT = "chat_user_context:";
 
 
 }

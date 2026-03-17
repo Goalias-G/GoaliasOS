@@ -86,7 +86,6 @@ public class LifeRecordServiceImpl extends ServiceImpl<LifeRecordMapper, LifeRec
 
     @Override
     public Boolean insertByBo(LifeRecordBo bo) {
-        bo.setUserId(LoginHelper.getUserId());
         LifeRecord add = MapstructUtils.convert(bo, LifeRecord.class);
         validEntityBeforeSave(add);
         return baseMapper.insert(add) > 0;

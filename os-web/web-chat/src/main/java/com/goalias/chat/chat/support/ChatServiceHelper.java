@@ -30,8 +30,7 @@ public class ChatServiceHelper {
      * @param response AI 响应
      */
     public static void recordTokenUsage(ChatResponse response) {
-        ThreadPoolTaskExecutor executor = SpringUtils.getBean("osThreadPool", ThreadPoolTaskExecutor.class);
-        executor.execute(() -> {
+
             RedisService redisService = SpringUtils.getBean(RedisService.class);
             if (Objects.nonNull(response.tokenUsage())) {
                 String modelName = response.modelName();
@@ -47,7 +46,6 @@ public class ChatServiceHelper {
                 log.info("记录 Token 使用: 模型={}, 输入={}, 输出={}",
                         modelName, inputTokens, outputTokens);
             }
-        });
     }
 
     public static void onStreamError(SseEmitter emitter, String errorMessage) {

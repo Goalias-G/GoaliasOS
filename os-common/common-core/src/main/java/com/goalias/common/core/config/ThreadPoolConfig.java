@@ -1,6 +1,5 @@
 package com.goalias.common.core.config;
 
-import com.alibaba.ttl.threadpool.TtlExecutors;
 import com.goalias.common.core.config.properties.ThreadPoolProperties;
 import com.goalias.common.core.utils.Threads;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;

@@ -42,7 +42,7 @@ public class ImageServiceImpl implements IChatService {
 //            //漫长的格式转换
 //            // 遍历消息列表，提取文本内容
 //        if (messages != null && !messages.isEmpty()) {
-//            Object content = messages.get(messages.size() - 1).getContent();
+//            Object content = messages.get(messages.size() - 1).getDescribe();
 //            List<Map<String, Object>> contentList = new ArrayList<>();
 //            StringBuilder textContent = new StringBuilder();
 //            if (content instanceof List<?>) {

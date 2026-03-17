@@ -59,7 +59,9 @@ public class BillingChatServiceProxy implements IChatService {
 
     @Override
     public String simpleChat(ChatRequest chatRequest) {
-        return delegate.simpleChat(chatRequest);
+        String chatResult = delegate.simpleChat(chatRequest);
+        log.debug("simpleChat AI回复内容：{}", chatResult);
+        return chatResult;
     }
 
     @Override

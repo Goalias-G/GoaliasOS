@@ -1,6 +1,6 @@
 package com.goalias.knowledge.embedding.model;
 
-import com.goalias.common.web.utils.JsonUtils;
+import cn.hutool.json.JSONUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -38,6 +38,6 @@ public class AliyunMultiModalEmbedRequest {
      * 转换为JSON字符串
      */
     public String toJson() {
-        return JsonUtils.toJsonString(this);
+        return JSONUtil.toJsonStr(this);
     }
 }

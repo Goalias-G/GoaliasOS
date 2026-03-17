@@ -14,6 +14,7 @@ import dev.langchain4j.community.model.dashscope.QwenChatModel;
 import dev.langchain4j.community.model.zhipu.ZhipuAiChatModel;
 import dev.langchain4j.community.model.zhipu.ZhipuAiStreamingChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
+import dev.langchain4j.model.chat.request.ResponseFormat;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,10 @@ import java.util.List;
 public class GlmChatServiceImpl implements IChatService {
 
     private final IChatModelService chatModelService;
+
     private final FunctionCallExecutor toolExecutor;
+
+    private final FunctionCallsFactory toolFactory;
 
     @Override
     public SseEmitter chat(ChatRequest chatRequest, SseEmitter emitter) {
@@ -46,11 +50,13 @@ public class GlmChatServiceImpl implements IChatService {
                 .topP(chatRequest.getTopP())
                 .build();
 
-        dev.langchain4j.model.chat.request.ChatRequest langChainRequest = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.toolSpecifications(toolFactory.getToolSpecifications()).build();
+
 
         try {
             // 使用 FunctionCallResponseHandler 处理响应
-            model.chat(langChainRequest, new FunctionCallResponseHandler(
+            model.chat(request, new FunctionCallResponseHandler(
                     emitter,
                     chatRequest,
                     model,
@@ -74,8 +80,12 @@ public class GlmChatServiceImpl implements IChatService {
                 .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
                 .build();
-        chatRequest.setEnableTool(false);
-        ChatResponse response = model.chat(toLangChainToolRequest(chatRequest));
+
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.responseFormat(ResponseFormat.JSON).build();
+
+        ChatResponse response = model.chat(request);
+        log.info("智谱 simpleChat 请求成功：{}", response);
         ChatServiceHelper.recordTokenUsage(response);
         return response.aiMessage().text();
     }

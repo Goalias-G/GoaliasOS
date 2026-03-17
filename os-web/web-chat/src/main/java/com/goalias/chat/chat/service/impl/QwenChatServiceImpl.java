@@ -1,6 +1,7 @@
 package com.goalias.chat.chat.service.impl;
 
 import com.goalias.chat.chat.enums.EnableSearchType;
+import com.goalias.chat.chat.factory.FunctionCallsFactory;
 import com.goalias.chat.chat.handler.FunctionCallExecutor;
 import com.goalias.chat.chat.handler.FunctionCallResponseHandler;
 import com.goalias.chat.chat.service.IChatService;
@@ -12,6 +13,7 @@ import com.goalias.common.chat.request.ChatRequest;
 import dev.langchain4j.community.model.dashscope.QwenChatModel;
 import dev.langchain4j.community.model.dashscope.QwenStreamingChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
+import dev.langchain4j.model.chat.request.ResponseFormat;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +32,10 @@ import java.util.Objects;
 public class QwenChatServiceImpl implements IChatService {
 
     private final IChatModelService chatModelService;
+
     private final FunctionCallExecutor toolExecutor;
+
+    private final FunctionCallsFactory toolFactory;
 
     @Override
     public SseEmitter chat(ChatRequest chatRequest, SseEmitter emitter) {
@@ -44,11 +49,12 @@ public class QwenChatServiceImpl implements IChatService {
                 .enableSearch(Objects.equals(chatModel.getEnableSearch(), EnableSearchType.YES.getCode()) ? chatRequest.getEnableSearch() : false)
                 .build();
 
-        dev.langchain4j.model.chat.request.ChatRequest langChainRequest = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.toolSpecifications(toolFactory.getToolSpecifications()).build();
 
         try {
             // 使用 FunctionCallResponseHandler 处理响应
-            model.chat(langChainRequest, new FunctionCallResponseHandler(
+            model.chat(request, new FunctionCallResponseHandler(
                     emitter,
                     chatRequest,
                     model,
@@ -72,8 +78,10 @@ public class QwenChatServiceImpl implements IChatService {
                 .temperature(chatRequest.getTemperature().floatValue())
                 .topP(chatRequest.getTopP())
                 .build();
-        chatRequest.setEnableTool(false);
-        ChatResponse response = model.chat(toLangChainToolRequest(chatRequest));
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.responseFormat(ResponseFormat.JSON).build();
+        ChatResponse response = model.chat(request);
+        log.info("千问 simpleChat 请求成功：{}", response);
         ChatServiceHelper.recordTokenUsage(response);
         return response.aiMessage().text();
     }
