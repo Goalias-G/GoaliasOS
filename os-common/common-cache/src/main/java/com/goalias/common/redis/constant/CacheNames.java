@@ -54,5 +54,11 @@ public interface CacheNames {
 
     String CHAT_USER_CONTEXT = "chat_user_context:";
 
+    /**
+     * 首页信息
+     */
+    String HOME_INFO_NEWS = "home_info:news";
+    String HOME_INFO_QUOTE = "home_info:quote";
+    String HOME_INFO_AI_RECOMMEND = "home_info:recommend";
 
 }

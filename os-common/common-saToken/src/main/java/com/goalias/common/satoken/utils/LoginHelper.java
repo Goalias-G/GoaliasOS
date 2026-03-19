@@ -107,7 +107,7 @@ public class LoginHelper {
      * 获取用户账户
      */
     public static String getUsername() {
-        return getLoginUser().getUsername();
+        return getLoginUser().getUserName();
     }
 
 

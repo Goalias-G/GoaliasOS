@@ -14,6 +14,7 @@ public enum PromptTemplateEnum {
     CHAT(1, "chat"),
     KNOWLEDGE(2, "knowledge"),
     USER_CONTEXT(3, "userContext"),
+    AI_RECOMMEND(4, "aiRecommend"),
     ;
 
     private final Integer code;

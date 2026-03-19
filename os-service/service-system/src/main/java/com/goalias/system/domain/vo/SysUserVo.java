@@ -83,6 +83,11 @@ public class SysUserVo implements Serializable {
     private String loginIp;
 
     /**
+     * 最后登录地点
+     */
+    private String loginLocation;
+
+    /**
      * 最后登录时间
      */
     private Date loginDate;

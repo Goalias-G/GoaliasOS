@@ -82,7 +82,7 @@ public class SysLoginService {
             StpUtil.logout();
             LoginUser loginUser = LoginHelper.getLoginUser();
             if (loginUser != null) {
-                recordLogininfor(loginUser.getUsername(), Constants.LOGOUT, "退出登录");
+                recordLogininfor(loginUser.getUserName(), Constants.LOGOUT, "退出登录");
             }
         } catch (NotLoginException ignored) {
         }

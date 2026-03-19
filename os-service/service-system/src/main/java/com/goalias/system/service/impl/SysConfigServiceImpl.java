@@ -73,20 +73,7 @@ public class SysConfigServiceImpl implements ISysConfigService {
         return StringUtils.EMPTY;
     }
 
-    /**
-     * 获取注册开关
-     * @param tenantId 租户id
-     * @return true开启，false关闭
-     */
-    @Override
-    public boolean selectRegisterEnabled(String tenantId) {
-        SysConfig retConfig = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>()
-            .eq(SysConfig::getConfigKey, "sys.account.registerUser"));
-        if (ObjectUtil.isNull(retConfig)) {
-            return false;
-        }
-        return Convert.toBool(retConfig.getConfigValue());
-    }
+
 
     /**
      * 查询参数配置列表

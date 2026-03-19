@@ -116,8 +116,6 @@ security:
     # actuator 监控配置
     - /actuator
     - /actuator/**
-    - /workflow/**
-    - /admin/workflow/**
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
@@ -222,7 +220,8 @@ vector-store:
     url: http://localhost:19530
     collectionname: LocalKnowledge
 
-
+uapi:
+  apiKey: ${UAPI_API_KEY}
 
 # 文本分词器配置
 splitter:
