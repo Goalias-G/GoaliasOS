@@ -16,6 +16,8 @@ import com.goalias.common.web.domain.TableDataInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +55,12 @@ public class DailyHealthServiceImpl extends ServiceImpl<DailyHealthMapper, Daily
     private LambdaQueryWrapper<DailyHealth> buildQueryWrapper(DailyHealthBo bo) {
         LambdaQueryWrapper<DailyHealth> lqw = Wrappers.lambdaQuery();
         lqw.eq(bo.getUserId() != null, DailyHealth::getUserId, bo.getUserId());
-        lqw.eq(bo.getHealthDate() != null, DailyHealth::getCreateTime, bo.getHealthDate());
+        if (bo.getHealthDate() != null) {
+            LocalDateTime start = bo.getHealthDate().atStartOfDay(); // 当天 00:00:00
+            LocalDateTime end = bo.getHealthDate().atTime(LocalTime.MAX); // 当天 23:59:59.999999999
+            lqw.ge(DailyHealth::getCreateTime, start)  // >= 当天开始
+                    .le(DailyHealth::getCreateTime, end);    // <= 当天结束
+        }
         lqw.ge(bo.getStartTime() != null, DailyHealth::getCreateTime, bo.getStartTime());
         lqw.le(bo.getEndTime() != null, DailyHealth::getCreateTime, bo.getEndTime());
         return lqw;

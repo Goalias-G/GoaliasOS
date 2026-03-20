@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoaliasOS - 今日生活记录提醒</title>
+    <style>
+        /* 客户端重置 */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; }
+
+        /* 通用样式 */
+        body { background-color: #f4f7f6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333333; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .header { background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); padding: 40px 20px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 1px; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 18px; color: #2c3e50; margin-bottom: 20px; font-weight: bold; }
+        .message { font-size: 16px; line-height: 1.6; color: #555555; margin-bottom: 30px; }
+
+        /* 四大核心模块 */
+        .features { display: table; width: 100%; margin-bottom: 30px; }
+        .feature-item { display: table-cell; width: 25%; text-align: center; vertical-align: top; padding: 10px; }
+        .feature-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+        .feature-label { font-size: 14px; color: #777777; font-weight: 500; }
+
+        /* 按钮 */
+        .btn-container { text-align: center; margin-top: 40px; }
+        .btn { background-color: #4CAF50; color: #ffffff; padding: 14px 40px; text-decoration: none; border-radius: 50px; font-size: 16px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3); transition: all 0.3s ease; }
+        .btn:hover { background-color: #45a049; box-shadow: 0 6px 8px rgba(76, 175, 80, 0.4); }
+
+        /* 页脚 */
+        .footer { background-color: #f9f9f9; padding: 20px; text-align: center; border-top: 1px solid #eeeeee; }
+        .footer p { font-size: 12px; color: #999999; margin: 5px 0; }
+        .footer a { color: #4CAF50; text-decoration: none; }
+
+        /* 移动端适配 */
+        @media screen and (max-width: 600px) {
+            .container { width: 100% !important; border-radius: 0 !important; }
+            .content { padding: 30px 20px !important; }
+            .feature-item { display: block; width: 100% !important; margin-bottom: 15px; }
+            .feature-item:last-child { margin-bottom: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" style="padding: 20px 0;">
+            <!-- 主容器 -->
+            <table class="container" width="600" border="0" cellspacing="0" cellpadding="0">
+
+                <!-- 头部 -->
+                <tr>
+                    <td class="header">
+                        <h1>🌱 GoaliasOS</h1>
+                        <p style="color: #e8f5e9; margin: 10px 0 0; font-size: 14px;">记录每一个成长的瞬间</p>
+                    </td>
+                </tr>
+
+                <!-- 内容区 -->
+                <tr>
+                    <td class="content">
+                        <div class="greeting">今日事，今日毕 📝</div>
+
+                        <div class="message">
+                            每一个记录都是成长的脚印，值得被认真珍藏。<br><br>
+                            花 <strong>2 分钟</strong> 记录今天的点滴吧 🎨。这不仅是数据的积累，更是对未来的一份感谢。让我们通过记录，更懂你的作息规律，陪你安心入眠，轻盈迎接明天。
+                        </div>
+
+                        <!-- 四大核心模块展示 -->
+                        <table class="features">
+                            <tr>
+                                <td class="feature-item">
+                                    <span class="feature-icon">💚</span>
+                                    <span class="feature-label">健康</span>
+                                </td>
+                                <td class="feature-item">
+                                    <span class="feature-icon">🏠</span>
+                                    <span class="feature-label">生活</span>
+                                </td>
+                                <td class="feature-item">
+                                    <span class="feature-icon">📝</span>
+                                    <span class="feature-label">记录</span>
+                                </td>
+                                <td class="feature-item">
+                                    <span class="feature-icon">🚀</span>
+                                    <span class="feature-label">提升</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="message" style="font-size: 14px; color: #888888; background: #f9fff9; padding: 15px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                            💡 <strong>小贴士：</strong> 完整的记录能让 AI 更精准地为你推荐明天的饮食与运动计划哦！
+                        </div>
+
+                        <!-- 行动按钮 -->
+                        <div class="btn-container">
+                            <a href="https://gaows.top" class="btn" target="_blank">立即记录今日</a>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- 页脚 -->
+                <tr>
+                    <td class="footer">
+                        <p style="margin-top: 10px;">这是一封系统自动发送的服务邮件，请勿直接回复。</p>
+                    </td>
+                </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

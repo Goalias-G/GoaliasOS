@@ -20,27 +20,30 @@ public class UApiServiceImpl implements IUApiService {
 
     @Override
     public String saying() {
-        HttpResponse response = HttpUtil.createGet(UApiConstants.SAYING).auth(apiKey.trim()).execute();
+        HttpResponse response = HttpUtil.createGet(UApiConstants.SAYING).bearerAuth(apiKey.trim()).execute();
         return JSONUtil.parseObj(response.body()).getStr("text");
     }
 
     @Override
     public HomeInfoVo.HotBoard getHotBoard(String type) {
-        HttpResponse response = HttpUtil.createGet(UApiConstants.HOT_BOARD).form("type", type).auth(apiKey.trim()).execute();
+        HttpResponse response = HttpUtil.createGet(UApiConstants.HOT_BOARD).form("type", type).bearerAuth(apiKey.trim()).execute();
         JSONObject jsonObject = JSONUtil.parseObj(response.body());
         return JSONUtil.toBean(jsonObject.toString(), HomeInfoVo.HotBoard.class);
     }
 
     @Override
     public HomeInfoVo.Weather getWeather(String city) {
-        HttpResponse response = HttpUtil.createGet(UApiConstants.WEATHER).auth(apiKey.trim()).form("city", city).execute();
+        HttpResponse response = HttpUtil.createGet(UApiConstants.WEATHER).bearerAuth(apiKey.trim()).form("city", city).execute();
         JSONObject jsonObject = JSONUtil.parseObj(response.body());
         return JSONUtil.toBean(jsonObject.toString(), HomeInfoVo.Weather.class);
     }
 
     @Override
     public String translate(String text, String toLanguage) {
-        HttpResponse response = HttpUtil.createGet(UApiConstants.TRANSLATE).auth(apiKey.trim()).form("text", text).form("to", toLanguage).execute();
+        JSONObject request = new JSONObject();
+        request.set("text", text);
+        request.set("to_lang", toLanguage);
+        HttpResponse response = HttpUtil.createPost(UApiConstants.TRANSLATE).bearerAuth(apiKey.trim()).body(request.toString(), "application/json").execute();
         JSONObject jsonObject = JSONUtil.parseObj(response.body());
         return jsonObject.getStr("translate");
     }

@@ -57,7 +57,7 @@ public class ChatRequest {
      * P=0.1 → 高确定性（只选高概率词）
      * P=0.9 → 高多样性（包含更多低概率词）
      */
-    private Double topP = 0.9;
+    private Double topP = 0.8;
 
 //    -----------------------------
 

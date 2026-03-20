@@ -15,7 +15,6 @@ public interface UApiConstants {
     //一言
     String SAYING = "https://uapis.cn/api/v1/saying";
 
-    //热搜 weibo douyin baidu juejin netease-music lol
     String HOT_BOARD = "https://uapis.cn/api/v1/misc/hotboard";
 
     //IP信息

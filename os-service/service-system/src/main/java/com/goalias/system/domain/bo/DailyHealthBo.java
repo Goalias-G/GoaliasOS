@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 /**
@@ -29,10 +31,10 @@ public class DailyHealthBo extends BaseEntity {
     private Long userId;
 
     @JsonFormat(pattern = "HH:mm:ss")
-    private Date upTime;
+    private LocalTime upTime;
 
     @JsonFormat(pattern = "HH:mm:ss")
-    private Date sleepTime;
+    private LocalTime sleepTime;
 
     private String food;
 
@@ -41,7 +43,7 @@ public class DailyHealthBo extends BaseEntity {
     private String remark;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date healthDate;
+    private LocalDate healthDate;
 
     private Date startTime;
 

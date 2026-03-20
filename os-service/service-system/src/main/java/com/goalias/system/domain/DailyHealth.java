@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serial;
+import java.time.LocalTime;
 import java.util.Date;
 
 /**
@@ -29,9 +30,9 @@ public class DailyHealth extends BaseEntity {
 
     private Long userId;
 
-    private Date upTime;
+    private LocalTime upTime;
 
-    private Date sleepTime;
+    private LocalTime sleepTime;
 
     private String food;
 

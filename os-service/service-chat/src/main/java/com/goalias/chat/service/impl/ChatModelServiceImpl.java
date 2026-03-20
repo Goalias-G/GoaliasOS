@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 聊天模型Service业务层处理
@@ -50,6 +51,7 @@ public class ChatModelServiceImpl implements IChatModelService {
     @Override
     public TableDataInfo<ChatModel> queryPageList(ChatModelBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<ChatModel> lqw = buildQueryWrapper(bo);
+        lqw.orderByDesc(ChatModel::getPriority);
         lqw.orderByDesc(ChatModel::getCreateTime);
         Page<ChatModel> result = baseMapper.selectPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
