@@ -38,10 +38,14 @@ public class HomeController {
         LoginUser loginUser = LoginHelper.getLoginUser();
         String location = loginUser.getLoginLocation().split(" ")[0];
         if (!Objects.isNull(location) && !"本机".equals(location)) {
-            HomeInfoVo.Weather weather = uApiService.getWeather(location);
-            homeInfoVo.setWeather(weather);
-        }
+            try {
+                HomeInfoVo.Weather weather = uApiService.getWeather(location);
+                homeInfoVo.setWeather(weather);
+            } catch (Exception e) {
+                log.error("获取首页天气失败，地址：{}", location, e);
+            }
 
+        }
         String saying = (String) redisService.get(CacheNames.HOME_INFO_QUOTE);
 
         Map<String, Object> newsMap = redisService.hmGet(CacheNames.HOME_INFO_NEWS);
@@ -49,7 +53,7 @@ public class HomeController {
         newsMap.forEach((key, value) -> newsList.add((HomeInfoVo.HotBoard) value));
 
         AiRecommend aiRecommend = (AiRecommend) redisService.get(CacheNames.HOME_INFO_AI_RECOMMEND);
-        if (!LoginHelper.isSuperAdmin()){
+        if (!LoginHelper.isSuperAdmin() && Objects.nonNull(aiRecommend)) {
             aiRecommend.setLifeAnalysis("只有 Goalias (管理员)才可以进行生活行为分析哦~");
         }
 
