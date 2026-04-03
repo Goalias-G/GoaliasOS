@@ -9,6 +9,7 @@ import com.goalias.chat.domain.vo.ChatModelVo;
 import com.goalias.chat.mapper.ChatModelMapper;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.redis.constant.CacheNames;
+import com.goalias.common.redis.service.RedisService;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ import java.util.Objects;
 public class ChatModelServiceImpl implements IChatModelService {
 
     private final ChatModelMapper baseMapper;
+    private final RedisService redisService;
 
 
     /**
@@ -54,6 +56,13 @@ public class ChatModelServiceImpl implements IChatModelService {
         lqw.orderByDesc(ChatModel::getPriority);
         lqw.orderByDesc(ChatModel::getCreateTime);
         Page<ChatModel> result = baseMapper.selectPage(pageQuery.build(), lqw);
+
+        Map<String, Object> inputTokenMap = redisService.hmGet(CacheNames.CHAT_TOKEN_INPUT);
+        Map<String, Object> outputTokenMap = redisService.hmGet(CacheNames.CHAT_TOKEN_OUTPUT);
+        result.getRecords().forEach(record -> {
+            record.setInputUsage(inputTokenMap.getOrDefault(record.getModelName(),0L));
+            record.setOutputUsage(outputTokenMap.getOrDefault(record.getModelName(),0L));
+        });
         return TableDataInfo.build(result);
     }
 

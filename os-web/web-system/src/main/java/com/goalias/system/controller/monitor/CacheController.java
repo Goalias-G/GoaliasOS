@@ -19,7 +19,7 @@ import java.util.*;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/monitor/cache")
+@RequestMapping("/monitor")
 public class CacheController {
 
     private final RedisConnectionFactory connectionFactory;
@@ -27,7 +27,7 @@ public class CacheController {
     /**
      * 获取缓存监控列表
      */
-    @GetMapping()
+    @GetMapping("/cache")
     public R<CacheListInfoVo> getInfo() {
         RedisConnection connection = connectionFactory.getConnection();
         Properties commandStats = connection.commands().info("commandstats");

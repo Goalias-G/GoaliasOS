@@ -5,6 +5,7 @@ import com.goalias.common.web.core.BaseController;
 import com.goalias.common.web.domain.PageQuery;
 import com.goalias.common.web.domain.TableDataInfo;
 import com.goalias.system.domain.DailyHealth;
+import com.goalias.system.domain.vo.SleepChartVo;
 import com.goalias.system.domain.bo.DailyHealthBo;
 import com.goalias.system.service.IDailyHealthService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 每日健康记录Controller
@@ -60,5 +62,28 @@ public class DailyHealthController extends BaseController {
     public R<Void> edit(@Validated @RequestBody DailyHealthBo bo) {
         return toAjax(dailyHealthService.updateByBo(bo));
     }
+
+
+    /**
+     * 获取近可选时间的起床和睡眠时间数据（用于双折线图）
+     *
+     * @param days 天数，默认10天
+     * @return 睡眠图表数据
+     */
+    @GetMapping("/chart")
+    public R<List<SleepChartVo>> getSleepChart(@RequestParam(defaultValue = "10") Integer days) {
+        List<DailyHealth> dailyHealths = dailyHealthService.queryRecentDays(days);
+        List<SleepChartVo> chartData = dailyHealths.stream()
+                .map(dh -> {
+                    SleepChartVo vo = new SleepChartVo();
+                    vo.setDate(dh.getCreateTime().toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate());
+                    vo.setUpTime(dh.getUpTime());
+                    vo.setSleepTime(dh.getSleepTime());
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        return R.ok(chartData);
+    }
+
 
 }

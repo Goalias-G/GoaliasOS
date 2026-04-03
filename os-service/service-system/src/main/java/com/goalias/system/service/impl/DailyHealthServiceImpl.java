@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -89,6 +91,17 @@ public class DailyHealthServiceImpl extends ServiceImpl<DailyHealthMapper, Daily
         return baseMapper.deleteBatchIds(ids) > 0;
     }
 
+
+    @Override
+    public List<DailyHealth> queryRecentDays(int days) {
+        Long userId = LoginHelper.getUserId();
+        LocalDateTime startTime = LocalDateTime.now().minusDays(days).with(LocalTime.MIN);
+        LambdaQueryWrapper<DailyHealth> lqw = Wrappers.lambdaQuery();
+        lqw.eq(DailyHealth::getUserId, userId)
+           .ge(DailyHealth::getCreateTime, startTime)
+           .orderByAsc(DailyHealth::getCreateTime);
+        return baseMapper.selectList(lqw);
+    }
     private void validEntityBeforeSave(DailyHealth entity) {
     }
 

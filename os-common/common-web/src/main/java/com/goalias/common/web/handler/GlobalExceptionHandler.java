@@ -17,11 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.MyBatisSystemException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * 全局异常处理器
@@ -157,5 +159,12 @@ public class GlobalExceptionHandler {
         }
         log.error("请求地址'{}', Mybatis系统异常", requestURI, e);
         return R.fail("数据访问异常，请稍后重试");
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<?> handleNoResourceFound(NoResourceFoundException ex) {
+        // 统一返回 404，不提示具体原因
+        log.error("Attack! No resource found: {}", ex.getMessage());
+        return ResponseEntity.notFound().build();
     }
 }

@@ -45,4 +45,12 @@ public interface IDailyHealthService {
      */
     Boolean deleteWithIds(Collection<Long> ids);
 
+    /**
+     * 查询最近N天的每日健康记录
+     *
+     * @param days 天数
+     * @return 每日健康记录列表
+     */
+    List<DailyHealth> queryRecentDays(int days);
+
 }

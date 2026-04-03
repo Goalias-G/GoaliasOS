@@ -2,6 +2,7 @@ package com.goalias.chat.domain;
 
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -97,6 +98,12 @@ public class ChatModel extends BaseEntity {
      * 模型维度
      */
     private Integer dimension;
+
+    @TableField(exist = false)
+    private Object inputUsage;
+
+    @TableField(exist = false)
+    private Object outputUsage;
 
 
 }

@@ -31,16 +31,16 @@ public class LifeTool implements OsToolProvider {
         return list.stream().collect(Collectors.toMap(LifeCategory::getId, LifeCategory::getName));
     }
 
-    @OsTool(name = "record_life_event", description = "自动识别并记录为一条生活事件，执行前需要先查询目前的场景分类 select_scene_category，" +
+    @OsTool(name = "record_life_event", description = "根据输入自动识别此是否包含一条生活事件，如果有则记录，执行前需要先查询目前的场景分类 select_scene_category，" +
             "判断事件是否匹配已有分类列表，有则选对应场景id,没有则创建新对应的场景分类名称，同时生成记录。")
-    public Boolean recordLifeEvent(@OsToolParam(name = "sceneId", description = "现已存在相关场景id") Long sceneId,
+    public Boolean recordLifeEvent(@OsToolParam(name = "sceneId", description = "现已存在与事件匹配的场景id") Long sceneId,
                                 @OsToolParam(name = "categoryName", description = "需新创建的场景分类名称") String categoryName,
                                 @OsToolParam(name = "title", description = "生活事件标题", required = true) String title,
                                 @OsToolParam(name = "content", description = "生活事件内容", required = true) String content,
                                 @OsToolParam(name = "recordDate", description = "此生活记录对应时间节点(yyyy-MM-dd)") String recordDate) {
         Long categoryId = null;
         Long userId = TtlTokenContext.getCurrentUserId();
-        log.debug("recordLifeEvent 执行 用户id:{},场景id：{},场景名称：{}", userId, sceneId, categoryName);
+        log.info("recordLifeEvent 执行 用户id:{},场景id：{},场景名称：{}", userId, sceneId, categoryName);
 
         if (Objects.isNull(sceneId)) {
             LifeCategoryBo bo = new LifeCategoryBo();

@@ -21,12 +21,14 @@ EXPOSE 7000
 # JVM 参数优化
 # -Xms512m: 初始堆内存
 # -Xmx512m: 最大堆内存
-# -XX:+UseG1GC: 使用 G1 垃圾收集器（低延迟）
-# -XX:MaxGCPauseMillis=200: 最大 GC 停顿时间 200ms
-# -XX:+OptimizeStringConcat: 优化字符串拼接
-# -XX:+UseStringDeduplication: 字符串去重，节省内存
-ENV JAVA_OPTS="-Xms512m -Xmx512m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseStringDeduplication -XX:+OptimizeStringConcat -XX:+DisableExplicitGC"
-
+ENV JAVA_OPTS="-Xms256m -Xmx384m \
+  -XX:MaxRAMPercentage=75.0 \
+  -XX:+UseContainerSupport \
+  -XX:+UseParallelGC \
+  -XX:MetaspaceSize=64m \
+  -XX:MaxMetaspaceSize=128m \
+  -XX:MaxDirectMemorySize=64m \
+  -XX:+DisableExplicitGC"
 # 启动命令
 # 定义启动命令
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar GoaliasOS.jar"]

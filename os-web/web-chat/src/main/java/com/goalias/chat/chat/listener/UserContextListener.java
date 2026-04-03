@@ -11,6 +11,7 @@ import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.redis.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class UserContextListener {
 
     @Async
     @EventListener
-    public void onUserContextUpdate(UserContextUpdateEvent event) {
+    public void onUserContextUpdate(@NotNull UserContextUpdateEvent event) {
         log.debug("UserContextListener->接收到用户画像更新事件，用户ID: {}，原始描述: {}",
                 event.getUserId(), event.getDescribe());
         Map<String, Object> currentUserContext = redisService.hmGet(CacheNames.CHAT_USER_CONTEXT + event.getUserId());

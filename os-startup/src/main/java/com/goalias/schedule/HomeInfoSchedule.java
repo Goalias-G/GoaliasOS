@@ -68,7 +68,7 @@ public class HomeInfoSchedule {
     /**
      * 每4小时 24积分/天
      */
-    @Scheduled(cron = "0 0 8,10,12,14,16,18,20,22 * * ? ")
+    @Scheduled(cron = "0 0 8,12,16,20 * * ? ")
     public void syncToDatabase() {
         log.info("开始更新首页信息新闻热榜与一言...");
         Map<String, HomeInfoVo.HotBoard> newsMap = new HashMap<>();
@@ -111,8 +111,7 @@ public class HomeInfoSchedule {
         healthBo.setUserId(UserConstants.SUPER_ADMIN_ID);
         healthBo.setStartTime(new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(3)));
         List<DailyHealth> healthList = dailyHealthService.queryList(healthBo);
-        String threeDaysHealthData = healthList.toString();
-        String jsonResult = sseService.simpleChat(new ChatRequest(), PromptTemplateEnum.AI_RECOMMEND, threeDaysHealthData);
+        String jsonResult = sseService.simpleChat(new ChatRequest(), PromptTemplateEnum.AI_RECOMMEND, healthList.toString());
         if (JSONUtil.isTypeJSON(jsonResult)) {
             AiRecommend aiRecommend = JSONUtil.toBean(jsonResult, AiRecommend.class);
 
@@ -135,7 +134,7 @@ public class HomeInfoSchedule {
     /**
      *
      */
-    @Scheduled(cron = "0 0 9 * * ? ")
+    @Scheduled(cron = "0 0 22 * * ?")
     public void homeInfoNotice() {
         log.info("开始检查今日健康记录填写情况并通知提醒");
         Long userId = UserConstants.SUPER_ADMIN_ID;
@@ -144,7 +143,7 @@ public class HomeInfoSchedule {
         healthBo.setStartTime(Date.from(LocalDate.now().atStartOfDay().toInstant(ZoneOffset.of("+8"))));
         healthBo.setEndTime(Date.from(LocalDate.now().atTime(23, 59, 59).toInstant(ZoneOffset.of("+8"))));
         List<DailyHealth> dailyHealths = dailyHealthService.queryList(healthBo);
-        if (CollUtil.isEmpty(dailyHealths) || dailyHealths.get(0).getSleepTime() == null) {
+        if (CollUtil.isEmpty(dailyHealths) || dailyHealths.get(0).getUpTime() == null) {
             log.info("今日没有填写健康记录,开始提醒");
             SysUserVo sysUserVo = userService.selectUserById(userId);
 
@@ -152,7 +151,7 @@ public class HomeInfoSchedule {
             try (InputStream inputStream = resource.getInputStream()) {
                 mailTemplate.sendHtmlMail(sysUserVo.getEmail(), "Goalias OS 生活记录提醒", new String(inputStream.readAllBytes(), StandardCharsets.UTF_8));
             } catch (Exception e) {
-                log.error("读取模板文件失败", e);
+                log.error("读取发送模板文件失败", e);
                 throw new RuntimeException(e);
             }
         }
