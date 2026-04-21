@@ -2,6 +2,7 @@ package com.goalias.chat.chat.handler;
 
 import cn.hutool.json.JSONUtil;
 import com.goalias.chat.chat.factory.FunctionCallsFactory;
+import com.goalias.chat.chat.support.TtlTokenContext;
 import com.goalias.chat.chat.tools.ToolMetadata;
 import com.goalias.common.core.exception.ServiceException;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
@@ -39,6 +40,17 @@ public class FunctionCallExecutor {
      * @return 执行结果（JSON 字符串）
      */
     public String execute(ToolExecutionRequest request) {
+        return execute(request, null);
+    }
+
+    /**
+     * 执行工具调用（携带用户 token 上下文）
+     *
+     * @param request 工具执行请求
+     * @param token   当前用户的 Sa-Token 值，用于在异步线程恢复登录上下文
+     * @return 执行结果（JSON 字符串）
+     */
+    public String execute(ToolExecutionRequest request, String token) {
         long startTime = System.currentTimeMillis();
         String toolName = request.name();
 
@@ -63,8 +75,8 @@ public class FunctionCallExecutor {
             // 2. 解析参数
             Object[] args = parseArguments(request.arguments(), metadata);
 
-            // 3. 执行方法（带超时控制）
-            Object result = executeWithTimeout(metadata, args);
+            // 3. 执行方法（带超时控制，显式传递 token）
+            Object result = executeWithTimeout(metadata, args, token);
 
             // 4. 返回结果
             long executionTime = System.currentTimeMillis() - startTime;
@@ -187,7 +199,7 @@ public class FunctionCallExecutor {
             return Boolean.parseBoolean(value.toString());
         }
 
-        // 复杂类型：使用 Hutool 的 JSON 转换
+        // 复杂类型：使用 Hutool 做 JSON 转换
         // 先将 value 转为 JSON 字符串，再转为目标类型
         String json = JSONUtil.toJsonStr(value);
         return JSONUtil.toBean(json, targetType);
@@ -198,23 +210,34 @@ public class FunctionCallExecutor {
      *
      * @param metadata 工具元数据
      * @param args     参数数组
+     * @param token    当前用户的 Sa-Token 值
      * @return 执行结果
      * @throws Exception 执行异常
      */
-    private Object executeWithTimeout(ToolMetadata metadata, Object[] args) throws Exception {
+    private Object executeWithTimeout(ToolMetadata metadata, Object[] args, String token) throws Exception {
         Method method = metadata.getMethod();
         Object instance = metadata.getInstance();
         long timeout = metadata.getTimeout();
 
-        // 提交执行任务
+        // 提交执行任务，在异步线程内显式设置 TTL token 上下文
         CompletableFuture<Object> future = CompletableFuture.supplyAsync(() -> {
+            // 在异步线程内设置当前用户的 token 上下文
+            boolean needClearTtl = false;
+            if (token != null && !token.isEmpty()) {
+                TtlTokenContext.setCurrentToken(token);
+                needClearTtl = true;
+            }
             try {
-                // 确保方法可访问
                 method.setAccessible(true);
                 return method.invoke(instance, args);
             } catch (Exception e) {
                 log.error("方法调用失败: {}", metadata.getName(), e);
                 throw new RuntimeException("方法调用失败: " + e.getMessage(), e);
+            } finally {
+                // 清理当前线程的 TTL 上下文
+                if (needClearTtl) {
+                    TtlTokenContext.remove();
+                }
             }
         }, threadPool);
 

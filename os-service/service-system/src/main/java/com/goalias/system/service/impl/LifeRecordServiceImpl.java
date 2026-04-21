@@ -56,6 +56,7 @@ public class LifeRecordServiceImpl extends ServiceImpl<LifeRecordMapper, LifeRec
 
         lqw.eq(LifeRecord::getUserId, bo.getUserId());
         lqw.eq(LifeRecord::getCategoryId, bo.getCategoryId());
+        lqw.like(StringUtils.isNotBlank(bo.getTitle()),LifeRecord::getTitle,bo.getTitle());
         lqw.eq(bo.getFavoriteFlag() != null, LifeRecord::getFavoriteFlag, bo.getFavoriteFlag());
         lqw.orderByDesc(LifeRecord::getRecordDate);
         lqw.orderByDesc(LifeRecord::getCreateTime);

@@ -135,9 +135,9 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
             // 发送工具执行中事件
             ChatServiceHelper.sendToolExecutingEvent(emitter, request.name(), i + 1, requests.size());
 
-            // 执行工具
+            // 执行工具，显式传递当前用户的 token 以确保异步线程能获取登录上下文
             long startTime = System.currentTimeMillis();
-            String result = toolExecutor.execute(request);
+            String result = toolExecutor.execute(request, originalRequest.getToken());
             long executionTime = System.currentTimeMillis() - startTime;
 
             toolResults.put(request.name(), result);
@@ -184,7 +184,7 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     }
 
     /**
-     * 回喂响应处理器
+     * 回馈响应处理器
      * 处理 AI 基于工具结果生成的最终回复
      */
     private class FeedbackResponseHandler implements StreamingChatResponseHandler {
