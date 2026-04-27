@@ -7,21 +7,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.goalias.common.web.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.io.Serial;
-import java.time.LocalTime;
-import java.util.Date;
 
-/**
- * 每日健康记录表 daily_health
- *
- * @author Goalias
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("daily_health")
-public class DailyHealth extends BaseEntity {
+@TableName("finance_transaction")
+public class FinanceTransaction extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -31,13 +23,17 @@ public class DailyHealth extends BaseEntity {
 
     private Long userId;
 
-    private LocalTime upTime;
+    private Long categoryId;
 
-    private LocalTime sleepTime;
+    private Long amount;
 
-    private String food;
-
-    private String exercise;
+    private Integer tag;
 
     private String remark;
+
+    @TableField(exist = false)
+    private String categoryName;
+
+    @TableField(exist = false)
+    private Integer categoryType;
 }

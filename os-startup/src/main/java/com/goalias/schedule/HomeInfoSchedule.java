@@ -1,11 +1,14 @@
 package com.goalias.schedule;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.goalias.chat.chat.service.ISseService;
 import com.goalias.chat.enums.PromptTemplateEnum;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.constant.UserConstants;
+import com.goalias.common.core.utils.DateUtils;
 import com.goalias.common.notification.core.MailTemplate;
 import com.goalias.common.redis.constant.CacheNames;
 import com.goalias.common.redis.service.RedisService;
@@ -33,9 +36,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 应用启动Runner
@@ -45,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-@Profile("prod")
+//@Profile("prod")
 public class HomeInfoSchedule {
 
     private final RedisService redisService;
@@ -103,7 +109,7 @@ public class HomeInfoSchedule {
      * "lifeAnalysis": "string"
      * }
      */
-    @Scheduled(cron = "0 0 3 * * ? ")
+    @Scheduled(cron = "0 0 6 * * ? ")
     public void aiRecommend() {
         log.info("aiRecommend 开始执行");
 
@@ -111,7 +117,9 @@ public class HomeInfoSchedule {
         healthBo.setUserId(UserConstants.SUPER_ADMIN_ID);
         healthBo.setStartTime(new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(3)));
         List<DailyHealth> healthList = dailyHealthService.queryList(healthBo);
-        String jsonResult = sseService.simpleChat(new ChatRequest(), PromptTemplateEnum.AI_RECOMMEND, healthList.toString());
+        List<String> toAiHealthList = healthList.stream()
+                .map(dailyHealth -> String.format("{日期: %s,此日记录: %s} ", DateUtils.dateTime(dailyHealth.getCreateTime()), dailyHealth)).toList();
+        String jsonResult = sseService.simpleChat(new ChatRequest(), PromptTemplateEnum.AI_RECOMMEND, toAiHealthList);
         if (JSONUtil.isTypeJSON(jsonResult)) {
             AiRecommend aiRecommend = JSONUtil.toBean(jsonResult, AiRecommend.class);
 

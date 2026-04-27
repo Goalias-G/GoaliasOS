@@ -23,7 +23,7 @@ public class LifeTool implements OsToolProvider {
     private final ILifeCategoryService categoryService;
     private final ILifeRecordService recordService;
 
-    @OsTool(name = "select_scene_category", description = "查询当前用户至今的所有生活场景分类的id与name")
+    @OsTool(name = "select_scene_category", description = "查询当前用户的生活场景分类的id与name")
     public Map<Long, String> lifeCategoryList() {
         LifeCategoryBo bo = new LifeCategoryBo();
         bo.setUserId(TtlTokenContext.getCurrentUserId());
@@ -31,7 +31,7 @@ public class LifeTool implements OsToolProvider {
         return list.stream().collect(Collectors.toMap(LifeCategory::getId, LifeCategory::getName));
     }
 
-    @OsTool(name = "record_life_event", description = "根据输入自动识别此是否包含一条生活事件，如果有则记录，执行前需要先查询目前的场景分类 select_scene_category，" +
+    @OsTool(name = "record_life_event", description = "用户指出需要记录生活事件时、用户输入中识别到生活事件时调用。执行前需要先查询目前的场景分类 select_scene_category，" +
             "判断事件是否匹配已有分类列表，有则选对应场景id,没有则创建新对应的场景分类名称，同时生成记录。")
     public Boolean recordLifeEvent(@OsToolParam(name = "sceneId", description = "现已存在与事件匹配的场景id") Long sceneId,
                                 @OsToolParam(name = "categoryName", description = "需新创建的场景分类名称") String categoryName,

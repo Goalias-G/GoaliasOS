@@ -1,27 +1,18 @@
 package com.goalias.system.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.goalias.common.web.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.io.Serial;
-import java.time.LocalTime;
-import java.util.Date;
 
-/**
- * 每日健康记录表 daily_health
- *
- * @author Goalias
- */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("daily_health")
-public class DailyHealth extends BaseEntity {
+@TableName("finance_category")
+public class FinanceCategory extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -31,13 +22,9 @@ public class DailyHealth extends BaseEntity {
 
     private Long userId;
 
-    private LocalTime upTime;
+    private String name;
 
-    private LocalTime sleepTime;
+    private Integer type;
 
-    private String food;
-
-    private String exercise;
-
-    private String remark;
+    private String icon;
 }
