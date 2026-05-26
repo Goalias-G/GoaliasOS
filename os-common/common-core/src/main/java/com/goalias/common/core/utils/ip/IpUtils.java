@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
+
 /**
  * @author Goalias
  */
@@ -66,8 +68,7 @@ public class IpUtils {
                 .form("oe", "utf-8")
                 .form("resource_id", "6006").execute();
         JSONObject response = new JSONObject(httpResponse.body());
-        if (response.get("data") != null){
-            System.out.println(response);
+        if (Objects.nonNull(response.get("data"))){
             return response.getJSONArray("data").getJSONObject(0).getStr("location");
         }
         return UNKNOWN;

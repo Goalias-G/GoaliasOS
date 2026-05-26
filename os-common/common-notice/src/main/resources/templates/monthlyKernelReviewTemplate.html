@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Goalias OS 月度内核复盘</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,'Microsoft YaHei',sans-serif;color:#172033;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7fb;padding:28px 0;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="720" cellspacing="0" cellpadding="0" style="width:720px;max-width:92%;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #e3e8f0;">
+                <tr>
+                    <td style="padding:28px 32px;background:#172033;color:#ffffff;">
+                        <div style="font-size:13px;letter-spacing:0;color:#aeb9c8;">Goalias OS</div>
+                        <h1 style="margin:8px 0 0;font-size:24px;line-height:1.35;font-weight:700;">{{month}} 月度内核复盘</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:24px 32px 8px;">
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td style="padding:12px 14px;background:#f7f9fc;border:1px solid #e6ebf2;border-radius:6px;">
+                                    <div style="font-size:12px;color:#667085;">收支流水</div>
+                                    <div style="font-size:22px;font-weight:700;color:#172033;margin-top:4px;">{{financeCount}} 笔</div>
+                                </td>
+                                <td style="width:12px;"></td>
+                                <td style="padding:12px 14px;background:#f7f9fc;border:1px solid #e6ebf2;border-radius:6px;">
+                                    <div style="font-size:12px;color:#667085;">生活记录</div>
+                                    <div style="font-size:22px;font-weight:700;color:#172033;margin-top:4px;">{{lifeCount}} 条</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:18px 32px 4px;color:#667085;font-size:13px;">生成时间：{{generatedAt}}</td>
+                </tr>
+                <tr>
+                    <td style="padding:12px 32px 28px;">
+                        <h2 style="font-size:18px;line-height:1.4;margin:0 0 10px;color:#172033;">月度摘要</h2>
+                        <div style="font-size:15px;line-height:1.8;color:#27364a;">{{monthlySummary}}</div>
+
+                        <h2 style="font-size:18px;line-height:1.4;margin:26px 0 10px;color:#172033;">财务流水分析</h2>
+                        <div style="font-size:15px;line-height:1.8;color:#27364a;">{{financeAnalysis}}</div>
+
+                        <h2 style="font-size:18px;line-height:1.4;margin:26px 0 10px;color:#172033;">生活日志分析</h2>
+                        <div style="font-size:15px;line-height:1.8;color:#27364a;">{{lifeLogAnalysis}}</div>
+
+                        <h2 style="font-size:18px;line-height:1.4;margin:26px 0 10px;color:#172033;">系统耦合洞察</h2>
+                        <div style="font-size:15px;line-height:1.8;color:#27364a;">{{couplingInsights}}</div>
+
+                        <h2 style="font-size:18px;line-height:1.4;margin:26px 0 10px;color:#172033;">下月内核调度</h2>
+                        <div style="font-size:15px;line-height:1.8;color:#27364a;">{{nextMonthKernelSchedules}}</div>
+
+                        <h2 style="font-size:18px;line-height:1.4;margin:26px 0 10px;color:#172033;">下月补充的数据</h2>
+                        <div style="font-size:15px;line-height:1.8;color:#27364a;">{{dataCollectionNeeds}}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:18px 32px;background:#f7f9fc;color:#667085;font-size:12px;line-height:1.6;">
+                        这是一封系统自动生成的月度复盘邮件，用于辅助个人系统观测、调度和迭代。
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

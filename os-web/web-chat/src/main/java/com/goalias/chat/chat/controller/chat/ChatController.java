@@ -45,7 +45,7 @@ public class ChatController {
 
     @SuppressWarnings("unused")
     public SseEmitter sseChatFallback(ChatRequest chatRequest) throws IOException {
-        log.info("fallback sseChat");
+        log.warn("fallback sseChat");
         SseEmitter sseEmitter = new SseEmitter(0L);
         sseEmitter.send("不好意思，刚才与 Goalias AI 交流的人太多了，请让我休息下稍后再试~");
 //        response.setContentType("text/event-stream;charset=UTF-8");

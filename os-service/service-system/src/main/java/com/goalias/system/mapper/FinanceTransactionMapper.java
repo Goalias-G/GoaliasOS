@@ -33,4 +33,10 @@ public interface FinanceTransactionMapper extends BaseMapper<FinanceTransaction>
                                                      @Param("tag") Integer tag,
                                                      @Param("startDate") String startDate,
                                                      @Param("endDate") String endDate);
+
+    List<FinanceTransactionVo> selectTransactionList(@Param("userId") Long userId,
+                                                     @Param("categoryId") Long categoryId,
+                                                     @Param("tag") Integer tag,
+                                                     @Param("startDate") String startDate,
+                                                     @Param("endDate") String endDate);
 }

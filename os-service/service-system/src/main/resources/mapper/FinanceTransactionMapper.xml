@@ -102,4 +102,27 @@
         ORDER BY t.create_time DESC
     </select>
 
+    <select id="selectTransactionList" resultType="com.goalias.system.domain.vo.FinanceTransactionVo">
+        SELECT
+            t.id, t.user_id, t.category_id, t.amount, t.tag,
+            t.remark, t.create_time, t.update_time,
+            c.name AS categoryName, c.type AS categoryType
+        FROM finance_transaction t
+        LEFT JOIN finance_category c ON t.category_id = c.id
+        WHERE t.user_id = #{userId}
+        <if test="categoryId != null">
+            AND t.category_id = #{categoryId}
+        </if>
+        <if test="tag != null">
+            AND t.tag = #{tag}
+        </if>
+        <if test="startDate != null">
+            AND t.create_time &gt;= #{startDate}
+        </if>
+        <if test="endDate != null">
+            AND t.create_time &lt; #{endDate}
+        </if>
+        ORDER BY t.create_time ASC
+    </select>
+
 </mapper>

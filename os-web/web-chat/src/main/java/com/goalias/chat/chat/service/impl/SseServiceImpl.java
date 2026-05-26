@@ -322,7 +322,7 @@ public class SseServiceImpl implements ISseService {
                 .collect(Collectors.joining("\n\n"));
         String enhancedPrompt = String.format("""
                 如有与问题匹配，请结合并摘选总结以下知识库信息回答[用户问题]。注意：优先使用背景知识，知识不足时诚实说明。
-                [参考资料]
+                [参考信息]
                 %s
                 
                 [用户问题]：%s

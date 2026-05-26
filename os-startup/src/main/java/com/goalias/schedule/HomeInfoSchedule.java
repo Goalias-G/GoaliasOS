@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-//@Profile("prod")
+@Profile("prod")
 public class HomeInfoSchedule {
 
     private final RedisService redisService;
@@ -95,7 +95,7 @@ public class HomeInfoSchedule {
     }
 
     /**
-     * 每天凌晨三点更新
+     * 每天早上六点更新
      * {
      * "greeting": "string",
      * "psychology": {
