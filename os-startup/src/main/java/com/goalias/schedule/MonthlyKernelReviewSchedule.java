@@ -3,7 +3,7 @@ package com.goalias.schedule;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.goalias.chat.chat.service.ISseService;
+import com.goalias.chat.service.ISseService;
 import com.goalias.chat.enums.PromptTemplateEnum;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.constant.UserConstants;

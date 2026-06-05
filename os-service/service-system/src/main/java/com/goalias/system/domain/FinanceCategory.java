@@ -24,6 +24,9 @@ public class FinanceCategory extends BaseEntity {
 
     private String name;
 
+    /**
+     * 分类类型 1-支出 2-收入
+     */
     private Integer type;
 
     private String icon;

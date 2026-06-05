@@ -79,7 +79,8 @@ public class QwenChatServiceImpl implements IChatService {
                 .topP(chatRequest.getTopP())
                 .build();
         dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
-        dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.responseFormat(ResponseFormat.JSON).build();
+        dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder
+                .responseFormat(chatRequest.getIsJsonResponse() ? ResponseFormat.JSON : ResponseFormat.TEXT).build();
         ChatResponse response = model.chat(request);
         log.info("千问 simpleChat 请求成功：{}", response);
         ChatServiceHelper.recordTokenUsage(response);

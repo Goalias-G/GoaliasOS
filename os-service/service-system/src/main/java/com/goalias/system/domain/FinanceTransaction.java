@@ -27,6 +27,9 @@ public class FinanceTransaction extends BaseEntity {
 
     private Long amount;
 
+    /**
+     * 流水标签 1-必要支出 2-弹性支出 3-工薪收入 4-额外收入
+     */
     private Integer tag;
 
     private String remark;

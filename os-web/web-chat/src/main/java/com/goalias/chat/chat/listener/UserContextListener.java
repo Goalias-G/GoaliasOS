@@ -4,7 +4,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.goalias.chat.chat.event.UserContextUpdateEvent;
-import com.goalias.chat.chat.service.ISseService;
+import com.goalias.chat.service.ISseService;
 import com.goalias.chat.enums.PromptTemplateEnum;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.redis.constant.CacheNames;

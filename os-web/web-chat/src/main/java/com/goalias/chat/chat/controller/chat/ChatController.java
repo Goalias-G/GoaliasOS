@@ -2,7 +2,7 @@ package com.goalias.chat.chat.controller.chat;
 
 
 import cn.hutool.json.JSONUtil;
-import com.goalias.chat.chat.service.ISseService;
+import com.goalias.chat.service.ISseService;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.domain.R;
 import com.goalias.common.rateLimiter.annotation.GoaliasFallback;

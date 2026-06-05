@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.goalias.system.mapper.SysScheduledTaskMapper">
+
+    <resultMap id="BaseResultMap" type="com.goalias.system.domain.SysScheduledTask">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="taskName" column="task_name"/>
+        <result property="taskType" column="task_type"/>
+        <result property="cronExpression" column="cron_expression"/>
+        <result property="description" column="description"/>
+        <result property="status" column="status"/>
+        <result property="lastExecuteTime" column="last_execute_time"/>
+        <result property="nextExecuteTime" column="next_execute_time"/>
+        <result property="lastExecuteStatus" column="last_execute_status"/>
+        <result property="executeCount" column="execute_count"/>
+        <result property="taskParams" column="params"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <select id="selectTaskPage" resultType="com.goalias.system.domain.vo.SysScheduledTaskVo">
+        SELECT id, user_id, task_name, task_type, cron_expression, description, status,
+               last_execute_time, next_execute_time, last_execute_status, execute_count,
+               params, remark, create_time, update_time
+        FROM sys_scheduled_task
+        <where>
+            del_flag = 0
+            <if test="userId != null">
+                AND user_id = #{userId}
+            </if>
+            <if test="taskName != null and taskName != ''">
+                AND task_name LIKE CONCAT('%', #{taskName}, '%')
+            </if>
+            <if test="taskType != null and taskType != ''">
+                AND task_type = #{taskType}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectRunningTasks" resultMap="BaseResultMap">
+        SELECT id, user_id, task_name, task_type, cron_expression, description, status,
+               last_execute_time, next_execute_time, last_execute_status, execute_count,
+               params, del_flag, create_by, create_time, update_by, update_time, remark
+        FROM sys_scheduled_task
+        WHERE del_flag = 0
+          AND status = '1'
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT id, user_id, task_name, task_type, cron_expression, description, status,
+               last_execute_time, next_execute_time, last_execute_status, execute_count,
+               params, del_flag, create_by, create_time, update_by, update_time, remark
+        FROM sys_scheduled_task
+        WHERE del_flag = 0
+          AND id IN
+          <foreach collection="ids" item="id" open="(" close=")" separator=",">
+              #{id}
+          </foreach>
+    </select>
+
+</mapper>

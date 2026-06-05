@@ -6,7 +6,7 @@ import cn.hutool.core.map.MapUtil;
 import com.goalias.chat.chat.factory.ChatServiceFactory;
 import com.goalias.chat.chat.service.IChatCostService;
 import com.goalias.chat.chat.service.IChatService;
-import com.goalias.chat.chat.service.ISseService;
+import com.goalias.chat.service.ISseService;
 import com.goalias.chat.chat.support.TtlTokenContext;
 import com.goalias.chat.chat.support.ChatRetryHelper;
 import com.goalias.chat.chat.support.RetryNotifier;

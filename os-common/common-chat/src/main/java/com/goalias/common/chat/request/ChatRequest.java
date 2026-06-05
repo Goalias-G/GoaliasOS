@@ -59,7 +59,7 @@ public class ChatRequest {
      */
     private Double topP = 0.8;
 
-//    -----------------------------
+//    --------------业务字段---------------
 
     /**
      * 消息id
@@ -93,5 +93,7 @@ public class ChatRequest {
      * 系统提示词(自动填充)
      */
     private String sysPrompt;
+
+    private Boolean isJsonResponse = true;
 
 }
