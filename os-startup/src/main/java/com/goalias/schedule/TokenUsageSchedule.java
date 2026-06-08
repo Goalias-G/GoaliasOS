@@ -38,7 +38,7 @@ public class TokenUsageSchedule {
     /**
      * 每6小时同步Redis数据到数据库
      */
-    @Scheduled(fixedRate = 6, timeUnit = TimeUnit.HOURS)
+    @Scheduled(fixedRate = 12, timeUnit = TimeUnit.HOURS)
     public void syncToDatabase() {
         log.info("开始同步Redis Token使用量到数据库...");
         try {

@@ -13,10 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ErrorHandler;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
@@ -61,7 +58,7 @@ public class DynamicTaskRegistrar {
         validateCron(task.getCronExpression());
         Long id = task.getId();
         ScheduledFuture<?> oldFuture = scheduledTasks.remove(id);
-        if (oldFuture != null) {
+        if (Objects.nonNull(oldFuture)) {
             oldFuture.cancel(false);
         }
         Runnable runnable = wrap(task, SOURCE_SCHEDULE);
@@ -84,23 +81,6 @@ public class DynamicTaskRegistrar {
             return true;
         }
         return false;
-    }
-
-    /**
-     * 修改任务的 cron 表达式（关闭后重启）
-     */
-    public void updateCron(TaskSnapshot task) {
-        if (task == null || task.getId() == null) {
-            throw new IllegalArgumentException("任务定义或任务ID不能为空");
-        }
-        validateCron(task.getCronExpression());
-        ScheduledFuture<?> oldFuture = scheduledTasks.remove(task.getId());
-        if (oldFuture != null) {
-            oldFuture.cancel(false);
-        }
-        ScheduledFuture<?> future = taskScheduler.schedule(wrap(task, SOURCE_SCHEDULE), new CronTrigger(task.getCronExpression()));
-        scheduledTasks.put(task.getId(), future);
-        log.info("[任务调度] 更新任务 cron id={} cron={}", task.getId(), task.getCronExpression());
     }
 
     /**
@@ -185,13 +165,4 @@ public class DynamicTaskRegistrar {
         }
     }
 
-    /**
-     * Spring 默认 ErrorHandler，避免单个任务异常导致调度线程吞错。
-     */
-    public static class LoggingErrorHandler implements ErrorHandler {
-        @Override
-        public void handleError(Throwable t) {
-            log.error("[任务调度] 调度线程异常", t);
-        }
-    }
 }

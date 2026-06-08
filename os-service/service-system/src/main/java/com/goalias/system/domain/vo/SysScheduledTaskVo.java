@@ -51,7 +51,7 @@ public class SysScheduledTaskVo implements Serializable {
     /**
      * 任务自定义参数（JSON字符串）
      */
-    private String taskParams;
+    private String params;
 
     private String remark;
 

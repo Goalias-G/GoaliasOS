@@ -90,4 +90,6 @@ public class SysScheduledTask extends BaseEntity {
     @TableLogic
     @TableField(select = false)
     private Integer delFlag;
+
+    private String remark;
 }

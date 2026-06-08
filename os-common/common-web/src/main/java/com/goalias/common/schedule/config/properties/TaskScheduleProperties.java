@@ -32,8 +32,4 @@ public class TaskScheduleProperties {
      */
     private Integer awaitTerminationSeconds = 60;
 
-    /**
-     * 立即执行时是否仍记录执行日志
-     */
-    private Boolean logManualTrigger = true;
 }
