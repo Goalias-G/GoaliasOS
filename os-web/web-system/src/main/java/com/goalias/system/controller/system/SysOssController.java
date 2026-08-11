@@ -84,7 +84,7 @@ public class SysOssController extends BaseController {
     /**
      * OSS对象详细信息
      *
-     * @param ossId OSS对象ID
+     * @param ossIds OSS对象ID
      */
     @GetMapping("/info/{ossIds}")
     public R<List<SysOssUploadVo>> info(@PathVariable Long[] ossIds) {

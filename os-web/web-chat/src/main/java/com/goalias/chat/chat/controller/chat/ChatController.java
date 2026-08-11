@@ -1,14 +1,12 @@
 package com.goalias.chat.chat.controller.chat;
 
 
-import cn.hutool.json.JSONUtil;
 import com.goalias.chat.service.ISseService;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.domain.R;
 import com.goalias.common.rateLimiter.annotation.GoaliasFallback;
 import com.goalias.common.rateLimiter.enums.FlowGradeEnum;
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +50,7 @@ public class ChatController {
 //        R<Object> fail = R.fail("不好意思，刚才与 Goalias AI 交流的人太多了，请让我休息下稍后再试~");
 //        response.getWriter().write(JSONUtil.toJsonStr(fail));
 //        response.getWriter().flush();
+        sseEmitter.complete();
         return sseEmitter;
     }
 

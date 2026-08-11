@@ -116,8 +116,8 @@ public class SseServiceImpl implements ISseService {
                             chatRequest.setModel(modelForTry.getModelName());
                             // 以 emitter 实例为唯一键注册失败回调
                             RetryNotifier.setFailureCallback(sseEmitter, onFailure);
-                            autoSelectServiceByCategoryAndInvoke(chatRequest, sseEmitter,
-                                    modelForTry.getProviderName());
+                            IChatService service = chatServiceFactory.getChatService(modelForTry.getProviderName());
+                            service.chat(chatRequest, sseEmitter);
                         }
                 );
             } else {
@@ -174,14 +174,6 @@ public class SseServiceImpl implements ISseService {
     }
 
     /**
-     * 根据给定分类获取服务并发起调用（避免在降级时重复选择模型）
-     */
-    private void autoSelectServiceByCategoryAndInvoke(ChatRequest chatRequest, SseEmitter sseEmitter, String providerName) {
-        IChatService service = chatServiceFactory.getChatService(providerName);
-        service.chat(chatRequest, sseEmitter);
-    }
-
-    /**
      * 根据分类选择优先级最高的模型
      */
     private ChatModel selectModelByCategory(String category) {
@@ -199,14 +191,7 @@ public class SseServiceImpl implements ISseService {
      * @return 截取后的字符
      */
     public static String getFirst10Characters(String str) {
-        // 判断字符串长度
-        if (str.length() > 10) {
-            // 如果长度大于10，截取前10个字符
-            return str.substring(0, 10);
-        } else {
-            // 如果长度不足10，返回整个字符串
-            return str;
-        }
+        return str.length() > 10 ? str.substring(0, 10) : str;
     }
 
     /**
@@ -234,18 +219,6 @@ public class SseServiceImpl implements ISseService {
         messages.add(0, sysMessage);
 
         chatRequest.setSysPrompt(sysPrompt);
-
-//        // 用户对话内容
-//        String chatString = null;
-//        // 获取用户对话信息
-//        Object content = messages.get(messages.size() - 1).getDescribe();
-//        if (content instanceof List<?> listContent) {
-//            if (CollectionUtil.isNotEmpty(listContent)) {
-//                chatString = listContent.get(0).toString();
-//            }
-//        } else {
-//            chatString = content.toString();
-//        }
         chatRequest.setPrompt(chatString);
     }
 

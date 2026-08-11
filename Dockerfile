@@ -1,4 +1,4 @@
-# GoaliasOS Docker 镜像 - 适用于 2 核 2G 服务器
+# GoaliasOS Docker 镜像
 # 基于 Eclipse Temurin JRE 17（轻量级）
 FROM eclipse-temurin:17-jre-alpine
 
@@ -19,9 +19,9 @@ COPY GoaliasOS.jar /app/GoaliasOS.jar
 EXPOSE 7000
 
 # JVM 参数优化
-# -Xms512m: 初始堆内存
-# -Xmx512m: 最大堆内存
-ENV JAVA_OPTS="-Xms256m -Xmx384m \
+# -Xms384m: 初始堆内存
+# -Xmx384m: 最大堆内存
+ENV JAVA_OPTS="-Xms384m -Xmx384m \
   -XX:MaxRAMPercentage=75.0 \
   -XX:+UseContainerSupport \
   -XX:+UseParallelGC \

@@ -1,6 +1,7 @@
 package com.goalias.common.core.utils.ip;
 
 
+import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
@@ -63,13 +64,17 @@ public class IpUtils {
         if (ip.equals("127.0.0.1") || ip.equals("0:0:0:0:0:0:0:1")){
             return "本机";
         }
-        HttpResponse httpResponse = HttpUtil.createGet("https://opendata.baidu.com/api.php")
-                .form("query", ip)
-                .form("oe", "utf-8")
-                .form("resource_id", "6006").execute();
-        JSONObject response = new JSONObject(httpResponse.body());
-        if (Objects.nonNull(response.get("data"))){
-            return response.getJSONArray("data").getJSONObject(0).getStr("location");
+        try {
+            HttpResponse httpResponse = HttpUtil.createGet("https://opendata.baidu.com/api.php")
+                    .form("query", ip)
+                    .form("oe", "utf-8")
+                    .form("resource_id", "6006").execute();
+            JSONObject response = new JSONObject(httpResponse.body());
+            if (Objects.nonNull(response.get("data"))){
+                return response.getJSONArray("data").getJSONObject(0).getStr("location");
+            }
+        } catch (Exception e) {
+            log.error("百度 {} 获取城市信息失败", ip, e);
         }
         return UNKNOWN;
     }
