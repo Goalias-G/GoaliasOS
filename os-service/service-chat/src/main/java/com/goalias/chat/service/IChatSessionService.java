@@ -41,6 +41,15 @@ public interface IChatSessionService {
     Boolean updateByBo(ChatSessionBo bo);
 
     /**
+     * 更新当前用户会话的归档状态
+     *
+     * @param id 会话 ID
+     * @param archiveStatus 归档状态（0：正常，1：已归档）
+     * @return 是否成功
+     */
+    Boolean updateArchiveStatus(Long id, Integer archiveStatus);
+
+    /**
      * 校验并批量删除会话管理信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);

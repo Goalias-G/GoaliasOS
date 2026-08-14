@@ -52,4 +52,9 @@ public class ChatSession extends BaseEntity {
      */
     private String conversationId;
 
+    /**
+     * 归档状态（0：正常，1：已归档）
+     */
+    private Integer archiveStatus;
+
 }

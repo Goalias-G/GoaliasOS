@@ -24,5 +24,9 @@ public class SysOssUploadVo {
      * 对象存储主键
      */
     private Long ossId;
+    /**
+     * 文件大小
+     */
+    private Long fileSize;
 
 }

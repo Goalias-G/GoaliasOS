@@ -67,6 +67,7 @@ public class ChatSessionServiceImpl implements IChatSessionService {
         lqw.eq(bo.getUserId() != null, ChatSession::getUserId, bo.getUserId());
         lqw.eq(StringUtils.isNotBlank(bo.getSessionTitle()), ChatSession::getSessionTitle, bo.getSessionTitle());
         lqw.eq(StringUtils.isNotBlank(bo.getSessionContent()), ChatSession::getSessionContent, bo.getSessionContent());
+        lqw.eq(bo.getArchiveStatus() != null, ChatSession::getArchiveStatus, bo.getArchiveStatus());
         return lqw;
     }
 
@@ -92,6 +93,18 @@ public class ChatSessionServiceImpl implements IChatSessionService {
         ChatSession update = MapstructUtils.convert(bo, ChatSession.class);
         validEntityBeforeSave(update);
         return baseMapper.updateById(update) > 0;
+    }
+
+    /**
+     * 更新当前用户会话的归档状态，避免跨用户修改会话。
+     */
+    @Override
+    public Boolean updateArchiveStatus(Long id, Integer archiveStatus) {
+        ChatSession update = new ChatSession();
+        update.setArchiveStatus(archiveStatus);
+        return baseMapper.update(update, Wrappers.<ChatSession>lambdaUpdate()
+            .eq(ChatSession::getId, id)
+            .eq(ChatSession::getUserId, LoginHelper.getUserId())) > 0;
     }
 
     /**

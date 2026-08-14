@@ -92,6 +92,7 @@ public class SysOssServiceImpl implements ISysOssService {
         oss.setFileSuffix(suffix);
         oss.setFileName(objectName);
         oss.setOriginalName(originalFilename);
+        oss.setFileSize(file.getSize());
         baseMapper.insert(oss);
         return oss;
     }

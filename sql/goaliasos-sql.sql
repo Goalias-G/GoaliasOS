@@ -67,15 +67,16 @@ create table chat_session
 (
     id              bigint auto_increment comment '主键'
         primary key,
-    user_id         bigint       null comment '用户id',
-    session_title   varchar(255) null comment '会话标题',
-    session_content text         null comment '会话内容',
-    create_by       bigint       null comment '创建者',
-    create_time     datetime     null comment '创建时间',
-    update_by       bigint       null comment '更新者',
-    update_time     datetime     null comment '更新时间',
-    remark          varchar(500) null comment '备注',
-    conversation_id varchar(32)  null comment '会话ID'
+    user_id         bigint            null comment '用户id',
+    session_title   varchar(255)      null comment '会话标题',
+    session_content text              null comment '会话内容',
+    create_by       bigint            null comment '创建者',
+    create_time     datetime          null comment '创建时间',
+    update_by       bigint            null comment '更新者',
+    update_time     datetime          null comment '更新时间',
+    remark          varchar(500)      null comment '备注',
+    conversation_id varchar(32)       null comment '会话ID',
+    archive_status  tinyint default 0 not null comment '归档状态（0：正常，1：已归档）'
 )
     comment '会话管理' collate = utf8mb4_general_ci
                        row_format = DYNAMIC;
@@ -323,6 +324,7 @@ create table sys_oss
     original_name varchar(255) default ''      not null comment '原名',
     file_suffix   varchar(10)  default ''      not null comment '文件后缀名',
     url           varchar(500)                 not null comment 'URL地址',
+    file_size     bigint                       null comment '文件大小',
     create_time   datetime                     null comment '创建时间',
     create_by     bigint                       null comment '上传人',
     update_time   datetime                     null comment '更新时间',
@@ -336,56 +338,57 @@ create table sys_scheduled_task
 (
     id                  bigint auto_increment comment '任务主键'
         primary key,
-    user_id             bigint       not null comment '所属用户ID',
-    task_name           varchar(64)  not null comment '任务名称',
-    task_type           varchar(20)  not null comment '任务类型（FINANCE-财务 LIFE-生活 CHAT-对话）',
-    cron_expression     varchar(64)  not null comment 'cron表达式',
-    description         varchar(255) null comment '任务描述',
-    status              char         default '0' null comment '任务状态（0-暂停 1-运行）',
-    last_execute_time   datetime                null comment '最近执行开始时间',
-    next_execute_time   datetime                null comment '下次执行时间',
-    last_execute_status char         default '0' null comment '最近一次执行状态（0-失败 1-成功）',
-    execute_count       bigint       default 0    null comment '累计执行次数',
-    params              varchar(2000)            null comment '任务自定义参数（JSON字符串）',
-    del_flag            char         default '0' null comment '删除标志（0-存在 1-删除）',
-    create_by           bigint                   null comment '创建者',
-    create_time         datetime                 null comment '创建时间',
-    update_by           bigint                   null comment '更新者',
-    update_time         datetime                 null comment '更新时间',
-    remark              varchar(500)             null comment '备注'
+    user_id             bigint             not null comment '所属用户ID',
+    task_name           varchar(64)        not null comment '任务名称',
+    task_type           varchar(20)        not null comment '任务类型（FINANCE-财务 LIFE-生活 CHAT-对话）',
+    cron_expression     varchar(64)        not null comment 'cron表达式',
+    description         varchar(255)       null comment '任务描述',
+    status              char   default '0' null comment '任务状态（0-暂停 1-运行）',
+    last_execute_time   datetime           null comment '最近执行开始时间',
+    next_execute_time   datetime           null comment '下次执行时间',
+    last_execute_status char   default '0' null comment '最近一次执行状态（0-失败 1-成功）',
+    execute_count       bigint default 0   null comment '累计执行次数',
+    params              varchar(2000)      null comment '任务自定义参数（JSON字符串）',
+    del_flag            char   default '0' null comment '删除标志（0-存在 1-删除）',
+    create_by           bigint             null comment '创建者',
+    create_time         datetime           null comment '创建时间',
+    update_by           bigint             null comment '更新者',
+    update_time         datetime           null comment '更新时间',
+    remark              varchar(500)       null comment '备注'
 )
     comment '动态任务调度表' collate = utf8mb4_general_ci
-                                row_format = DYNAMIC;
-
-create index idx_sys_scheduled_task_user
-    on sys_scheduled_task (user_id);
+                             row_format = DYNAMIC;
 
 create index idx_sys_scheduled_task_status
     on sys_scheduled_task (status);
+
+create index idx_sys_scheduled_task_user
+    on sys_scheduled_task (user_id);
 
 create table sys_scheduled_task_log
 (
     id             bigint auto_increment comment '日志主键'
         primary key,
-    task_id        bigint       not null comment '关联任务ID',
-    task_name      varchar(64)  not null comment '任务名称（冗余）',
-    task_type      varchar(20)  not null comment '任务类型（冗余）',
-    start_time     datetime     not null comment '执行开始时间',
-    end_time       datetime     null comment '执行结束时间',
-    duration_ms    bigint       null comment '耗时（毫秒）',
-    status         char         default '0' null comment '执行状态（0-失败 1-成功）',
-    error_message  text         null comment '异常信息',
-    result_message varchar(500) null comment '执行结果摘要',
-    create_time    datetime     null comment '入库时间'
+    task_id        bigint           not null comment '关联任务ID',
+    task_name      varchar(64)      not null comment '任务名称（冗余）',
+    task_type      varchar(20)      not null comment '任务类型（冗余）',
+    start_time     datetime         not null comment '执行开始时间',
+    end_time       datetime         null comment '执行结束时间',
+    duration_ms    bigint           null comment '耗时（毫秒）',
+    status         char default '0' null comment '执行状态（0-失败 1-成功）',
+    source         varchar(20)      null comment '触发来源：SCHEDULE-调度 MANUAL-手动',
+    error_message  text             null comment '异常信息',
+    result_message varchar(500)     null comment '执行结果摘要',
+    create_time    datetime         null comment '入库时间'
 )
     comment '任务执行日志表' collate = utf8mb4_general_ci
-                                  row_format = DYNAMIC;
-
-create index idx_sys_scheduled_task_log_task
-    on sys_scheduled_task_log (task_id);
+                             row_format = DYNAMIC;
 
 create index idx_sys_scheduled_task_log_start
     on sys_scheduled_task_log (start_time);
+
+create index idx_sys_scheduled_task_log_task
+    on sys_scheduled_task_log (task_id);
 
 create table sys_user
 (

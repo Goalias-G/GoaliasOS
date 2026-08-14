@@ -1,77 +1,58 @@
-# GoaliasOS 协作规范
+# GoaliasOS 协作指南
 
 ## 项目定位
 
-GoaliasOS 是一个以个人成长为核心的操作系统式生活管理服务平台。项目将个人成长过程抽象为可观测、可调度、可复盘的系统运行过程：
+GoaliasOS 是以“个人成长”为核心的生活管理服务端。系统隐喻是：目标是进程、习惯是服务、反思是日志、成长是持续更新的内核。功能设计应支持“记录真实状态 → 分析/调度 → 反馈行动 → 复盘迭代”的闭环，而非仅新增孤立 CRUD。
 
-- 目标对应进程：可启动、推进、暂停、终止。
-- 习惯对应服务：长期运行、持续打卡、周期评估。
-- 反思对应日志：记录状态、事件、复盘和成长轨迹。
-- 成长对应内核迭代：通过数据沉淀和 AI 分析持续优化个人系统。
+## 技术与运行
 
-所有新增能力、接口命名和业务描述都应优先沿用这套操作系统隐喻，避免把项目退化为普通清单、记账或聊天系统。
+- Java 17、Spring Boot 3.4.4、Maven 多模块。
+- MyBatis-Plus + MySQL；Redis；Sa-Token；MinIO；Spring AI / LangChain4j。
+- 默认服务端口 `7000`、上下文路径 `/goalias-os`；环境由 Maven profile `dev` / `prod` 与 `application*.yml` 控制。
 
-## 工作方式
-
-- 操作本项目时优先使用命令行读取、检查和验证文件。当前环境如不可用 bash，可使用等价命令行能力完成任务。
-- 不要绕过仓库结构直接堆代码；先理解现有模块、包名、实体、服务和控制器风格。
-- 修改文档或代码前，先确认相关模块的真实实现，避免写入规划式、未落地或与代码不符的内容。
-- 保持 UTF-8 编码，中文文档和中文注释不得出现乱码。
-- 不要提交密钥、密码、访问令牌、真实连接串等敏感信息。
-
-## 架构边界
-
-项目采用 Maven 多模块分层架构：
-
-```text
-os-startup  启动层，负责应用入口、全局配置、定时任务和运行时装配
-os-web      接口层，负责 REST API、参数接收、权限入口和请求编排
-os-service  业务层，负责领域实体、Mapper、Service 接口和核心业务实现
-os-common   公共能力层，负责缓存、安全、Web 基础能力、对象存储、通知、AI 通用组件和限流框架
+```powershell
+mvn clean package -DskipTests
+mvn spring-boot:run -pl os-startup -am
+mvn test
 ```
 
-模块职责必须清晰：
+本地启动前根据 `.env.example`、`application-dev.yml` 准备 MySQL、Redis 及所需对象存储/AI 配置。密钥、Token、连接串仅通过环境变量或部署注入，绝不写入代码、SQL 或文档示例。
 
-- 控制器放在 `os-web` 对应子模块。
-- 业务实体、Mapper、Service 接口和服务实现放在 `os-service` 对应子模块。
-- 通用工具、公共配置、基础设施封装放在 `os-common` 对应子模块。
-- 应用启动、定时任务、环境配置放在 `os-startup`。
+## 分层与模块边界
 
-## 主要功能域
+```text
+os-startup/  应用入口、运行装配、全局/环境配置、定时任务
+os-web/      REST Controller、请求参数、权限入口、接口编排
+os-service/  领域模型、Mapper、Service 接口与业务实现
+os-common/   Web、安全、缓存、OSS、通知、AI、限流等公共能力
+sql/         数据库脚本
+docs/        项目文档
+```
 
-- 用户与认证：账号登录、游客登录、用户资料、登录日志、Sa-Token 会话与权限管理。
-- 生活内核：生活记录、分类管理、每日健康、每日知识和首页统计。
-- 财务记录：收支分类、交易记录、统计分析。
-- AI 对话：模型管理、会话管理、消息记录、SSE 流式响应、Token 用量统计。
-- 知识库：知识空间、附件上传、文档解析、分片、向量化与检索增强。
-- 基础设施：Redis 缓存、MinIO 对象存储、短信和邮件通知、XSS 防护、重复提交防护、限流熔断。
+`os-web` 只负责 HTTP 边界与编排，不承载复杂业务或 SQL；业务实体、Mapper 和 Service 放入相应 `os-service` 子模块；可复用基础能力才进入 `os-common`；启动、调度和环境配置属于 `os-startup`。按既有模块归属扩展，勿制造跨层反向依赖。
 
-## 代码规范
+现有核心领域包括：用户/认证与权限、生活记录与分类、每日健康/知识/首页统计、财务分类与流水、AI 模型/会话/消息/SSE/Token 统计、知识库附件解析/分片/向量检索、系统配置与定时任务。
 
-- Java 版本为 17，项目基于 Spring Boot 3.4.4。
-- 数据访问使用 MyBatis-Plus，分页统一使用 `PageQuery` 和 `TableDataInfo`。
-- 实体继承或复用现有基础模型，审计字段、逻辑删除、字段填充遵循现有实现。
-- API 返回统一使用 `R<T>`，列表分页使用 `TableDataInfo`。
-- 业务异常使用 `ServiceException`，由 `GlobalExceptionHandler` 统一处理。
-- 安全能力优先复用 Sa-Token、XSS 过滤、参数校验、`@Sensitive` 脱敏和重复提交防护。
-- Redis 操作优先复用 `RedisService`，对象存储优先复用 `MinioService` 和系统 OSS 服务。
-- AI Function Calling 工具必须尽量设计为幂等操作，并明确控制 Token 消耗、超时和失败回退。
-- 关键业务流程需要记录必要日志，错误日志应保留完整异常上下文。
+## 接口与业务实现
 
-## 配置规范
+常见链路为：`Controller → Service → Mapper → MySQL/Redis/外部服务`。
 
-- 环境配置使用 `application.yml`、`application-dev.yml`、`application-prod.yml`。
-- 业务配置优先使用 `@ConfigurationProperties`。
-- 敏感配置通过环境变量或部署平台注入，不允许硬编码到代码或文档示例中。
-- 默认运行端口为 `7000`，默认上下文路径为 `/goalias-os`。
-- 涉及 MySQL、Redis、MinIO、邮件、短信、AI 模型、向量库的配置时，必须同时关注本地开发和生产部署的差异。
+- 新接口先在相邻模块找同类实现；Controller 做 `@Valid` 参数校验、权限声明和轻量编排，Service 承担事务与业务规则，Mapper 专注数据访问。
+- 单体结果使用 `R<T>`，分页复用 `PageQuery` 与 `TableDataInfo`；不要自建不兼容的响应/分页格式。
+- 业务错误抛 `ServiceException`，交由全局异常处理；不在 Controller 吞异常或拼装错误响应。
+- 复用审计字段、逻辑删除、MyBatis-Plus 约定与现有基础实体；SQL/字段变更同步更新 `sql/` 和相关 VO/DTO/Mapper。
+- 缓存复用 `RedisService`，文件复用 `MinioService`/OSS 服务；避免直接复制基础设施实现。
+- AI/SSE/外部调用必须考虑超时、取消、失败降级与幂等；敏感用户数据与密钥不得进入日志。关键业务保留有意义的上下文日志。
 
-## 代码审查清单
+## 安全与配置
 
-- 是否符合 `os-startup`、`os-web`、`os-service`、`os-common` 的分层边界。
-- 是否复用现有公共能力，避免重复造轮子。
-- 是否添加必要的权限校验、参数校验和输入防护。
-- 是否正确处理异常、空值、并发、重复提交和外部服务失败。
-- 是否避免泄露敏感字段、密钥、Token 和用户隐私数据。
-- 是否保持操作系统隐喻下的命名一致性。
-- 是否补充必要中文注释，且注释解释业务意图而不是重复代码。
+- 优先复用 Sa-Token、权限注解、XSS 过滤、参数校验、`@Sensitive` 脱敏、重复提交防护及限流熔断能力。
+- 请求输入、文件上传和外部回调都要显式校验；变更开放路径、CORS、安全排除项须谨慎并说明理由。
+- 配置优先使用 `@ConfigurationProperties`；`application.yml` 为公共项，环境差异放 `application-dev.yml` / `application-prod.yml`。
+
+## 代码风格与检查
+
+- 遵循现有包名、命名与 Lombok/注解风格；类名 PascalCase，方法/字段 camelCase，接口与实现职责清晰。
+- 注释说明业务意图、规则或边界，不复述代码；中文文本使用 UTF-8，新增文件无 BOM。
+- 改动前先检查相关子模块、实体、接口与 SQL，避免重复造轮子；保留用户已有无关改动。
+- 至少运行受影响模块的 Maven 编译/测试；跨模块、依赖或启动配置变动时运行根目录 `mvn clean package -DskipTests`。

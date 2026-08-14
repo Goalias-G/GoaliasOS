@@ -42,5 +42,9 @@ public class SysOss extends BaseEntity {
      * URL地址
      */
     private String url;
+    /**
+     * 文件大小
+     */
+    private Long fileSize;
 
 }
