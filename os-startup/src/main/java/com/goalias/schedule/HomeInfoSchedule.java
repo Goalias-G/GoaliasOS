@@ -22,6 +22,7 @@ import com.goalias.system.domain.vo.HomeInfoVo;
 import com.goalias.system.domain.vo.SysUserVo;
 import com.goalias.system.mapper.DailyKnowledgeMapper;
 import com.goalias.system.service.IDailyHealthService;
+import com.goalias.system.service.IDailyKnowledgeService;
 import com.goalias.system.service.ISysUserService;
 import com.goalias.system.service.IUApiService;
 import lombok.RequiredArgsConstructor;
@@ -69,6 +70,8 @@ public class HomeInfoSchedule {
     private final ISysUserService userService;
 
     private final ResourceLoader resourceLoader;
+
+    private final IDailyKnowledgeService iDailyKnowledgeService;
 
 
     /**
@@ -130,8 +133,12 @@ public class HomeInfoSchedule {
                     .type("knowledge").title(aiRecommend.getKnowledge().getTitle()).content(aiRecommend.getKnowledge().getContent())
                     .build();
 
-            dailyKnowledgeMapper.insert(psychology);
-            dailyKnowledgeMapper.insert(knowledge);
+            if (!iDailyKnowledgeService.checkExistKnowledge(psychology.getType(), psychology.getTitle())) {
+                dailyKnowledgeMapper.insert(psychology);
+            }
+            if (!iDailyKnowledgeService.checkExistKnowledge(knowledge.getType(), knowledge.getTitle())) {
+                dailyKnowledgeMapper.insert(knowledge);
+            }
             redisService.set(CacheNames.HOME_INFO_AI_RECOMMEND, aiRecommend);
             log.info("aiRecommend 记录信息完成");
         } else {

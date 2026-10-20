@@ -146,13 +146,19 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
      */
     private void preCheckBalance(ChatRequest chatRequest) {
 
-        String modelName = chatRequest.getModel();
-        ChatModel chatModel = chatModelService.selectModelByName(modelName);
-        BigDecimal unitPrice = BigDecimal.valueOf(chatModel.getModelPrice());//百万Token 单价
+//        String modelName = chatRequest.getModel();
+//        ChatModel chatModel = chatModelService.selectModelByName(modelName);
+//        BigDecimal unitPrice = BigDecimal.valueOf(chatModel.getModelPrice());//百万Token 单价
 
         // 按次计费：直接检查单次费用 (系统只按次计费)
 //        if (BillingType.TIMES.getCode().equals(chatModel.getModelType())) {
-            checkUserTimesWithoutDeduct(chatRequest.getUserId());
+        SysUser loginUser = sysUserMapper.selectById(chatRequest.getUserId());
+        if (Objects.isNull(loginUser)) {
+            throw new SecurityException("用户未登录!");
+        }
+        if (loginUser.getUserBalance() <= 0) {
+            throw new ServiceException("余额不足, 请充值。当前余额: " + loginUser.getUserBalance());
+        }
             return;
 //        }
     }
@@ -173,16 +179,6 @@ public class ChatCostServiceImpl implements IChatCostService {// 不按Token计�
 
         if (userBalance.compareTo(cost) < 0 || userBalance.compareTo(BigDecimal.ZERO) == 0) {
             throw new ServiceException("余额不足, 请充值。当前余额: " + userBalance + "，需要: " + cost);
-        }
-    }
-
-    private void checkUserTimesWithoutDeduct(Long userId) {
-        SysUser loginUser = sysUserMapper.selectById(userId);
-        if (Objects.isNull(loginUser)) {
-            throw new SecurityException("用户未登录!");
-        }
-        if (loginUser.getUserBalance() <= 0) {
-            throw new ServiceException("余额不足, 请充值。当前余额: " + loginUser.getUserBalance());
         }
     }
 

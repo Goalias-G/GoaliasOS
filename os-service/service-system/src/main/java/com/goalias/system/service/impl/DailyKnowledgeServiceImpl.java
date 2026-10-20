@@ -57,6 +57,14 @@ public class DailyKnowledgeServiceImpl extends ServiceImpl<DailyKnowledgeMapper,
     }
 
     @Override
+    public Boolean checkExistKnowledge(String type, String title) {
+        LambdaQueryWrapper<DailyKnowledge> lqw = Wrappers.lambdaQuery();
+        lqw.eq(DailyKnowledge::getType,type);
+        lqw.eq(DailyKnowledge::getTitle,title);
+        return baseMapper.exists(lqw);
+    }
+
+    @Override
     public Boolean insertByBo(DailyKnowledgeBo bo) {
         DailyKnowledge add = MapstructUtils.convert(bo, DailyKnowledge.class);
         validEntityBeforeSave(add);

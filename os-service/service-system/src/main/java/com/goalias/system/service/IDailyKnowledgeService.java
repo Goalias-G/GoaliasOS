@@ -30,6 +30,7 @@ public interface IDailyKnowledgeService {
      */
     List<DailyKnowledge> queryList(DailyKnowledgeBo bo);
 
+    Boolean checkExistKnowledge(String type, String title);
     /**
      * 新增每日知识
      */
