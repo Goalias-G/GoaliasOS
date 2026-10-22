@@ -10,16 +10,18 @@ import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.enums.ChatModeType;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.chat.request.ChatRequest;
-import dev.langchain4j.community.model.dashscope.QwenChatModel;
-import dev.langchain4j.community.model.dashscope.QwenStreamingChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ResponseFormat;
 import dev.langchain4j.model.chat.response.ChatResponse;
+import dev.langchain4j.model.openai.OpenAiChatModel;
+import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -37,19 +39,33 @@ public class QwenChatServiceImpl implements IChatService {
 
     private final FunctionCallsFactory toolFactory;
 
+    private final Environment environment;
+
     @Override
     public SseEmitter chat(ChatRequest chatRequest, SseEmitter emitter) {
         ChatModel chatModel = chatModelService.selectModelByName(chatRequest.getModel());
 
-        StreamingChatModel model = QwenStreamingChatModel.builder()
+        boolean enableSearch = Objects.equals(chatModel.getEnableSearch(), EnableSearchType.YES.getCode()) ? chatRequest.getEnableSearch() : false;
+        Map<String, Object> enableSearchMap = Map.of(
+                "enable_search", true,
+                "enable_thinking", true,
+                "search_options", Map.of("forced_search", true)
+        );
+
+        StreamingChatModel model = OpenAiStreamingChatModel.builder()
+                .baseUrl(chatModel.getApiHost())
                 .apiKey(chatModel.getApiKey())
                 .modelName(chatModel.getModelName())
-                .temperature(chatRequest.getTemperature().floatValue())
+                .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
-                .enableSearch(Objects.equals(chatModel.getEnableSearch(), EnableSearchType.YES.getCode()) ? chatRequest.getEnableSearch() : false)
+                .customParameters(enableSearch ? enableSearchMap : null)
+                .returnThinking(true)
+                .logRequests(environment.matchesProfiles("dev"))
+                .logResponses(environment.matchesProfiles("dev"))
+//                .isMultimodalModel(chatModel.getModelName().equals("qwen3.8-flash"))
                 .build();
 
-        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainRequest(chatRequest);
         dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.toolSpecifications(toolFactory.getToolSpecifications()).build();
 
         try {
@@ -61,7 +77,7 @@ public class QwenChatServiceImpl implements IChatService {
                     toolExecutor
             ));
         } catch (Exception e) {
-            log.error("千问请求失败：{}", e.getMessage());
+            log.error("AI Streaming Chat 请求失败：{}", e.getMessage());
             ChatServiceHelper.onStreamError(emitter, e.getMessage());
         }
 
@@ -72,17 +88,17 @@ public class QwenChatServiceImpl implements IChatService {
     public String simpleChat(ChatRequest chatRequest) {
         ChatModel chatModel = chatModelService.selectModelByName(chatRequest.getModel());
 
-        QwenChatModel model = QwenChatModel.builder()
+        OpenAiChatModel model = OpenAiChatModel.builder()
+                .baseUrl(chatModel.getApiHost())
                 .apiKey(chatModel.getApiKey())
                 .modelName(chatModel.getModelName())
-                .temperature(chatRequest.getTemperature().floatValue())
+                .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
+                .responseFormat(chatRequest.getIsJsonResponse() ? ResponseFormat.JSON : ResponseFormat.TEXT)
                 .build();
-        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
-        dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder
-                .responseFormat(chatRequest.getIsJsonResponse() ? ResponseFormat.JSON : ResponseFormat.TEXT).build();
-        ChatResponse response = model.chat(request);
-        log.info("千问 simpleChat 请求成功：{}", response);
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainRequest(chatRequest);
+        ChatResponse response = model.chat(requestBuilder.build());
+        log.debug("AI Simple Chat 请求成功：{}", response);
         ChatServiceHelper.recordTokenUsage(response);
         return response.aiMessage().text();
     }

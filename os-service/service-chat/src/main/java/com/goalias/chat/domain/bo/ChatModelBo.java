@@ -51,6 +51,11 @@ public class ChatModelBo extends BaseEntity {
     private String modelType;
 
     /**
+     * 是否支持联网搜索(0-否 1-是)
+     */
+    private Integer enableSearch;
+
+    /**
      * 是否显示
      */
     @NotBlank(message = "是否显示不能为空", groups = { AddGroup.class, EditGroup.class })

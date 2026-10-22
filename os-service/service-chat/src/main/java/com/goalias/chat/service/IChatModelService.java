@@ -51,10 +51,6 @@ public interface IChatModelService {
      * 通过模型名称获取模型信息
      */
     ChatModel selectModelByName(String modelName);
-    /**
-     * 通过模型分类获取模型信息
-     */
-    ChatModel selectModelByCategory(String image);
     
     /**
      * 通过模型分类获取优先级最高的模型信息

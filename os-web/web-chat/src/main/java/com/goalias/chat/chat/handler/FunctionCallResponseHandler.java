@@ -1,6 +1,7 @@
 package com.goalias.chat.chat.handler;
 
 import com.goalias.chat.chat.factory.FunctionCallsFactory;
+import com.goalias.chat.chat.service.IChatService;
 import com.goalias.chat.chat.support.ChatServiceHelper;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
@@ -245,17 +246,7 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
      * @return langchain4j 消息
      */
     private ChatMessage convertMessage(Message msg) {
-        String role = msg.getRole();
-        String content = msg.getContent().toString();
-
-        return switch (role) {
-            case "user" -> UserMessage.from(content);
-            case "system" -> SystemMessage.from(content);
-            case "assistant" -> AiMessage.from(content);
-            default -> {
-                log.warn("未知的消息角色: {}, 默认作为用户消息处理", role);
-                yield UserMessage.from(content);
-            }
-        };
+        // 复用统一的消息转换，保留图片等多模态内容
+        return IChatService.toLangChainMessage(msg);
     }
 }

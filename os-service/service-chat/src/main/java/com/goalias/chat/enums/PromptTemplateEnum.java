@@ -16,6 +16,7 @@ public enum PromptTemplateEnum {
     USER_CONTEXT(3, "userContext"),
     AI_RECOMMEND(4, "aiRecommend"),
     MONTHLY_KERNEL_REVIEW(5, "monthlyKernelReview"),
+    SESSION_RENAME(6, "sessionRename"),
     ;
 
     private final Integer code;

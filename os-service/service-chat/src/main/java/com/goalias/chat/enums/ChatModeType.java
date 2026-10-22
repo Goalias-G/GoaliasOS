@@ -8,8 +8,6 @@ public enum ChatModeType {//用于查找模型Implementation
     QIANWEN("alibailian", "通义千问"),
 
     GLM("glm", "GLM智谱模型"),
-
-    IMAGE("image", "图片识别模型"),
     ;
 
     private final String code;

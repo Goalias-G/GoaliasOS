@@ -38,7 +38,7 @@ public class MailTemplate {
     public void sendSimpleMail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(properties.getUsername());
-        message.setTo(to);
+        message.setTo(to.split(","));
         message.setSubject(subject);
         message.setText(text);
         mailSender.send(message);
@@ -50,7 +50,6 @@ public class MailTemplate {
      * @param to       收件人
      * @param subject  邮件主题
      * @param text     邮件内容
-     * @param filePath 附件路径
      * @throws MessagingException
      */
     public void sendMailWithAttachment(String to, String subject, String text, File file){//文件存储方式？
@@ -59,7 +58,7 @@ public class MailTemplate {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setFrom(properties.getUsername());
             helper.setValidateAddresses(true);
-            helper.setTo(to);
+            helper.setTo(to.split(","));
             helper.setSubject(subject);
             helper.setText(text);
             helper.addAttachment(file.getName(), file);
@@ -84,7 +83,7 @@ public class MailTemplate {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setFrom(properties.getUsername());
             helper.setValidateAddresses(true);
-            helper.setTo(to);
+            helper.setTo(to.split(","));
             helper.setSubject(subject);
             helper.setText(html, true);
         } catch (MessagingException e) {

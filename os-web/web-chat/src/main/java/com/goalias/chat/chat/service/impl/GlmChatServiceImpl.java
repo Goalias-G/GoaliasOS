@@ -9,20 +9,15 @@ import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.enums.ChatModeType;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.common.chat.request.ChatRequest;
-import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.community.model.dashscope.QwenChatModel;
 import dev.langchain4j.community.model.zhipu.ZhipuAiChatModel;
 import dev.langchain4j.community.model.zhipu.ZhipuAiStreamingChatModel;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ResponseFormat;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.List;
 
 
 /**
@@ -50,7 +45,7 @@ public class GlmChatServiceImpl implements IChatService {
                 .topP(chatRequest.getTopP())
                 .build();
 
-        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainRequest(chatRequest);
         dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.toolSpecifications(toolFactory.getToolSpecifications()).build();
 
 
@@ -81,7 +76,7 @@ public class GlmChatServiceImpl implements IChatService {
                 .topP(chatRequest.getTopP())
                 .build();
 
-        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainToolRequest(chatRequest);
+        dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainRequest(chatRequest);
         dev.langchain4j.model.chat.request.ChatRequest request = requestBuilder.responseFormat(ResponseFormat.JSON).build();
 
         ChatResponse response = model.chat(request);

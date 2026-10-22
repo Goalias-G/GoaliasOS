@@ -6,10 +6,9 @@ import cn.hutool.core.map.MapUtil;
 import com.goalias.chat.chat.factory.ChatServiceFactory;
 import com.goalias.chat.chat.service.IChatCostService;
 import com.goalias.chat.chat.service.IChatService;
-import com.goalias.chat.service.ISseService;
-import com.goalias.chat.chat.support.TtlTokenContext;
 import com.goalias.chat.chat.support.ChatRetryHelper;
 import com.goalias.chat.chat.support.RetryNotifier;
+import com.goalias.chat.chat.support.TtlTokenContext;
 import com.goalias.chat.chat.util.SSEUtil;
 import com.goalias.chat.domain.ChatModel;
 import com.goalias.chat.domain.PromptTemplate;
@@ -18,6 +17,7 @@ import com.goalias.chat.enums.PromptTemplateEnum;
 import com.goalias.chat.service.IChatModelService;
 import com.goalias.chat.service.IChatSessionService;
 import com.goalias.chat.service.IPromptTemplateService;
+import com.goalias.chat.service.ISseService;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.utils.DateUtils;
@@ -31,6 +31,7 @@ import com.goalias.knowledge.service.IKnowledgeInfoService;
 import com.goalias.knowledge.service.VectorStoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +66,8 @@ public class SseServiceImpl implements ISseService {
     private final IPromptTemplateService promptTemplateService;
 
     private final RedisService redisService;
+
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     private static final ThreadLocal<ChatModel> chatModelHolder = new ThreadLocal<>();
 
@@ -94,6 +98,14 @@ public class SseServiceImpl implements ISseService {
                 chatSessionBo.setSessionContent(chatRequest.getPrompt());
                 chatSessionService.insertByBo(chatSessionBo);
                 chatRequest.setSessionId(chatSessionBo.getId());
+                CompletableFuture.runAsync(() -> {
+                    ChatRequest sessionRenameRequest = new ChatRequest();
+                    sessionRenameRequest.setIsJsonResponse(false);
+                    String sessionName = this.simpleChat(sessionRenameRequest, PromptTemplateEnum.SESSION_RENAME, chatRequest.getPrompt());
+                    chatSessionBo.setUpdateTime(DateUtils.getNowDate());
+                    chatSessionBo.setSessionTitle(sessionName);
+                    chatSessionService.updateByBo(chatSessionBo);
+                }, threadPoolTaskExecutor);
             }
 
             // 保存用户消息
@@ -152,9 +164,7 @@ public class SseServiceImpl implements ISseService {
      */
     private IChatService autoSelectModelAndGetService(ChatRequest chatRequest) {
         try {
-            if (Boolean.TRUE.equals(chatRequest.getHasAttachment())) {
-                chatModelHolder.set(selectModelByCategory("image"));
-            } else if (Boolean.TRUE.equals(chatRequest.getAutoSelectModel())) {
+            if (Boolean.TRUE.equals(chatRequest.getAutoSelectModel())) {
                 chatModelHolder.set(selectModelByCategory("chat"));
             } else {
                 chatModelHolder.set(chatModelService.selectModelByName(chatRequest.getModel()));
@@ -200,7 +210,8 @@ public class SseServiceImpl implements ISseService {
     private void buildChatMessageList(ChatRequest chatRequest) {
         List<Message> messages = chatRequest.getMessages();
         Message chatMessage = messages.get(messages.size() - 1);
-        String chatString = chatMessage.getContent().toString();
+        // 多模态消息仅提取文本部分作为提示词/标题
+        String chatString = IChatService.extractText(chatMessage.getContent());
 
         // 处理知识库相关逻辑
         String sysPrompt = processKnowledgeBase(chatRequest, messages);
@@ -272,7 +283,7 @@ public class SseServiceImpl implements ISseService {
      */
     private QueryVectorBo buildQueryVectorBo(ChatRequest chatRequest, KnowledgeInfo knowledgeInfo,
                                              ChatModel chatModel) {
-        String content = chatRequest.getMessages().get(chatRequest.getMessages().size() - 1).getContent().toString();
+        String content = IChatService.extractText(chatRequest.getMessages().get(chatRequest.getMessages().size() - 1).getContent());
 
         QueryVectorBo queryVectorBo = new QueryVectorBo();
         queryVectorBo.setQuery(content);
@@ -299,7 +310,7 @@ public class SseServiceImpl implements ISseService {
                 %s
                 
                 [用户问题]：%s
-                """, knowledgeContext, userInput.getContent());
+                """, knowledgeContext, IChatService.extractText(userInput.getContent()));
 
         userInput.setContent(enhancedPrompt);
     }

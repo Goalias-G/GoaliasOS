@@ -25,7 +25,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ThreadPoolConfig {
 
     /**
-     * 核心线程数 = cpu 核心数 * 2 (IO 密集型)
+     * CPU 密集型	计算、加解密、压缩、复杂逻辑	    N + 1（N = CPU 核数）
+     * IO 密集型	    数据库、RPC、HTTP、文件读写	2N 或更多
      */
     private final int core = Runtime.getRuntime().availableProcessors();
 

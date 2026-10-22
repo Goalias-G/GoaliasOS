@@ -145,14 +145,6 @@ public class ChatModelServiceImpl implements IChatModelService {
     }
 
     /**
-     * 通过模型分类获取模型信息
-     */
-    @Override
-    public ChatModel selectModelByCategory(String category) {
-        return baseMapper.selectOne(Wrappers.<ChatModel>lambdaQuery().eq(ChatModel::getCategory, category));
-    }
-
-    /**
      * 通过模型分类获取优先级最高的模型信息
      */
     @Override
