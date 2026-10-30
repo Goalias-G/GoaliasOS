@@ -32,10 +32,10 @@ public class LifeTool implements OsToolProvider {
         return list.stream().collect(Collectors.toMap(LifeCategory::getId, LifeCategory::getName));
     }
 
-    @OsTool(name = "record_life_event", description = "用户指出需要记录生活事件时、用户输入中识别到生活事件时调用。执行前需要先查询目前的场景分类 select_scene_category，" +
-            "判断事件是否匹配已有分类列表，有则选对应场景id,没有则创建新对应的场景分类名称，同时生成记录。" +
-            "若用户消息中包含[附件OSS文件ID]，必须将其中的 ID 原样传入 fileIds 参数。")
-    public Boolean recordLifeEvent(@OsToolParam(name = "sceneId", description = "现已存在与事件匹配的场景id") Long sceneId,
+    @OsTool(name = "record_life_event", description = "用户指出需要记录生活事件时、用户输入中识别到生活事件时调用。" +
+            "同一条用户消息只调用一次：先 select_scene_category，再本工具；成功后禁止再次调用本工具或重新查询分类，直接用自然语言向用户确认即可。" +
+            "有匹配分类则传 sceneId，无则传 categoryName 新建。若用户消息含[附件OSS文件ID]，必须原样传入 fileIds。")
+    public Map<String, Object> recordLifeEvent(@OsToolParam(name = "sceneId", description = "现已存在与事件匹配的场景id") Long sceneId,
                                 @OsToolParam(name = "categoryName", description = "需新创建的场景分类名称") String categoryName,
                                 @OsToolParam(name = "title", description = "生活事件标题", required = true) String title,
                                 @OsToolParam(name = "content", description = "生活事件内容", required = true) String content,
@@ -68,6 +68,15 @@ public class LifeTool implements OsToolProvider {
             record.setAttachsId(fileIds.trim());
         }
         record.setRemark("OS AI 自动记录");
-        return recordService.insertByBo(record);
+        boolean ok = Boolean.TRUE.equals(recordService.insertByBo(record));
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("success", ok);
+        result.put("title", title);
+        result.put("categoryId", Optional.ofNullable(sceneId).orElse(categoryId));
+        result.put("message", ok
+                ? "生活记录已成功写入"
+                : "生活记录写入失败");
+        return result;
     }
 }

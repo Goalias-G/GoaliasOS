@@ -6,14 +6,11 @@ import com.goalias.chat.chat.support.ChatServiceHelper;
 import com.goalias.common.chat.entity.chat.Message;
 import com.goalias.common.chat.request.ChatRequest;
 import com.goalias.common.core.utils.SpringUtils;
-import com.goalias.common.redis.constant.CacheNames;
-import com.goalias.common.redis.service.RedisService;
 import dev.langchain4j.agent.tool.ToolExecutionRequest;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.request.ChatRequestParameters;
 import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.chat.response.PartialThinking;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +25,7 @@ import java.util.*;
  * 1. 流式文本响应处理
  * 2. 工具调用请求检测和处理
  * 3. 多工具顺序执行
- * 4. 工具结果回喂给 AI
+ * 4. 工具结果回喂给 AI（跨多轮累计会话，避免重复调用）
  * 5. SSE 事件发送
  */
 @Slf4j
@@ -41,15 +38,15 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     private final FunctionCallExecutor toolExecutor;
 
     /**
-     * 处理部分响应（流式文本片段）
-     *
-     * @param partialResponse 文本片段
+     * 跨多轮工具调用累计的会话消息。
+     * 若每轮都从 originalRequest 重建，上一轮工具历史会丢失，模型易按系统提示重复整段流程。
      */
+    private List<ChatMessage> conversationMessages;
+
     @Override
     public void onPartialResponse(String partialResponse) {
         try {
-            // 流式返回文本片段给客户端
-            if (Objects.nonNull(partialResponse)){
+            if (Objects.nonNull(partialResponse)) {
                 emitter.send(partialResponse);
             }
         } catch (Exception e) {
@@ -58,18 +55,11 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
         }
     }
 
-    /**
-     * 处理完整响应
-     * 检查是否有工具调用请求，如果有则执行工具并回喂结果
-     *
-     * @param completeResponse 完整响应
-     */
     @Override
     public void onCompleteResponse(ChatResponse completeResponse) {
         try {
             ChatServiceHelper.recordTokenUsage(completeResponse);
 
-            // 检查是否有工具调用请求
             if (completeResponse.aiMessage().hasToolExecutionRequests()) {
                 log.debug("检测到工具调用请求");
                 handleToolCalls(completeResponse);
@@ -83,95 +73,73 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
     }
 
     /**
-     * 处理工具调用
-     * 执行所有工具调用请求，并将结果回喂给 AI
-     *
-     * @param response AI 响应
+     * 处理工具调用：在累计会话上追加本轮 AI 工具请求与执行结果，再回喂
      */
     private void handleToolCalls(ChatResponse response) {
         try {
             List<ToolExecutionRequest> requests = response.aiMessage().toolExecutionRequests();
-
-            // 发送工具调用开始事件
             ChatServiceHelper.sendToolCallStartEvent(emitter, requests.size());
 
-            List<ChatMessage> newMessages = buildMessagesWithToolCalls(response.aiMessage(), requests);
+            ensureConversationInitialized();
+            appendToolRound(response.aiMessage(), requests);
 
-            log.debug("开始执行工具回喂，Messages{}", newMessages);
-            // 回喂给 AI，生成最终回复
-            feedbackToAI(newMessages);
-
+            log.debug("开始执行工具回喂，Messages 轮次累计条数={}", conversationMessages.size());
+            feedbackToAI(conversationMessages);
         } catch (Exception e) {
             log.error("处理工具调用失败", e);
             ChatServiceHelper.onStreamError(emitter, "工具调用失败: " + e.getMessage());
         }
     }
 
-    /**
-     * 构建包含工具调用和结果的消息历史
-     *
-     * @param aiMessage AI 的工具调用消息
-     * @param requests  工具执行请求列表
-     * @return 新的消息历史
-     */
-    private List<ChatMessage> buildMessagesWithToolCalls(
-            AiMessage aiMessage,
-            List<ToolExecutionRequest> requests) throws IOException {
-
-        // 复制原始消息历史
-        List<ChatMessage> newMessages = new ArrayList<>();
-
-        // 转换原始请求中的消息
-        for (Message msg : originalRequest.getMessages()) {
-            newMessages.add(convertMessage(msg));
+    private void ensureConversationInitialized() {
+        if (conversationMessages != null) {
+            return;
         }
+        conversationMessages = new ArrayList<>();
+        for (Message msg : originalRequest.getMessages()) {
+            conversationMessages.add(convertMessage(msg));
+        }
+    }
 
-        // 添加 AI 的工具调用消息
-        newMessages.add(aiMessage);
+    /**
+     * 将本轮 AiMessage（含 tool requests）与工具结果追加到累计会话
+     */
+    private void appendToolRound(AiMessage aiMessage, List<ToolExecutionRequest> requests) throws IOException {
+        conversationMessages.add(aiMessage);
 
-        Map<String, String> toolResults = new HashMap<>();
-        // 执行所有工具调用并添加结果
+        Map<String, String> toolResults = new LinkedHashMap<>();
         for (int i = 0; i < requests.size(); i++) {
             ToolExecutionRequest request = requests.get(i);
-            // 发送工具执行中事件
             ChatServiceHelper.sendToolExecutingEvent(emitter, request.name(), i + 1, requests.size());
 
-            // 执行工具，显式传递当前用户的 token 以确保异步线程能获取登录上下文
             long startTime = System.currentTimeMillis();
             String result = toolExecutor.execute(request, originalRequest.getToken());
             long executionTime = System.currentTimeMillis() - startTime;
 
             toolResults.put(request.name(), result);
-            // 发送工具执行完成事件
             ChatServiceHelper.sendToolCompletedEvent(emitter, request.name(), executionTime);
-
             log.debug("工具 {} 执行完成，耗时: {}ms", request.name(), executionTime);
         }
 
-        //Qwen不支持多个 ToolExecutionResultMessage 返回
-        ToolExecutionResultMessage toolsResultMessage = ToolExecutionResultMessage.from(
-                "combined-tool-results",
-                "toolResults",
-                toolResults.toString()
-        );
-
-        newMessages.add(toolsResultMessage);
-
-        return newMessages;
+        if (requests.size() == 1) {
+            // 单工具：绑定真实 request id，便于模型正确关联结果
+            ToolExecutionRequest request = requests.get(0);
+            conversationMessages.add(ToolExecutionResultMessage.from(request, toolResults.get(request.name())));
+        } else {
+            // 多工具：Qwen 等对多条 ToolExecutionResultMessage 支持不佳，合并为一条
+            conversationMessages.add(ToolExecutionResultMessage.from(
+                    "combined-tool-results",
+                    "toolResults",
+                    toolResults.toString()
+            ));
+        }
     }
 
-    /**
-     * 将工具结果回喂给 AI，生成最终回复
-     *
-     * @param messages 包含工具结果的完整消息历史
-     */
     private void feedbackToAI(List<ChatMessage> messages) throws IOException {
-        // 发送 AI 思考事件
         ChatServiceHelper.sendAIThinkingEvent(emitter);
 
         FunctionCallsFactory toolFactory = SpringUtils.getBean(FunctionCallsFactory.class);
 
-        // 构建新请求（包含工具规范，以便 AI 可以继续调用工具）
         dev.langchain4j.model.chat.request.ChatRequest feedbackRequest =
                 dev.langchain4j.model.chat.request.ChatRequest.builder()
                         .messages(messages)
@@ -180,20 +148,14 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
                                 .build())
                         .build();
 
-        // 再次调用 AI（使用新的处理器处理回喂响应）
         model.chat(feedbackRequest, new FeedbackResponseHandler());
     }
 
-    /**
-     * 回馈响应处理器
-     * 处理 AI 基于工具结果生成的最终回复
-     */
     private class FeedbackResponseHandler implements StreamingChatResponseHandler {
 
         @Override
         public void onPartialResponse(String partialResponse) {
             try {
-                // 流式返回 AI 的最终回复
                 emitter.send(partialResponse);
             } catch (IOException e) {
                 log.error("发送回喂响应失败", e);
@@ -209,7 +171,6 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
                     log.debug("检测到后续工具调用请求，继续处理");
                     handleToolCalls(completeResponse);
                 } else {
-                    // 完成对话
                     log.debug("Function Call 流程完成");
                     ChatServiceHelper.onStreamComplete(emitter);
                 }
@@ -226,27 +187,13 @@ public class FunctionCallResponseHandler implements StreamingChatResponseHandler
         }
     }
 
-    /**
-     * 处理错误
-     *
-     * @param error 错误对象
-     */
     @Override
     public void onError(Throwable error) {
         log.error("AI 响应错误", error);
         ChatServiceHelper.onStreamError(emitter, "AI 响应错误: " + error.getMessage());
     }
 
-    // ==================== 辅助方法 ====================
-
-    /**
-     * 转换消息格式
-     * 将消息格式转换为 langchain4j 的格式
-     *
-     * @return langchain4j 消息
-     */
     private ChatMessage convertMessage(Message msg) {
-        // 复用统一的消息转换，保留图片等多模态内容
         return IChatService.toLangChainMessage(msg);
     }
 }

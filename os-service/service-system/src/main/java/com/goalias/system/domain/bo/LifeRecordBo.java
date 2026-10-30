@@ -7,6 +7,7 @@ import com.goalias.common.web.domain.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.util.Date;
@@ -38,6 +39,20 @@ public class LifeRecordBo extends BaseEntity {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date recordDate;
+
+    /**
+     * 记录日期筛选起点（含），GET 查询参数需 DateTimeFormat（非 JsonFormat）
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date beginDate;
+
+    /**
+     * 记录日期筛选终点（含），GET 查询参数需 DateTimeFormat（非 JsonFormat）
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date endDate;
 
     private String attachsId;
 

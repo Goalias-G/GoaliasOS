@@ -55,16 +55,14 @@ public class LifeRecordServiceImpl extends ServiceImpl<LifeRecordMapper, LifeRec
         LambdaQueryWrapper<LifeRecord> lqw = buildQueryWrapper(bo);
 
         lqw.eq(LifeRecord::getUserId, bo.getUserId());
-        lqw.eq(LifeRecord::getCategoryId, bo.getCategoryId());
-        lqw.like(StringUtils.isNotBlank(bo.getTitle()),LifeRecord::getTitle,bo.getTitle());
+        lqw.eq(bo.getCategoryId() != null, LifeRecord::getCategoryId, bo.getCategoryId());
+        lqw.like(StringUtils.isNotBlank(bo.getTitle()), LifeRecord::getTitle, bo.getTitle());
         lqw.eq(bo.getFavoriteFlag() != null, LifeRecord::getFavoriteFlag, bo.getFavoriteFlag());
+        lqw.ge(bo.getBeginDate() != null, LifeRecord::getRecordDate, bo.getBeginDate());
+        lqw.le(bo.getEndDate() != null, LifeRecord::getRecordDate, bo.getEndDate());
         lqw.orderByDesc(LifeRecord::getRecordDate);
         lqw.orderByDesc(LifeRecord::getCreateTime);
         Page<LifeRecord> result = baseMapper.selectPage(pageQuery.build(), lqw);
-//        List<LifeRecord> records = result.getRecords();
-//        for (LifeRecord record : records) {
-//            fillAttachsUrls(record);
-//        }
         return TableDataInfo.build(result);
     }
 

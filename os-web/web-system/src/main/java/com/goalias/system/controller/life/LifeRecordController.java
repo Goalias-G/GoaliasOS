@@ -1,7 +1,6 @@
 package com.goalias.system.controller.life;
 
 import com.goalias.common.core.domain.R;
-import com.goalias.common.core.exception.ServiceException;
 import com.goalias.common.satoken.utils.LoginHelper;
 import com.goalias.common.web.core.BaseController;
 import com.goalias.common.web.domain.PageQuery;
@@ -13,9 +12,6 @@ import com.goalias.system.service.ILifeRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * 生活记录Controller
@@ -32,12 +28,10 @@ public class LifeRecordController extends BaseController {
 
     /**
      * 查询生活记录列表
+     * categoryId 为空时查询当前用户全部记录；可用 beginDate/endDate 按记录日期筛选
      */
     @GetMapping("/list")
     public TableDataInfo<LifeRecord> list(@Validated LifeRecordBo bo, PageQuery pageQuery) {
-        if (Objects.isNull(bo.getCategoryId())){
-            throw new ServiceException("分类id不可为空!");
-        }
         return lifeRecordService.queryPageList(bo, pageQuery);
     }
 
