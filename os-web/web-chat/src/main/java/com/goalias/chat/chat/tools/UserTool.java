@@ -36,7 +36,7 @@ public class UserTool implements OsToolProvider {
     }
 
     @OsTool(name = "update_user_context", description = "用户输入对自己个人背景身份信息有描述时调用,包括基础画像、偏好设置、技术背景、重要事实等")
-    public Boolean updateUserContext(@OsToolParam(name = "description", description = "包含用户个人描述的原始描述片段", required = true) String description) {
+    public Boolean updateUserContext(@OsToolParam(name = "description", description = "包含用户个人描述的原始描述片段或初步结构化信息", required = true) String description) {
         Long ttlUserId = TtlTokenContext.getCurrentUserId();
         log.info("updateUserContext 执行 userId: {}", ttlUserId);
 

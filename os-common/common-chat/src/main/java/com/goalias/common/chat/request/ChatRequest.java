@@ -47,6 +47,16 @@ public class ChatRequest {
     private Boolean hasAttachment;
 
     /**
+     * 快捷指令场景，对应 PromptTemplateEnum.desc（如 lifeRecord）
+     */
+    private String scene;
+
+    /**
+     * 生活记录附件 OSS 文件 ID（非多模态，供 record_life_event 使用）
+     */
+    private List<Long> fileIds;
+
+    /**
      * 采样温度，取值范围[0,2]
      * 控制随机性强度
      */

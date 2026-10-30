@@ -210,10 +210,11 @@ public class SseServiceImpl implements ISseService {
     private void buildChatMessageList(ChatRequest chatRequest) {
         List<Message> messages = chatRequest.getMessages();
         Message chatMessage = messages.get(messages.size() - 1);
-        // 多模态消息仅提取文本部分作为提示词/标题
+        // 多模态消息仅提取文本部分作为提示词/标题（入库用原文，后续增强不回写 prompt）
         String chatString = IChatService.extractText(chatMessage.getContent());
+        chatRequest.setPrompt(chatString);
 
-        // 处理知识库相关逻辑
+        // 处理知识库 / 场景系统提示词
         String sysPrompt = processKnowledgeBase(chatRequest, messages);
 
         Map<String, Object> userContext = redisService.hmGet(CacheNames.CHAT_USER_CONTEXT + chatRequest.getUserId());
@@ -230,15 +231,17 @@ public class SseServiceImpl implements ISseService {
         messages.add(0, sysMessage);
 
         chatRequest.setSysPrompt(sysPrompt);
-        chatRequest.setPrompt(chatString);
+
+        // 仅增强发给模型的末条用户消息，不改变入库的原始 prompt
+        enrichUserMessageWithFileIds(chatRequest, messages);
     }
 
     /**
-     * 处理知识库相关逻辑
+     * 处理知识库相关逻辑；无知识库时按场景加载 PromptTemplate
      */
     private String processKnowledgeBase(ChatRequest chatRequest, List<Message> messages) {
         if (StringUtils.isEmpty(chatRequest.getKid())) {
-            return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
+            return resolveSceneSystemPrompt(chatRequest);
         }
 
         try {
@@ -246,7 +249,7 @@ public class SseServiceImpl implements ISseService {
             KnowledgeInfo knowledgeInfo = knowledgeInfoService.queryByKid(chatRequest.getKid());
             if (Objects.isNull(knowledgeInfo)) {
                 log.warn("知识库信息不存在，kid: {}", chatRequest.getKid());
-                return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
+                return resolveSceneSystemPrompt(chatRequest);
             }
 
             // 查询向量模型配置信息
@@ -274,8 +277,52 @@ public class SseServiceImpl implements ISseService {
 
         } catch (Exception e) {
             log.error("处理知识库信息失败: {}", e.getMessage(), e);
-            return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
+            return resolveSceneSystemPrompt(chatRequest);
         }
+    }
+
+    /**
+     * 按快捷指令场景选择系统提示词模板，未指定或未命中则使用 chat
+     */
+    private String resolveSceneSystemPrompt(ChatRequest chatRequest) {
+        PromptTemplateEnum sceneEnum = PromptTemplateEnum.fromDesc(chatRequest.getScene());
+        if (sceneEnum != null) {
+            return getPromptTemplatePrompt(sceneEnum.getDesc());
+        }
+        if (StringUtils.isNotEmpty(chatRequest.getScene())) {
+            log.warn("未知快捷指令场景: {}，回退到 chat 模板", chatRequest.getScene());
+        }
+        return getPromptTemplatePrompt(PromptTemplateEnum.CHAT.getDesc());
+    }
+
+    /**
+     * 将生活记录附件 ID 注入末条用户消息供模型调用 record_life_event；不修改 chatRequest.prompt
+     */
+    private void enrichUserMessageWithFileIds(ChatRequest chatRequest, List<Message> messages) {
+        List<Long> fileIds = chatRequest.getFileIds();
+        if (CollectionUtil.isEmpty(fileIds)) {
+            return;
+        }
+        if (!PromptTemplateEnum.LIFE_RECORD.getDesc().equals(chatRequest.getScene())) {
+            log.warn("fileIds 仅在 lifeRecord 场景生效，当前 scene={}，已忽略", chatRequest.getScene());
+            return;
+        }
+        String joinedIds = fileIds.stream()
+                .filter(Objects::nonNull)
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+        if (StringUtils.isEmpty(joinedIds)) {
+            return;
+        }
+        // 系统提示词插在 index 0，末条用户消息仍在最后
+        Message userMessage = messages.get(messages.size() - 1);
+        String originalText = IChatService.extractText(userMessage.getContent());
+        String enhanced = originalText + """
+                
+                [附件OSS文件ID]: %s
+                调用 record_life_event 时必须将上述 ID 原样填入 fileIds 参数（多个英文逗号分隔）。
+                """.formatted(joinedIds);
+        userMessage.setContent(enhanced);
     }
 
     /**
