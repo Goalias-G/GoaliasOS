@@ -47,8 +47,8 @@ public class UserProfileTool implements McpToolContributor {
         profile.put("userName", user.getUserName());
         profile.put("sex", user.getSex());
         profile.put("email", user.getEmail());
-        profile.put("userPlan", user.getUserPlan());
-        profile.put("userGrade", user.getUserGrade());
+//        profile.put("userPlan", user.getUserPlan());
+//        profile.put("userGrade", user.getUserGrade());
         profile.put("userBalance", user.getUserBalance());
         profile.put("loginLocation", user.getLoginLocation());
         profile.put("createTime", user.getCreateTime());

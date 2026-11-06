@@ -7,7 +7,7 @@ GoaliasOS 是以“个人成长”为核心的生活管理服务端。系统隐�
 ## 技术与运行
 
 - Java 17、Spring Boot 3.4.4、Maven 多模块。
-- MyBatis-Plus + MySQL；Redis；Sa-Token；MinIO；Spring AI / LangChain4j。
+- MyBatis-Plus + MySQL；Redis；Sa-Token；MinIO；LangChain4j。
 - 默认服务端口 `7000`、上下文路径 `/goalias-os`；环境由 Maven profile `dev` / `prod` 与 `application*.yml` 控制。
 
 ```powershell

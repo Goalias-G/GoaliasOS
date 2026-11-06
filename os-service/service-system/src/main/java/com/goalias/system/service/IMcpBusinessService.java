@@ -77,16 +77,4 @@ public interface IMcpBusinessService {
      * @return 分类占比列表
      */
     List<FinanceCategoryPieVo> getFinanceCategoryPie(Long userId, String startDate, String endDate);
-
-    /**
-     * 新增支出流水（分类不存在时自动创建支出分类）
-     *
-     * @param userId       用户ID
-     * @param categoryName 支出分类名称
-     * @param amountCent   金额（分）
-     * @param tag          流水标签 1-必要支出 2-弹性支出
-     * @param remark       备注
-     * @return 新增的支出流水
-     */
-    FinanceTransaction addExpense(Long userId, String categoryName, long amountCent, Integer tag, String remark);
 }

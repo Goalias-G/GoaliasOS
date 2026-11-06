@@ -43,22 +43,6 @@ public class FinanceTool implements McpToolContributor {
                                 .build())
                         .callHandler((exchange, request) -> McpResults.call(() ->
                                 getFinanceSummary(request.arguments())))
-                        .build(),
-                McpServerFeatures.SyncToolSpecification.builder()
-                        .tool(McpSchema.Tool.builder()
-                                .name("add_expense")
-                                .description("新增一笔支出流水：金额单位为元，分类不存在时自动创建，返回新增结果")
-                                .inputSchema(JsonSchemas.object(Map.of(
-                                        "amountYuan", JsonSchemas.property("number", "支出金额（元，必填）"),
-                                        "categoryName", JsonSchemas.property("string", "支出分类名称（必填），如 餐饮/交通/购物"),
-                                        "expenseType", JsonSchemas.enumProperty(
-                                                "支出类型：necessary=必要支出，flexible=弹性支出",
-                                                List.of("necessary", "flexible"), "flexible"),
-                                        "remark", JsonSchemas.property("string", "备注（可选）")
-                                ), "amountYuan", "categoryName"))
-                                .build())
-                        .callHandler((exchange, request) -> McpResults.call(() ->
-                                addExpense(request.arguments())))
                         .build());
     }
 
@@ -91,32 +75,6 @@ public class FinanceTool implements McpToolContributor {
             }
         }
         result.put("topCategories", topCategories);
-        return result;
-    }
-
-    /**
-     * 新增支出：元转分、支出类型映射为流水标签，分类不存在时自动创建
-     */
-    private Map<String, Object> addExpense(Map<String, Object> arguments) {
-        BigDecimal amountYuan = McpResults.getRequiredAmount(arguments, "amountYuan");
-        if (amountYuan.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("支出金额必须大于0");
-        }
-        String categoryName = McpResults.getRequiredString(arguments, "categoryName");
-        String expenseType = McpResults.getString(arguments, "expenseType", "flexible");
-        String remark = McpResults.getString(arguments, "remark", "MCP 客户端记录");
-        // 支出标签：1-必要支出 2-弹性支出
-        int tag = "necessary".equalsIgnoreCase(expenseType) ? 1 : 2;
-        long amountCent = McpResults.yuanToCent(amountYuan);
-        FinanceTransaction transaction = businessService.addExpense(
-                McpToolConstants.DEFAULT_USER_ID, categoryName, amountCent, tag, remark);
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("success", true);
-        result.put("transactionId", transaction.getId());
-        result.put("categoryName", categoryName);
-        result.put("amountYuan", amountYuan);
-        result.put("expenseType", tag == 1 ? "necessary" : "flexible");
-        result.put("message", "支出记录已添加");
         return result;
     }
 }

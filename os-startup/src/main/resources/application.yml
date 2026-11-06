@@ -208,11 +208,6 @@ websocket:
   # 设置访问源地址
   allowedOrigins: '*'
 
-spring:
-  ai:
-    openai:
-      api-key: sk-xx
-
 # 向量库配置
 vector-store:
   # 向量存储类型 可选(pinecone/milvus)

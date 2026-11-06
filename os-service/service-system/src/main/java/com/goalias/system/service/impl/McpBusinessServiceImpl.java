@@ -102,36 +102,4 @@ public class McpBusinessServiceImpl implements IMcpBusinessService {
     public List<FinanceCategoryPieVo> getFinanceCategoryPie(Long userId, String startDate, String endDate) {
         return financeTransactionMapper.selectCategoryPie(userId, startDate, endDate);
     }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public FinanceTransaction addExpense(Long userId, String categoryName, long amountCent, Integer tag, String remark) {
-        if (StrUtil.isBlank(categoryName)) {
-            throw new ServiceException("支出分类名称不能为空");
-        }
-        if (amountCent <= 0) {
-            throw new ServiceException("支出金额必须大于0");
-        }
-        // 按用户+名称+支出类型精确匹配分类，未命中则自动创建
-        LambdaQueryWrapper<FinanceCategory> categoryWrapper = Wrappers.lambdaQuery();
-        categoryWrapper.eq(FinanceCategory::getUserId, userId);
-        categoryWrapper.eq(FinanceCategory::getName, categoryName.trim());
-        categoryWrapper.eq(FinanceCategory::getType, 1);
-        FinanceCategory category = financeCategoryMapper.selectOne(categoryWrapper);
-        if (category == null) {
-            category = new FinanceCategory();
-            category.setUserId(userId);
-            category.setName(categoryName.trim());
-            category.setType(1);
-            financeCategoryMapper.insert(category);
-        }
-        FinanceTransaction transaction = new FinanceTransaction();
-        transaction.setUserId(userId);
-        transaction.setCategoryId(category.getId());
-        transaction.setAmount(amountCent);
-        transaction.setTag(tag);
-        transaction.setRemark(remark);
-        financeTransactionMapper.insert(transaction);
-        return transaction;
-    }
 }
