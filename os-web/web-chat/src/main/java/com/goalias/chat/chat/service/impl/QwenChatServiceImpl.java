@@ -21,6 +21,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Objects;
 
@@ -60,6 +61,7 @@ public class QwenChatServiceImpl implements IChatService {
                 .topP(chatRequest.getTopP())
                 .customParameters(enableSearch ? enableSearchMap : null)
                 .returnThinking(true)
+                .timeout(Duration.ofMinutes(2))
                 .logRequests(environment.matchesProfiles("dev"))
                 .logResponses(environment.matchesProfiles("dev"))
 //                .isMultimodalModel(chatModel.getModelName().equals("qwen3.8-flash"))
@@ -95,6 +97,7 @@ public class QwenChatServiceImpl implements IChatService {
                 .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
                 .responseFormat(chatRequest.getIsJsonResponse() ? ResponseFormat.JSON : ResponseFormat.TEXT)
+                .timeout(Duration.ofMinutes(5))
                 .build();
         dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainRequest(chatRequest);
         ChatResponse response = model.chat(requestBuilder.build());

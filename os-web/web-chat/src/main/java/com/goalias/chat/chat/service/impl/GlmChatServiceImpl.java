@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.time.Duration;
+
 
 /**
  * 智谱模型
@@ -43,6 +45,8 @@ public class GlmChatServiceImpl implements IChatService {
                 .model(chatModel.getModelName())
                 .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
+                .connectTimeout(Duration.ofSeconds(30))
+                .readTimeout(Duration.ofSeconds(2))
                 .build();
 
         dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainRequest(chatRequest);
@@ -74,6 +78,8 @@ public class GlmChatServiceImpl implements IChatService {
                 .model(chatModel.getModelName())
                 .temperature(chatRequest.getTemperature())
                 .topP(chatRequest.getTopP())
+                .connectTimeout(Duration.ofSeconds(30))
+                .readTimeout(Duration.ofSeconds(5))
                 .build();
 
         dev.langchain4j.model.chat.request.ChatRequest.Builder requestBuilder = toLangChainRequest(chatRequest);

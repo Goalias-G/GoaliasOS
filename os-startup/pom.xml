@@ -25,6 +25,11 @@
             <groupId>com.goalias</groupId>
             <artifactId>web-chat</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.goalias</groupId>
+            <artifactId>web-mcp</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

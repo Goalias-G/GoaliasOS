@@ -264,3 +264,12 @@ splitter:
     h3-separator-regex: "^###\\s+.+$"
     code-block-separator: "```"
     horizontal-rule-separator: "---"
+
+mcp:
+  enabled: true
+  # 应用内端点路径，完整路径为 /goalias-os/mcp
+  endpoint: /mcp
+  server-name: goalias-os
+  server-version: 1.0.0
+  # 客户端认证固定 Key，通过 Authorization: Bearer <key> 传递
+  api-key: ${MCP_API_KEY:goalias-os-mcp-server-api-key}
